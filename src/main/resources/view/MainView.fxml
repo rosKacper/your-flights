@@ -17,7 +17,7 @@
                   <Cursor fx:constant="HAND" />
               </cursor>
           </JFXButton>
-          <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="false" layoutY="300.0" prefHeight="51.0" prefWidth="310.0" ripplerFill="#0582ca" text="Customers" textAlignment="CENTER">
+          <JFXButton alignment="CENTER" buttonType="RAISED" layoutY="300.0" onAction="#showCustomersView" prefHeight="51.0" prefWidth="310.0" ripplerFill="#0582ca" text="Customers" textAlignment="CENTER">
               <font>
                   <Font size="24.0" />
               </font>
