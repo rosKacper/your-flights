@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.lab.to.yourflights.model.customers;
+package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;

@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.lab.to.yourflights.model.ticketcategory;
+package pl.edu.agh.ki.lab.to.yourflights.model;
 
 
 import javax.persistence.Entity;

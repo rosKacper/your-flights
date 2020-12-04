@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.lab.to.yourflights.model.ticketorder;
+package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

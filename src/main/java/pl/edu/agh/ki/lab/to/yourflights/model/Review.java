@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.lab.to.yourflights.model.review;
+package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import com.sun.istack.NotNull;
 

@@ -1,11 +1,11 @@
-package pl.edu.agh.ki.lab.to.yourflights.model.customers;
+package pl.edu.agh.ki.lab.to.yourflights.service;
 
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.ki.lab.to.yourflights.model.airline.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.airline.AirlineRepository;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import pl.edu.agh.ki.lab.to.yourflights.repository.CustomerRepository;
 
 @Service
 public class CustomerService {

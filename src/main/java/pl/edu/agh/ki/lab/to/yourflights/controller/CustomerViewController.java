@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import pl.edu.agh.ki.lab.to.yourflights.model.customers.Customer;
-import pl.edu.agh.ki.lab.to.yourflights.model.customers.CustomerService;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 
 import java.io.IOException;
 

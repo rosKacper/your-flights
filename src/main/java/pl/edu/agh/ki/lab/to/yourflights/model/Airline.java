@@ -1,7 +1,6 @@
-package pl.edu.agh.ki.lab.to.yourflights.model.airline;
+package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import com.sun.istack.NotNull;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
