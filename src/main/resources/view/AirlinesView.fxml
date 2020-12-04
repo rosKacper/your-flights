@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXListView?>
-<?import javafx.scene.layout.BorderPane?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.AirlinesViewController">
-   <center>
-      <JFXListView fx:id="airlinesListView" verticalGap="10.0" BorderPane.alignment="CENTER" />
-   </center>
-</BorderPane>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.AirlinesViewController">
+   <AnchorPane layoutY="5.0" prefHeight="600.0" prefWidth="228.0">
+      <children>
+          <Text layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Airlines" textAlignment="CENTER" wrappingWidth="228.0">
+              <font>
+                  <Font size="48.0" />
+              </font>
+          </Text>
+          <JFXButton alignment="CENTER" contentDisplay="CENTER" layoutY="111.0" prefHeight="51.0" prefWidth="228.0" ripplerFill="#0582ca" text="Add new Airline" textAlignment="CENTER">
+              <font>
+                  <Font size="18.0" />
+              </font>
+              <cursor>
+                  <Cursor fx:constant="HAND" />
+              </cursor>
+          </JFXButton>
+          <JFXButton alignment="CENTER" contentDisplay="CENTER" layoutY="162.0" onAction="#showMainView" prefHeight="51.0" prefWidth="228.0" ripplerFill="#0582ca" text="Home" textAlignment="CENTER">
+              <font>
+                  <Font size="18.0" />
+              </font>
+              <cursor>
+                  <Cursor fx:constant="HAND" />
+              </cursor>
+         </JFXButton>
+      </children>
+   </AnchorPane>
+   <AnchorPane layoutX="228.0" layoutY="5.0" prefHeight="600.0" prefWidth="572.0">
+      <children>
+         <JFXTreeTableView fx:id="airlinesTableView" layoutY="-5.0" prefHeight="605.0" prefWidth="572.0">
+            <columns>
+               <TreeTableColumn fx:id="nameColumn" prefWidth="100.0" text="Name" />
+               <TreeTableColumn fx:id="countryColumn" prefWidth="100.0" text="Country" />
+               <TreeTableColumn fx:id="descriptionColumn" prefWidth="371.0" text="Description" />
+            </columns></JFXTreeTableView>
+      </children>
+   </AnchorPane>
+</AnchorPane>
