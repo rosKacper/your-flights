@@ -20,18 +20,19 @@ public class Reservation {
 
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = false,
+            orphanRemoval = true,
             fetch = FetchType.LAZY,
             mappedBy = "reservation"
     )
     private List<TicketOrder> ticketOrders;
 
-    @ManyToOne
-    @JoinColumn(name = "customerID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customerID")
     private Customer customer;
 
-    public Reservation(Date reservationDate) {
+    public Reservation(Date reservationDate, Customer customer) {
         this.reservationDate = reservationDate;
+        this.customer = customer;
     }
 
     public Reservation() {}
@@ -43,4 +44,13 @@ public class Reservation {
     public void setReservationDate(Date reservationDate) {
         this.reservationDate = reservationDate;
     }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
 }

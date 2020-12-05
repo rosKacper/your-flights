@@ -24,14 +24,6 @@ public class TicketDiscount {
         this.name = name;
     }
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = false,
-            fetch = FetchType.LAZY,
-            mappedBy = "ticketDiscount"
-    )
-    private List<TicketOrder> ticketOrders;
-
     public TicketDiscount() {}
 
     public String getName() {

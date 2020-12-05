@@ -16,9 +16,19 @@ public class Review {
     private double rating;
     private String comment;
 
-    public Review(double rating, String comment){
+    @ManyToOne
+    @JoinColumn(name = "airlineID")
+    private Airline airline;
+
+    @ManyToOne
+    @JoinColumn(name = "userID")
+    private User user;
+
+    public Review(double rating, String comment, User user, Airline airline){
         this.rating=rating;
         this.comment=comment;
+        this.user=user;
+        this.airline=airline;
     }
 
     public Review(){}

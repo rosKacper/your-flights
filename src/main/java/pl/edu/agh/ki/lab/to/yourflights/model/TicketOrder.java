@@ -16,19 +16,16 @@ public class TicketOrder {
     @NotNull
     private int numberOfSeats;
 
-    //TODO
-    //reservationID, ticketCategoryID, ticketDiscountID
-    //used in mapping relations in database
-    @ManyToOne
-    @JoinColumn(name = "ticketDiscountID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticketDiscountID")
     private TicketDiscount ticketDiscount;
 
-    @ManyToOne
-    @JoinColumn(name = "reservationID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservationID")
     private Reservation reservation;
 
-    @ManyToOne
-    @JoinColumn(name = "ticketCategoryID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticketCategoryID")
     private TicketCategory ticketCategory;
 
 
@@ -37,8 +34,11 @@ public class TicketOrder {
 
     //TODO
     //add fields used in mapping relations to constructor
-    public TicketOrder(int numberOfSeats){
+    public TicketOrder(int numberOfSeats, TicketDiscount ticketDiscount, Reservation reservation, TicketCategory ticketCategory){
         this.numberOfSeats = numberOfSeats;
+        this.ticketDiscount = ticketDiscount;
+        this.reservation = reservation;
+        this.ticketCategory = ticketCategory;
     }
 
 
@@ -53,4 +53,27 @@ public class TicketOrder {
         this.numberOfSeats = numberOfSeats;
     }
 
+    public TicketDiscount getTicketDiscount() {
+        return ticketDiscount;
+    }
+
+    public void setTicketDiscount(TicketDiscount ticketDiscount) {
+        this.ticketDiscount = ticketDiscount;
+    }
+
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
+
+    public TicketCategory getTicketCategory() {
+        return ticketCategory;
+    }
+
+    public void setTicketCategory(TicketCategory ticketCategory) {
+        this.ticketCategory = ticketCategory;
+    }
 }

@@ -6,6 +6,7 @@ import javafx.beans.property.StringProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,10 +20,20 @@ public class Customer extends RecursiveTreeObject<Customer> {
     private String firstName, secondName, country, city, street, postalCode, phoneNumber, emailAddress;
 
     @OneToOne
-    @JoinColumn(name="ACCOUNT_ID")
+    @JoinColumn(name="accountId")
     private User user;
 
-    public Customer(String firstName, String secondName, String country, String city, String street, String postalCode, String phoneNumber, String emailAddress) {
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY,
+            mappedBy = "customer"
+    )
+    private List<Reservation> reservations;
+
+    public Customer(String firstName, String secondName, String country,
+                    String city, String street, String postalCode,
+                    String phoneNumber, String emailAddress, User user) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.country = country;
@@ -31,6 +42,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
+        this.user = user;
     }
 
     public Customer(){}

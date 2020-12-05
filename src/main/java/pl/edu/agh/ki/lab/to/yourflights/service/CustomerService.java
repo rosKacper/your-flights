@@ -20,8 +20,8 @@ public class CustomerService {
     public ObservableList<Customer> getMockData() {
         ObservableList<Customer> customers = FXCollections.observableArrayList();
 
-        Customer customer1 = new Customer("Adam", "Małysz", "Polska", "Wisła", "Wyzwolenia", "43-460", "102102102", "lecadam@lec.com");
-        Customer customer2 = new Customer("Janne", "Ahonnen", "Finlandia", "Kuopio", "Suokatu", "70110", "103103103", "lecajanne@lec.com");
+        Customer customer1 = new Customer("Adam", "Małysz", "Polska", "Wisła", "Wyzwolenia", "43-460", "102102102", "lecadam@lec.com", null);
+        Customer customer2 = new Customer("Janne", "Ahonnen", "Finlandia", "Kuopio", "Suokatu", "70110", "103103103", "lecajanne@lec.com", null);
 
         customers.add(customer1);
         customers.add(customer2);

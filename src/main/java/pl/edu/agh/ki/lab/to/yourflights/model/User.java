@@ -4,6 +4,7 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,6 +22,14 @@ public class User {
     private String login;
 
     private String password;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY,
+            mappedBy = "user"
+    )
+    private List<Review> reviews;
 
     public User(UserRole role, String login, String password) {
         this.role = role;
