@@ -1,5 +1,7 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -26,16 +30,19 @@ public class addCustomersController {
     private final Resource mainView;
     @FXML
     public Text actiontarget;
-    public TextField firstName, lastName, country, street, postalCode, phoneNumber, emailAddress;
+    public TextField firstName, lastName, country,city, street, postalCode, phoneNumber, emailAddress;
     private final ApplicationContext applicationContext;
 
 
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
 
+        Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText());
+        CustomerService.addCustomer(customer);
         actiontarget.setText("Done!");
         firstName.clear();
         lastName.clear();
         country.clear();
+        city.clear();
         street.clear();
         postalCode.clear();
         phoneNumber.clear();

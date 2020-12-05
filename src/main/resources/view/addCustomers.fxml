@@ -28,31 +28,35 @@
            GridPane.columnIndex="0" GridPane.rowIndex="3"/>
     <TextField fx:id="country"
                GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-    <Label text="Street Name:"
+    <Label text="City:"
            GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-    <TextField fx:id="street"
+    <TextField fx:id="city"
                GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-    <Label text="Postal code:"
+    <Label text="Street Name:"
            GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-    <TextField fx:id="postalCode"
+    <TextField fx:id="street"
                GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-    <Label text="Phone Number:"
+    <Label text="Postal code:"
            GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-    <TextField fx:id="phoneNumber"
+    <TextField fx:id="postalCode"
                GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-    <Label text="Email Address:"
+    <Label text="Phone Number:"
            GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-    <TextField fx:id="emailAddress"
+    <TextField fx:id="phoneNumber"
                GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+    <Label text="Email Address:"
+           GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+    <TextField fx:id="emailAddress"
+               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
     <HBox spacing="10" alignment="bottom_right"
-          GridPane.columnIndex="1" GridPane.rowIndex="8">
+          GridPane.columnIndex="1" GridPane.rowIndex="9">
         <Button text="Create"
                 onAction="#handleSubmitButtonAction"/>
     </HBox>
     <Text fx:id="actiontarget"
-          GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+          GridPane.columnIndex="1" GridPane.rowIndex="10"/>
 
-    <JFXButton alignment="BOTTOM_LEFT" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="8" onAction="#showMainView"  prefHeight="51.0" prefWidth="228.0" ripplerFill="#0582ca" text="Home" textAlignment="CENTER">
+    <JFXButton alignment="BOTTOM_LEFT" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="9" onAction="#showMainView"  prefHeight="51.0" prefWidth="228.0" ripplerFill="#0582ca" text="Home" textAlignment="CENTER">
         <font>
             <Font size="18.0" />
         </font>
