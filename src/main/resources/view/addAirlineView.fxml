@@ -12,6 +12,10 @@
 <?import javafx.scene.text.Font?>
 <GridPane fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.addAirlineController"
           xmlns:fx="http://javafx.com/fxml/1" alignment="center" hgap="10" vgap="10" prefHeight="600.0" prefWidth="228.0">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" maxWidth="150" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" maxWidth="200" />
+    </columnConstraints>
     <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
     <JFXButton fx:id ="formTitle" alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" disable="true"  prefHeight="51.0" prefWidth="328" GridPane.columnSpan="2" ripplerFill="#0582ca" text="Enter your details: " textFill="black" textAlignment="CENTER">
         <font>
@@ -21,35 +25,19 @@
             <Cursor fx:constant="HAND" />
         </cursor>
     </JFXButton>
-    <Label text="Name:"
+    <Label text="Name:" fx:id ="nameLabel"
            GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     <TextField fx:id ="name"
                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    <Label text="Country:"
+    <Label text="Country:" fx:id ="countryLabel"
            GridPane.columnIndex="0" GridPane.rowIndex="2"/>
     <TextField fx:id="country"
                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <Label text="City:"
+    <Label text="Description:" fx:id ="descriptionLabel"
            GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-    <TextField fx:id="city"
-               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-    <Label text="Street Name:"
-           GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-    <TextField fx:id="street"
-               GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-    <Label text="Postal code:"
-           GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-    <TextField fx:id="postalCode"
-               GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-    <Label text="Email Address:"
-           GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-    <TextField fx:id="emailAddress"
-               GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-    <Label text="Description:"
-           GridPane.columnIndex="0" GridPane.rowIndex="7"/>
     <TextField fx:id="description"
-               GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-    <JFXButton alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="8" onAction="#handleSubmitButtonAction"  prefHeight="51.0" prefWidth="328" GridPane.columnSpan="2" ripplerFill="#0582ca" text="Submit" textAlignment="CENTER">
+               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <JFXButton alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="4" onAction="#handleSubmitButtonAction"  prefHeight="51.0" prefWidth="328" GridPane.columnSpan="2" ripplerFill="#0582ca" text="Submit" textAlignment="CENTER">
         <font>
             <Font size="18.0" />
         </font>
@@ -57,7 +45,7 @@
             <Cursor fx:constant="HAND" />
         </cursor>
     </JFXButton>
-    <JFXButton alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="9" onAction="#showMainView"  prefHeight="51.0"  prefWidth="328" ripplerFill="#0582ca" GridPane.columnSpan="2" text="Home" textAlignment="CENTER">
+    <JFXButton alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5" onAction="#showMainView"  prefHeight="51.0"  prefWidth="328" ripplerFill="#0582ca" GridPane.columnSpan="2" text="Airlines" textAlignment="CENTER">
         <font>
             <Font size="18.0" />
         </font>

@@ -34,6 +34,8 @@ public class addCustomersController {
 
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
 
+
+
         Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(), null);
         CustomerService.addCustomer(customer);
         actiontarget.setText("Done!");
