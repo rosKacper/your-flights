@@ -1,9 +1,6 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
@@ -22,6 +19,17 @@ public class TicketOrder {
     //TODO
     //reservationID, ticketCategoryID, ticketDiscountID
     //used in mapping relations in database
+    @ManyToOne
+    @JoinColumn(name = "ticketDiscountID", referencedColumnName = "ID")
+    private TicketDiscount ticketDiscount;
+
+    @ManyToOne
+    @JoinColumn(name = "reservationID", referencedColumnName = "ID")
+    private Reservation reservation;
+
+    @ManyToOne
+    @JoinColumn(name = "ticketCategoryID", referencedColumnName = "ID")
+    private TicketCategory ticketCategory;
 
 
     public TicketOrder(){}

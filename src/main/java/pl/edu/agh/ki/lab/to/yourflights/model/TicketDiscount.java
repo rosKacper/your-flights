@@ -1,16 +1,17 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class TicketDiscount {
 
     @Id
     @GeneratedValue
-    private int UUID;
+    private UUID id;
 
     @NotEmpty
     private double discount;
@@ -22,6 +23,14 @@ public class TicketDiscount {
         this.discount = discount;
         this.name = name;
     }
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = false,
+            fetch = FetchType.LAZY,
+            mappedBy = "ticketDiscount"
+    )
+    private List<TicketOrder> ticketOrders;
 
     public TicketDiscount() {}
 

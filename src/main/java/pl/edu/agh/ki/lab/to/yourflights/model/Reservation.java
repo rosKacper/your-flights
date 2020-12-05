@@ -5,6 +5,7 @@ import com.sun.istack.NotNull;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +17,18 @@ public class Reservation {
 
     @NotEmpty
     private Date reservationDate;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = false,
+            fetch = FetchType.LAZY,
+            mappedBy = "reservation"
+    )
+    private List<TicketOrder> ticketOrders;
+
+    @ManyToOne
+    @JoinColumn(name = "customerID", referencedColumnName = "ID")
+    private Customer customer;
 
     public Reservation(Date reservationDate) {
         this.reservationDate = reservationDate;

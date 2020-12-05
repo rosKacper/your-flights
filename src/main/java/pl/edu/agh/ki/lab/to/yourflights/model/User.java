@@ -4,13 +4,14 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.UUID;
 
 @Entity
 public class User {
 
     @Id
     @GeneratedValue
-    private int UUID;
+    private UUID id;
 
     @NotEmpty
     @Enumerated(EnumType.STRING)
