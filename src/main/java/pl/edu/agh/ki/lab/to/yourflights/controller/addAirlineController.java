@@ -59,7 +59,12 @@ public class addAirlineController {
         boolean nameValidation = Validator.validateNotEmpty(name, nameLabel);
         boolean descriptionValidation = Validator.validateNotEmpty(description, descriptionLabel);
 
-        if(!countryValidation || !nameValidation || !descriptionValidation) return;
+        if(!countryValidation || !nameValidation || !descriptionValidation) {
+            formTitle.setText("Error!");
+            formTitle.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+            formTitle.setTextFill(Color.WHITE);
+            return;
+        }
 
         Airline airline = new Airline(name.getText(),country.getText(),description.getText());
         AirlineService.addAirline(airline);
