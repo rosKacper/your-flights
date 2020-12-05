@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -18,6 +19,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
+import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
 
@@ -25,16 +27,32 @@ import java.io.IOException;
 public class addCustomersController {
     public PasswordField passwordField;
 
-    private final Resource mainView;
+    private final Resource customerView;
     @FXML
     public Text actiontarget;
     public TextField firstName, lastName, country,city, street, postalCode, phoneNumber, emailAddress;
     private final ApplicationContext applicationContext;
 
+    @FXML
+    public Label firstNameValidationLabel, lastNameValidationLabel,
+            countryValidationLabel, cityValidationLabel, streetValidationLabel,
+            postalCodeValidationLabel, phoneNumberValidationLabel, emailAddressValidationLabel;
+
 
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
+        boolean firstNameValidation = Validator.validateNotEmpty(firstName, firstNameValidationLabel);
+        boolean lastNameValidation = Validator.validateNotEmpty(lastName, lastNameValidationLabel);
+        boolean countryValidation = Validator.validateNotEmpty(country, countryValidationLabel);
+        boolean cityValidation = Validator.validateNotEmpty(city, cityValidationLabel);
+        boolean streetValidation = Validator.validateNotEmpty(street, streetValidationLabel);
+        boolean postalCodeValidation = Validator.validateNotEmpty(postalCode, postalCodeValidationLabel);
+        boolean phoneNumberValidation = Validator.validateNotEmpty(phoneNumber, phoneNumberValidationLabel);
+        boolean emailAddressValidation = Validator.validateEmail(emailAddress, emailAddressValidationLabel);
 
-
+        if(!firstNameValidation || !lastNameValidation || !countryValidation || !cityValidation || !streetValidation
+                || !postalCodeValidation || !phoneNumberValidation || !emailAddressValidation) {
+            return;
+        }
 
         Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(), null);
         CustomerService.addCustomer(customer);
@@ -48,16 +66,17 @@ public class addCustomersController {
         phoneNumber.clear();
         emailAddress.clear();
 
+        showCustomersView(actionEvent);
     }
 
-    public addCustomersController(@Value("classpath:/view/MainView.fxml") Resource mainView, ApplicationContext applicationContext){
-        this.mainView=mainView;
+    public addCustomersController(@Value("classpath:/view/CustomerView.fxml") Resource customerView, ApplicationContext applicationContext){
+        this.customerView = customerView;
         this.applicationContext=applicationContext;
     }
 
-    public void showMainView(ActionEvent actionEvent) {
+    public void showCustomersView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(customerView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

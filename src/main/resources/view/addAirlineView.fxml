@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-
-<?import javafx.scene.text.Text?>
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-<GridPane fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.addAirlineController"
-          xmlns:fx="http://javafx.com/fxml/1" alignment="center" hgap="10" vgap="10" prefHeight="600.0" prefWidth="228.0">
+
+<GridPane alignment="center" hgap="10.0" prefHeight="600.0" prefWidth="800.0" vgap="8.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.addAirlineController">
     <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" maxWidth="150" />
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" maxWidth="200" />
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="184.0" minWidth="10.0" prefWidth="184.0" />
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="10.0" prefWidth="166.0" />
     </columnConstraints>
-    <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
-    <JFXButton fx:id ="formTitle" alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" disable="true"  prefHeight="51.0" prefWidth="328" GridPane.columnSpan="2" ripplerFill="#0582ca" text="Enter your details: " textFill="black" textAlignment="CENTER">
+    <padding><Insets bottom="10.0" left="25.0" right="10.0" top="10.0" /></padding>
+    <JFXButton fx:id="formTitle" alignment="BOTTOM_CENTER" contentDisplay="CENTER" disable="true" prefHeight="51.0" prefWidth="408.0" ripplerFill="#0582ca" text="Enter Airline details: " textAlignment="CENTER" textFill="black" GridPane.columnSpan="2" GridPane.rowIndex="1">
+        <font>
+            <Font size="24.0" />
+        </font>
+        <cursor>
+            <Cursor fx:constant="HAND" />
+        </cursor>
+    </JFXButton>
+    <Label fx:id="nameLabel" text="Name:" GridPane.rowIndex="3" />
+    <TextField fx:id="name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    <Label fx:id="countryLabel" text="Country:" GridPane.rowIndex="5" />
+    <TextField fx:id="country" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    <Label fx:id="descriptionLabel" text="Description (optional):" GridPane.rowIndex="7" />
+    <TextField fx:id="description" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+    <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#handleSubmitButtonAction" prefHeight="51.0" prefWidth="200.0" ripplerFill="#276738" style="-fx-background-color: #529E66;" text="Submit" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="11">
         <font>
             <Font size="18.0" />
         </font>
@@ -25,19 +38,7 @@
             <Cursor fx:constant="HAND" />
         </cursor>
     </JFXButton>
-    <Label text="Name:" fx:id ="nameLabel"
-           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-    <TextField fx:id ="name"
-               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    <Label text="Country:" fx:id ="countryLabel"
-           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-    <TextField fx:id="country"
-               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <Label text="Description:" fx:id ="descriptionLabel"
-           GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-    <TextField fx:id="description"
-               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-    <JFXButton alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="4" onAction="#handleSubmitButtonAction"  prefHeight="51.0" prefWidth="328" GridPane.columnSpan="2" ripplerFill="#0582ca" text="Submit" textAlignment="CENTER">
+    <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showAirlinesView" prefHeight="51.0" prefWidth="183.0" ripplerFill="#95353a" style="-fx-border-color: #D0454C; -fx-border-width: 2px;" text="Cancel" textAlignment="CENTER" GridPane.columnSpan="2147483647" GridPane.rowIndex="11">
         <font>
             <Font size="18.0" />
         </font>
@@ -45,12 +46,22 @@
             <Cursor fx:constant="HAND" />
         </cursor>
     </JFXButton>
-    <JFXButton alignment="BOTTOM_CENTER" contentDisplay="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5" onAction="#showMainView"  prefHeight="51.0"  prefWidth="328" ripplerFill="#0582ca" GridPane.columnSpan="2" text="Airlines" textAlignment="CENTER">
-        <font>
-            <Font size="18.0" />
-        </font>
-        <cursor>
-            <Cursor fx:constant="HAND" />
-        </cursor>
-    </JFXButton>
+   <Label fx:id="nameValidationLabel" prefHeight="17.0" prefWidth="184.0" GridPane.rowIndex="4" />
+   <Label fx:id="countryValidationLabel" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="6" />
+   <Label prefHeight="17.0" prefWidth="163.0" GridPane.rowIndex="8" />
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
 </GridPane>

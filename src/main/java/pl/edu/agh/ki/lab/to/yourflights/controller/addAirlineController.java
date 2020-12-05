@@ -43,26 +43,26 @@ import java.util.stream.Collectors;
 @Component
 public class addAirlineController {
 
-    private Validator validator = new Validator();
-    private final Resource airlineView;
+    private final Resource airlinesView;
     @FXML
     public TextField name, country, description;
     @FXML
     public Label nameLabel,  countryLabel, descriptionLabel;
+    @FXML
+    public Label nameValidationLabel,  countryValidationLabel;
     @FXML
     public Button formTitle;
     private final ApplicationContext applicationContext;
 
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
 
-        boolean countryValidation = Validator.validateNotEmpty(country, countryLabel);
-        boolean nameValidation = Validator.validateNotEmpty(name, nameLabel);
-        boolean descriptionValidation = Validator.validateNotEmpty(description, descriptionLabel);
+        boolean countryValidation = Validator.validateNotEmpty(country, countryValidationLabel);
+        boolean nameValidation = Validator.validateNotEmpty(name, nameValidationLabel);
 
-        if(!countryValidation || !nameValidation || !descriptionValidation) {
-            formTitle.setText("Error!");
-            formTitle.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-            formTitle.setTextFill(Color.WHITE);
+        if(!countryValidation || !nameValidation) {
+//            formTitle.setText("Error!");
+//            formTitle.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+//            formTitle.setTextFill(Color.WHITE);
             return;
         }
 
@@ -73,21 +73,23 @@ public class addAirlineController {
         description.clear();
         name.clear();
 
-        formTitle.setText("Airline Added!");
-        formTitle.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
-        formTitle.setTextFill(Color.WHITE);
+//        formTitle.setText("Airline Added!");
+//        formTitle.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+//        formTitle.setTextFill(Color.WHITE);
+
+        showAirlinesView(actionEvent);
 
     }
 
-    public addAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlineView, ApplicationContext applicationContext){
-        this.airlineView = airlineView;
+    public addAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView, ApplicationContext applicationContext){
+        this.airlinesView = airlinesView;
         this.applicationContext = applicationContext;
     }
 
 
-    public void showMainView(ActionEvent actionEvent) {
+    public void showAirlinesView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(airlineView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
