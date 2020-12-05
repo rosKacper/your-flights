@@ -17,7 +17,6 @@ public class CustomerService {
     }
     public static ObservableList<Customer> customers = FXCollections.observableArrayList();
 
-
     /*
     //method returning example data for testing purposes
     public ObservableList<Customer> getMockData() {
@@ -32,6 +31,7 @@ public class CustomerService {
         return customers;
     }
     */
+
     //method adding customer to list
     public static void addCustomer(Customer customer){
         customers.add(customer);

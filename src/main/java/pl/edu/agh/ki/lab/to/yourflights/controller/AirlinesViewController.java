@@ -27,6 +27,7 @@ public class AirlinesViewController {
 
     private AirlineService airlineService;
     private final Resource mainView;
+    private final Resource addAirlineView;
     private final ApplicationContext applicationContext;
 
     @FXML
@@ -57,9 +58,11 @@ public class AirlinesViewController {
 
     }
 
-    public AirlinesViewController(AirlineService airlineService, @Value("classpath:/view/MainView.fxml") Resource mainView, ApplicationContext applicationContext) {
+    public AirlinesViewController(AirlineService airlineService, @Value("classpath:/view/MainView.fxml") Resource mainView,
+                                  @Value("classpath:/view/addAirlineView.fxml") Resource addAirlineView, ApplicationContext applicationContext) {
         this.airlineService = airlineService;
         this.mainView = mainView;
+        this.addAirlineView = addAirlineView;
         this.applicationContext = applicationContext;
     }
 
@@ -71,6 +74,20 @@ public class AirlinesViewController {
     public void showMainView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent, 800, 600);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showAddAirline(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(addAirlineView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

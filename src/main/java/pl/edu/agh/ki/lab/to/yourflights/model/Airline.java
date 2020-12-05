@@ -23,6 +23,14 @@ public class Airline extends RecursiveTreeObject<Airline> {
     private String country;
     @NotEmpty
     private String description;
+    @NotEmpty
+    private String city;
+    @NotEmpty
+    private String street;
+    @NotEmpty
+    private String postalCode;
+    @NotEmpty
+    private String emailAddress;
 
     @OneToOne
     @JoinColumn(name="accountID")
@@ -44,10 +52,15 @@ public class Airline extends RecursiveTreeObject<Airline> {
     )
     private List<Review> reviews;
 
-    public Airline(String name, String country, String description) {
+    public Airline(String name, String country,String description,  String city,
+                   String street, String postalCode, String emailAdress) {
         this.name = name;
         this.country = country;
         this.description = description;
+        this.city = city;
+        this.street = street;
+        this.postalCode = postalCode;
+        this.emailAddress = emailAdress;
     }
 
     public Airline() {
@@ -62,7 +75,20 @@ public class Airline extends RecursiveTreeObject<Airline> {
         return new SimpleStringProperty(country);
     }
 
-    public StringProperty getDescriptionProperty() {
-        return new SimpleStringProperty(description);
+    public StringProperty getDescriptionProperty() { return new SimpleStringProperty(description); }
+
+    public StringProperty getCityProperty() {
+        return new SimpleStringProperty(city);
     }
+
+    public StringProperty getStreetProperty() {
+        return new SimpleStringProperty(street);
+    }
+
+    public StringProperty getPostalCodeProperty() { return new SimpleStringProperty(postalCode); }
+
+    public StringProperty getEmailAddressProperty() {
+        return new SimpleStringProperty(emailAddress);
+    }
+
 }
