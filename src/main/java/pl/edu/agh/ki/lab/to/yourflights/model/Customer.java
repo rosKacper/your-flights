@@ -4,11 +4,9 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,7 +19,21 @@ public class Customer extends RecursiveTreeObject<Customer> {
     @NotEmpty
     private String firstName, secondName, country, city, street, postalCode, phoneNumber, emailAddress;
 
-    public Customer(String firstName, String secondName, String country, String city, String street, String postalCode, String phoneNumber, String emailAddress) {
+    @OneToOne
+    @JoinColumn(name="accountId")
+    private User user;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY,
+            mappedBy = "customer"
+    )
+    private List<Reservation> reservations;
+
+    public Customer(String firstName, String secondName, String country,
+                    String city, String street, String postalCode,
+                    String phoneNumber, String emailAddress, User user) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.country = country;
@@ -30,6 +42,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
+        this.user = user;
     }
 
     public Customer(){}

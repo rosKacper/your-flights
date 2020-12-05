@@ -16,7 +16,7 @@
                   <Font size="48.0" />
               </font>
           </Text>
-          <JFXButton alignment="CENTER" contentDisplay="CENTER" layoutY="111.0" prefHeight="51.0" prefWidth="228.0" ripplerFill="#0582ca" text="Add new Airline" textAlignment="CENTER">
+          <JFXButton alignment="CENTER" contentDisplay="CENTER" layoutY="111.0" onAction="#showAddAirline" prefHeight="51.0" prefWidth="228.0" ripplerFill="#0582ca" text="Add new Airline" textAlignment="CENTER">
               <font>
                   <Font size="18.0" />
               </font>

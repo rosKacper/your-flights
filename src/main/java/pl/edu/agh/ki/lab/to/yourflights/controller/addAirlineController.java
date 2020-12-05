@@ -16,41 +16,41 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Component
-public class addCustomersController {
-    public PasswordField passwordField;
+public class addAirlineController {
 
     private final Resource mainView;
     @FXML
-    public Text actiontarget;
-    public TextField firstName, lastName, country,city, street, postalCode, phoneNumber, emailAddress;
+    public TextField name, emailAddress, country, city, street, postalCode, description;
     private final ApplicationContext applicationContext;
 
 
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
-
-        Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(), null);
-        CustomerService.addCustomer(customer);
-        actiontarget.setText("Done!");
-        firstName.clear();
-        lastName.clear();
+        Airline airline = new Airline(name.getText(),country.getText(),description.getText(),
+                city.getText(),street.getText(),postalCode.getText(),
+                emailAddress.getText());
+        AirlineService.addAirline(airline);
+        name.clear();
+        description.clear();
         country.clear();
         city.clear();
         street.clear();
         postalCode.clear();
-        phoneNumber.clear();
         emailAddress.clear();
-
     }
 
-    public addCustomersController(@Value("classpath:/view/MainView.fxml") Resource mainView, ApplicationContext applicationContext){
-        this.mainView=mainView;
-        this.applicationContext=applicationContext;
+    public addAirlineController(@Value("classpath:/view/MainView.fxml") Resource mainView, ApplicationContext applicationContext){
+        this.mainView = mainView;
+        this.applicationContext = applicationContext;
     }
 
     public void showMainView(ActionEvent actionEvent) {
