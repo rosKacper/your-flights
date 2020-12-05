@@ -15,7 +15,10 @@ public class CustomerService {
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
+    public static ObservableList<Customer> customers = FXCollections.observableArrayList();
 
+
+    /*
     //method returning example data for testing purposes
     public ObservableList<Customer> getMockData() {
         ObservableList<Customer> customers = FXCollections.observableArrayList();
@@ -28,5 +31,14 @@ public class CustomerService {
 
         return customers;
     }
+    */
+    //method adding customer to list
+    public static void addCustomer(Customer customer){
+        customers.add(customer);
+    }
 
+    //method returning data
+    public ObservableList<Customer> getMockData() {
+        return customers;
+    }
 }

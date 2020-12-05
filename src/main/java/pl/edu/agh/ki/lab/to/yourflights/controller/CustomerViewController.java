@@ -29,6 +29,7 @@ public class CustomerViewController {
     private CustomerService customerService;
 
     private final Resource mainView;
+    private final Resource addCustomerView;
     private final ApplicationContext applicationContext;
 
     @FXML
@@ -64,9 +65,10 @@ public class CustomerViewController {
 
     }
 
-    public CustomerViewController(CustomerService customerService, @Value("classpath:/view/MainView.fxml") Resource mainView, ApplicationContext applicationContext) {
+    public CustomerViewController(CustomerService customerService, @Value("classpath:/view/MainView.fxml") Resource mainView, @Value("classpath:/view/addCustomers.fxml") Resource addCustomerView, ApplicationContext applicationContext) {
         this.customerService = customerService;
         this.mainView = mainView;
+        this.addCustomerView = addCustomerView;
         this.applicationContext = applicationContext;
     }
 
@@ -78,6 +80,20 @@ public class CustomerViewController {
     public void showMainView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent, 800, 600);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showAddCustomer(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(addCustomerView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
