@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'pl.edu.agh.ki.lab.to'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-m1'
 sourceCompatibility = '11'
 
 repositories {
@@ -28,4 +28,8 @@ test {
 javafx {
     version = '15'
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']
+}
+
+bootJar {
+    launchScript()
 }

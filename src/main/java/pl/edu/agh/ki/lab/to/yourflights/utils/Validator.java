@@ -37,6 +37,8 @@ public class Validator {
      * @return true jeśli email jest poprawny, false w przeciwnym razie
      */
     public static boolean validateEmail(TextField field, Label label) {
+        // poniższy regex akceptuje maile w formacie person@mail.pl asd@a.a (muszą zawierać literę lub cyfrę
+        // na pierwszym miejscu, literę na ostatnim miejscu, oraz @ i . wewnątrz )
         if (!Pattern.matches("\\A\\s*[a-zA-Z0-9]+([-._]?[A-z0-9]+)*(\\+[A-z0-9]+([-._]?[A-z0-9]+)*)?@[A-z0-9]+([-.]?[a-z0-9]+)*\\.[A-z]+\\s*", field.getText())) {
             label.setText("Email address incorrect!");
             label.setTextFill(Color.RED);
