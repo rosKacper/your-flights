@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Klasa definiuje model lotu
+ * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
+ */
 @Entity
 public class Flight {
 
@@ -25,10 +29,16 @@ public class Flight {
     @NotNull
     private Date arrivalTime;
 
+    /**
+     * Mapowanie relacji do przewoźnika realizującego dany lot
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airlineID")
     private Airline airline;
 
+    /**
+     * Mapowanie relacji do dostępnych kategorii biletów w danym locie
+     */
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,

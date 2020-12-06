@@ -9,6 +9,10 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Klasa definiuje model klienta
+ * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
+ */
 @Entity
 public class Customer extends RecursiveTreeObject<Customer> {
 
@@ -19,10 +23,16 @@ public class Customer extends RecursiveTreeObject<Customer> {
     @NotEmpty
     private String firstName, secondName, country, city, street, postalCode, phoneNumber, emailAddress;
 
+    /**
+     * Mapowanie relacji do użytkownika
+     */
     @OneToOne
     @JoinColumn(name="accountId")
     private User user;
 
+    /**
+     * Mapowanie relacji do rezerwacji danego klienta
+     */
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,

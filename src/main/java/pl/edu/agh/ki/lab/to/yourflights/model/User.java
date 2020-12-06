@@ -7,6 +7,10 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Klasa definiuje model użytkownika aplikacji
+ * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
+ */
 @Entity
 public class User {
 
@@ -17,12 +21,13 @@ public class User {
     @NotEmpty
     @Enumerated(EnumType.STRING)
     private UserRole role;
-
     @NotEmpty
     private String login;
-
     private String password;
 
+    /**
+     * Mapowanie relacji do ocen użytkownika
+     */
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,

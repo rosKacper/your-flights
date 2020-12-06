@@ -1,98 +1,108 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
-import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
+/**
+ * Kontroler obsługujący formularz do dodawania klientów
+ * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
+ */
 @Component
 public class addAirlineController {
 
+    /**
+     * Widok przewoźników
+     */
     private final Resource airlinesView;
-    @FXML
-    public TextField name, country, description;
-    @FXML
-    public Label nameLabel,  countryLabel, descriptionLabel;
-    @FXML
-    public Label nameValidationLabel,  countryValidationLabel;
-    @FXML
-    public Button formTitle;
+
+    /**
+     * Kontekst aplikacji Springowej
+     */
     private final ApplicationContext applicationContext;
 
+    /**
+     * Pola formularza
+     */
+    @FXML
+    public TextField name, country, description;
+
+    /**
+     * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
+     */
+    @FXML
+    public Label nameValidationLabel,  countryValidationLabel;
+
+    /**
+     * Metoda obsługująca dodawanie przewoźnika po naciśnięciu przycisku "submit" w formularzu
+     * Zaimplementowana została podstawowa obsługa sprawdzania poprawności wpisanych wartości
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
 
+        //Obsługa poprawności danych w formularzu
+        //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean countryValidation = Validator.validateNotEmpty(country, countryValidationLabel);
         boolean nameValidation = Validator.validateNotEmpty(name, nameValidationLabel);
-
         if(!countryValidation || !nameValidation) {
-//            formTitle.setText("Error!");
-//            formTitle.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-//            formTitle.setTextFill(Color.WHITE);
             return;
         }
 
+        //Stworzenie nowego przewoźnika i wyczyszczenie pól formularza
         Airline airline = new Airline(name.getText(),country.getText(),description.getText());
         AirlineService.addAirline(airline);
-
         country.clear();
         description.clear();
         name.clear();
 
-//        formTitle.setText("Airline Added!");
-//        formTitle.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
-//        formTitle.setTextFill(Color.WHITE);
-
+        //Po dodaniu przewoźnika zakończonym sukcesem, następuje powrót do widoku listy przewoźników
         showAirlinesView(actionEvent);
-
     }
 
+    /**
+     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
+     * @param airlinesView widok przewoźników
+     * @param applicationContext kontekst aplikacji Springa
+     */
     public addAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView, ApplicationContext applicationContext){
         this.airlinesView = airlinesView;
         this.applicationContext = applicationContext;
     }
 
-
+    /**
+     * Metoda służąca do przejścia do widoku listy przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
+            //ładujemy widok z pliku .fxml
             FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
+
+            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
+
+            //wczytanie sceny
             Parent parent = fxmlloader.load();
+
+            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            //utworzenie i wyświetlenie sceny
             Scene scene = new Scene(parent, 800, 600);
             stage.setScene(scene);
             stage.show();

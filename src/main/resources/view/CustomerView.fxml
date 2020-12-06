@@ -8,9 +8,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<!-- Widok tabeli klientów -->
+
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.CustomerViewController">
-
-
     <AnchorPane prefHeight="605.0" prefWidth="228.0">
         <children>
             <Text layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customers" textAlignment="CENTER" wrappingWidth="228.0">

@@ -4,26 +4,38 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
+/**
+ * Klasa definiuje model zamówienia na bilety (np. 3 bilety w kategorii ekonomicznej, ze zniżką studencką)
+ * Pojedyncza rezerwacja może mieć kilka takich zamówień na bilety (np. 2 bilety dla dorosłych i 1 bilet dla dzieci)
+ * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
+ */
 @Entity
 public class TicketOrder {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-
     @NotNull
     private int numberOfSeats;
 
+    /**
+     * Mapowanie relacji do zniżki na bilet
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticketDiscountID")
     private TicketDiscount ticketDiscount;
 
+    /**
+     * Mapowanie relacji do rezerwacji której dotyczy zamówienie na bilety
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservationID")
     private Reservation reservation;
 
+    /**
+     * Mapowanie relacji do kategorii biletów której dotyczy zamówienie na bilety
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticketCategoryID")
     private TicketCategory ticketCategory;
@@ -31,16 +43,12 @@ public class TicketOrder {
 
     public TicketOrder(){}
 
-
-    //TODO
-    //add fields used in mapping relations to constructor
     public TicketOrder(int numberOfSeats, TicketDiscount ticketDiscount, Reservation reservation, TicketCategory ticketCategory){
         this.numberOfSeats = numberOfSeats;
         this.ticketDiscount = ticketDiscount;
         this.reservation = reservation;
         this.ticketCategory = ticketCategory;
     }
-
 
 
     //getters and setters

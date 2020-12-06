@@ -2,10 +2,12 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
+/**
+ * Klasa definiuje model zniżki na bilet (czyli np. zniżka studencka, zniżka dla dzieci)
+ * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
+ */
 @Entity
 public class TicketDiscount {
 
@@ -15,7 +17,6 @@ public class TicketDiscount {
 
     @NotEmpty
     private double discount;
-
     @NotEmpty
     private String name;
 

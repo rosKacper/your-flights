@@ -13,14 +13,27 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Kontroler głównego widoku aplikacji
+ * Z niego możemy przechodzić m.in. do widoku klientów albo do widoku przewoźników
+ */
 @Component
 public class MainViewController {
 
-    private final ApplicationContext applicationContext;
     private final Resource airlinesView;
     private final Resource customersView;
 
+    /**
+     * Kontekst aplikacji Springa
+     */
+    private final ApplicationContext applicationContext;
 
+    /**
+     * Konstruktor, Spring wstrzykuje odpowiednie zależności
+     * @param applicationContext kontekst aplikacji Springa
+     * @param airlinesView widok tabeli przewoźników
+     * @param customersView widok tabeli klientów
+     */
     public MainViewController(ApplicationContext applicationContext,
                               @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                               @Value("classpath:/view/CustomerView.fxml") Resource customersView) {
@@ -29,6 +42,10 @@ public class MainViewController {
         this.customersView = customersView;
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku tabeli przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
@@ -38,11 +55,15 @@ public class MainViewController {
             Scene scene = new Scene(parent, 800, 600);
             stage.setScene(scene);
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Metoda służąca do przejścia do widoku tabeli klientów
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showCustomersView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(customersView.getURL());
@@ -52,7 +73,6 @@ public class MainViewController {
             Scene scene = new Scene(parent, 800, 600);
             stage.setScene(scene);
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
