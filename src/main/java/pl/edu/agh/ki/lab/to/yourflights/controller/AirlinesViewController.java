@@ -3,6 +3,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler widoku tabeli przewoźników
@@ -62,13 +64,12 @@ public class AirlinesViewController {
         descriptionColumn.setCellValueFactory(data -> data.getValue().getValue().getDescriptionProperty());
 
         //Pobranie przewoźników z serwisu
-        ObservableList<Airline> airlines = airlineService.getMockData();
+        ObservableList<Airline> airlines = FXCollections.observableList(airlineService.findAll());
 
         //Przekazanie danych do tabeli
         final TreeItem<Airline> root = new RecursiveTreeItem<Airline>(airlines, RecursiveTreeObject::getChildren);
         airlinesTableView.setRoot(root);
         airlinesTableView.setShowRoot(false);
-
     }
 
     /**
@@ -118,15 +119,21 @@ public class AirlinesViewController {
     }
 
     /**
-     * Metoda służąca do przejścia do widoku formularza dodawania przewoźników
+     * Metoda służąca do przejścia do widoku formularza dodawania/edycji przewoźników
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showAddAirline(ActionEvent actionEvent) {
+    public void showAddAirline(ActionEvent actionEvent, Airline airline) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(addAirlineView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            if(airline != null) {
+                AddAirlineController controller = fxmlloader.getController();
+                controller.setData(airline);
+            }
+
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
@@ -151,5 +158,25 @@ public class AirlinesViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        var airlines = airlinesTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
+        airlineService.deleteAll(FXCollections.observableList(airlines));
+        this.setModel();
+    }
+
+    @FXML
+    private void handleUpdateAction(ActionEvent event) {
+        var airline = airlinesTableView.getSelectionModel().getSelectedItem();
+        if(airline != null) {
+            this.showAddAirline(event, airline.getValue());
+        }
+    }
+
+    @FXML
+    private void handleAddAction(ActionEvent event) {
+        this.showAddAirline(event, null);
     }
 }

@@ -14,7 +14,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
@@ -48,6 +50,36 @@ public class AddAirlineController {
     @FXML
     public Label nameValidationLabel,  countryValidationLabel;
 
+    private AirlineService airlineService;
+    private Airline airline;
+
+    /**
+     * Metoda ustawiająca przewoźnika do edycji
+     * @param airline przewoźnik do edycji, może być nullem
+     */
+    public void setData(Airline airline) {
+        this.airline = airline;
+        updateControls();
+    }
+
+    /**
+     * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego przewoźnika do edycji
+     */
+    private void updateControls() {
+        name.textProperty().setValue(airline.getName());
+        country.textProperty().setValue(airline.getCountry());
+        description.textProperty().setValue(airline.getDescription());
+    }
+
+    /**
+     * Metoda aktualizująca przewoźnika po edycji
+     */
+    private void updateModel() {
+        airline.setName(name.textProperty().getValue());
+        airline.setCountry(country.textProperty().getValue());
+        airline.setDescription(description.textProperty().getValue());
+    }
+
     /**
      * Metoda obsługująca dodawanie przewoźnika po naciśnięciu przycisku "submit" w formularzu
      * Zaimplementowana została podstawowa obsługa sprawdzania poprawności wpisanych wartości
@@ -64,13 +96,17 @@ public class AddAirlineController {
         }
 
         //Stworzenie nowego przewoźnika i wyczyszczenie pól formularza
-        Airline airline = new Airline(name.getText(),country.getText(),description.getText());
-        AirlineService.addAirline(airline);
+        if(airline == null) {
+            airline = new Airline(name.getText(),country.getText(),description.getText());
+        } else {
+            updateModel();
+        }
+        airlineService.save(airline);
         country.clear();
         description.clear();
         name.clear();
 
-        //Po dodaniu przewoźnika zakończonym sukcesem, następuje powrót do widoku listy przewoźników
+        //Po dodaniu/edycji przewoźnika zakończonym sukcesem, następuje powrót do widoku listy przewoźników
         showAirlinesView(actionEvent);
     }
 
@@ -79,9 +115,12 @@ public class AddAirlineController {
      * @param airlinesView widok przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView, ApplicationContext applicationContext){
+    public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                                ApplicationContext applicationContext,
+                                AirlineService airlineService){
         this.airlinesView = airlinesView;
         this.applicationContext = applicationContext;
+        this.airlineService = airlineService;
     }
 
     /**

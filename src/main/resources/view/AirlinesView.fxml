@@ -23,9 +23,9 @@
                <TreeTableColumn fx:id="descriptionColumn" prefWidth="729.0" text="Description" />
             </columns>
          </JFXTreeTableView>
-         <HBox layoutX="30.0" layoutY="700.0" prefHeight="80.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+         <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="700.0" prefHeight="80.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
             <children>
-                <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#showAddAirline" prefHeight="60.0" prefWidth="211.0" ripplerFill="#0582ca" text="Add new Airline" textAlignment="CENTER">
+                <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#276738" style="-fx-border-color: #276738; -fx-border-width: 2px;" text="Add" textAlignment="CENTER">
                     <font>
                         <Font size="18.0" />
                     </font>
@@ -33,6 +33,28 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </JFXButton>
+               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleDeleteAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#95353a" style="-fx-border-color: #95353a; -fx-border-width: 2px;" text="Delete" textAlignment="CENTER">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <HBox.margin>
+                     <Insets left="20.0" />
+                  </HBox.margin>
+               </JFXButton>
+               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleUpdateAction" prefHeight="27.0" prefWidth="211.0" ripplerFill="#e9c46a" style="-fx-border-color: #e9c46a; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <HBox.margin>
+                     <Insets left="20.0" />
+                  </HBox.margin>
+               </JFXButton>
             </children>
             <padding>
                <Insets bottom="10.0" top="10.0" />
