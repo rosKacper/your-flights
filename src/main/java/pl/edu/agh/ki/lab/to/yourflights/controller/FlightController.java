@@ -5,13 +5,17 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
@@ -47,6 +52,7 @@ public class FlightController {
      * Kontekst aplikacji Springa
      */
     private final ApplicationContext applicationContext;
+
     @FXML
     private JFXTreeTableView<Flight> flightsTableView;
     /**
@@ -71,13 +77,13 @@ public class FlightController {
         departureTime.setCellValueFactory(data -> data.getValue().getValue().getCountryProperty());
         arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getCityProperty());
 
-        //Pobranie klientów z serwisu
-        //ObservableList<Customer> customers = customerService.getMockData();
+        //Pobranie przewoźników z serwisu
+        ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
 
         //Przekazanie danych do tabeli
-        //final TreeItem<Customer> root = new RecursiveTreeItem<>(customers, RecursiveTreeObject::getChildren);
-        //customersTableView.setRoot(root);
-        //customersTableView.setShowRoot(false);
+        final TreeItem<Flight> root = new RecursiveTreeItem<Flight>(flights, RecursiveTreeObject::getChildren);
+        flightsTableView.setRoot(root);
+        flightsTableView.setShowRoot(false);
     }
     public FlightController(FlightService flightService, ApplicationContext applicationContext,
                             @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,

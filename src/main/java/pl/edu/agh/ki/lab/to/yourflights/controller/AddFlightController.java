@@ -22,6 +22,7 @@ import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -55,6 +56,12 @@ public class AddFlightController {
     /**
      * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
      */
+
+    /**
+     * Formatuje date w postaci string do odpowiedniego formatu
+     */
+    DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     @FXML
     public Label firstNameValidationLabel, lastNameValidationLabel,
             countryValidationLabel, cityValidationLabel, streetValidationLabel,
@@ -82,9 +89,9 @@ public class AddFlightController {
      * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego klienta do edycji
      */
     private void updateControls() {
-        departureTime= flight.getDepartureTime().ParseExact("25/03/2017", "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        departureTime.setValue(LocalDate.parse( flight.getDepartureTime(),formatter));
         placeOfDeparture.textProperty().setValue(flight.getPlaceOfDeparture());
-        arrivalTime.textProperty().setValue(flight.getArrivalTime());
+        arrivalTime.setValue(LocalDate.parse( flight.getArrivalTime(),formatter));
         placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
 
     }
@@ -127,11 +134,10 @@ public class AddFlightController {
         }
 
         flightService.save(flight);
-        actiontarget.setText("Customer added successfully!");
         placeOfDeparture.clear();
         placeOfDestination.clear();
-        departureTime=null;
-        arrivalTime=null;
+        //departureTime=null;
+        //arrivalTime=null;
 
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów

@@ -53,7 +53,7 @@
     </VBox>
     <AnchorPane layoutX="220.0" prefHeight="800.0" prefWidth="1060.0">
         <children>
-            <JFXTreeTableView fx:id="flightTableView" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
+            <JFXTreeTableView fx:id="flightsTableView" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
                 <columns>
                     <TreeTableColumn fx:id="departure" prefWidth="250.0" text="Departure" />
                     <TreeTableColumn fx:id="destination" prefWidth="250.0" text="Destination" />
