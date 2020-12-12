@@ -19,6 +19,8 @@ import java.util.UUID;
 @Entity
 public class Flight extends RecursiveTreeObject<Flight> {
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -109,6 +111,14 @@ public class Flight extends RecursiveTreeObject<Flight> {
 
     public List<TicketCategory> getTicketCategories() {
         return ticketCategories;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public StringProperty getplaceOfDepartureProperty(){

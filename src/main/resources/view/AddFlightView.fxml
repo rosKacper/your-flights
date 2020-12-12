@@ -35,22 +35,12 @@
                 <Font size="14.0" />
             </font></Label>
         <Text fx:id="actiontarget" GridPane.columnIndex="1" GridPane.rowIndex="19" />
-        <Label fx:id="placeOfDepartureValidation" prefHeight="17.0" prefWidth="385.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="3">
+        <Label fx:id="placeOfDepartureValidationLabel" prefHeight="17.0" prefWidth="385.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="3">
             <GridPane.margin>
                 <Insets />
             </GridPane.margin>
         </Label>
-        <Label fx:id="placeOfDestinationValidation" prefHeight="17.0" prefWidth="386.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="5">
-            <GridPane.margin>
-                <Insets />
-            </GridPane.margin>
-        </Label>
-        <Label fx:id="departureTimeValidation" prefHeight="17.0" prefWidth="386.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="7">
-            <GridPane.margin>
-                <Insets />
-            </GridPane.margin>
-        </Label>
-        <Label fx:id="arrivalTimeValidation" prefHeight="17.0" prefWidth="385.0" textFill="#d0454c" GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
+        <Label fx:id="placeOfDestinationValidationLabel" prefHeight="17.0" prefWidth="386.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="5">
             <GridPane.margin>
                 <Insets />
             </GridPane.margin>

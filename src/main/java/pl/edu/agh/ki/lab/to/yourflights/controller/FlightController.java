@@ -68,7 +68,7 @@ public class FlightController {
     private TreeTableColumn<Flight, String> arrivalTime;
 
     /**
-     * Metoda która wczytuje dane do tabeli przwoźników
+     * Metoda która wczytuje dane do tabeli lotów
      */
     public void setModel() {
         //Ustawienie kolumn
@@ -77,7 +77,7 @@ public class FlightController {
         departureTime.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
         arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getarrivalTimeProperty());
 
-        //Pobranie przewoźników z serwisu
+        //Pobranie lotów z serwisu
         ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
 
         //Przekazanie danych do tabeli
@@ -169,7 +169,7 @@ public class FlightController {
     }
 
     /**
-     * Metoda służąca do przejścia do widoku formularza do dodawania/edycji klientów
+     * Metoda służąca do przejścia do widoku formularza do dodawania/edycji lotów
      * @param actionEvent event emitowany przez przycisk
      */
     public void showAddFlight(ActionEvent actionEvent, Flight flight) {

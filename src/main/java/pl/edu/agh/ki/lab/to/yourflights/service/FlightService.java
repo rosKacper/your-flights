@@ -33,8 +33,8 @@ public class FlightService {
     }
 
     /**
-     * Metoda zwracająca wszystkich użytkowników z bazy danych
-     * @return lista wszystkich użytkowników
+     * Metoda zwracająca wszystkie loty z bazy danych
+     * @return lista wszystkich lotów
      */
     public List<Flight> findAll() {
         return flightRepository.findAll();
@@ -57,7 +57,7 @@ public class FlightService {
     }
 
     /**
-     * Metoda zapisująca klienta w bazie danych
+     * Metoda zapisująca lot w bazie danych
      * @param flight lot do zapisania w bazie danych
      */
     public void save(Flight flight) {

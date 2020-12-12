@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -18,50 +19,59 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.UUID;
 
 /**
- * Kontroler widoku tabeli przewoźników
+ * Kontroler widoku tabeli rezerwacji
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class ReservationListController {
 
-    private AirlineService reservationService;
+    private ReservationService reservationService;
     private final Resource mainView;
     private final Resource customersView;
     private final Resource airlineView;
     private final ApplicationContext applicationContext;
 
     /**
-     * Tabela przewoźników
+     * Tabela rezerwacji
      */
     @FXML
-    private JFXTreeTableView<Airline> airlinesTableView;
+    private JFXTreeTableView<Reservation> resevationTableView;
 
     /**
      * Kolumny tabeli
      */
     @FXML
-    private TreeTableColumn<Airline, String> reservationDate;
+    private TreeTableColumn<Reservation, String> reservationDate;
     @FXML
-    private TreeTableColumn<Airline, String> customer_ID;
+    private TreeTableColumn<Customer, String> firstName;
     @FXML
-    private TreeTableColumn<Airline, String> reservation_ID;
+    private TreeTableColumn<Customer, String> lastName;
+    @FXML
+    private TreeTableColumn<TicketCategory, String> flight_ID ;
 
 
     /**
-     * Metoda która wczytuje dane do tabeli przwoźników
+     * Metoda która wczytuje dane do tabeli rezerwacji
      */
     public void setModel() {
         //Ustawienie kolumn
-        reservationDate.setCellValueFactory(data -> data.getValue().getValue().getNameProperty());
-        customer_ID.setCellValueFactory(data -> data.getValue().getValue().getCountryProperty());
-        reservation_ID.setCellValueFactory(data -> data.getValue().getValue().getDescriptionProperty());
+        reservationDate.setCellValueFactory(data -> data.getValue().getValue().getReservationDateProperty());
+        firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
+        lastName.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
+        flight_ID.setCellValueFactory(data -> data.getValue().getValue().getFlightIDProperty());
 
-        //Pobranie przewoźników z serwisu
+        //Pobranie rezerwacje z serwisu
         //ObservableList<Airline> airlines = airlineService.getMockData();
 
         //Przekazanie danych do tabeli
@@ -73,18 +83,18 @@ public class ReservationListController {
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
-     * @param airlineService serwis do pobierania danych o przewoźnikach
+     * @param reservationService serwis do pobierania danych o rezerwacji
      * @param mainView główny widok aplikacji
      * @param AirlineView widok formularza do przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public ReservationListController(AirlineService airlineService,
-                                  @Value("classpath:/view/MainView.fxml") Resource mainView,
-                                  @Value("classpath:/view/CustomersView.fxml") Resource customersView,
-                                  @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,
+    public ReservationListController(ReservationService reservationService,
+                                     @Value("classpath:/view/MainView.fxml") Resource mainView,
+                                     @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                                     @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,
 
-                                  ApplicationContext applicationContext) {
-        this.reservationService = airlineService;
+                                     ApplicationContext applicationContext) {
+        this.reservationService = reservationService;
         this.mainView = mainView;
         this.airlineView = AirlineView;
         this.applicationContext = applicationContext;

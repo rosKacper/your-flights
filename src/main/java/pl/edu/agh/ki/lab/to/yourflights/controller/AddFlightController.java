@@ -28,14 +28,14 @@ import java.util.Date;
 
 
 /**
- * Kontroler obsługujący formularz do dodawania klientów
+ * Kontroler obsługujący formularz do dodawania lotów
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class AddFlightController {
 
     /**
-     * Widok klientów
+     * Widok lotów
      */
     private final Resource flightView;
 
@@ -52,32 +52,26 @@ public class AddFlightController {
 
     @FXML
     public DatePicker departureTime, arrivalTime ;
-    //DatePicker
-    /**
-     * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
-     */
-
+    @FXML
+    public Label placeOfDestinationValidationLabel;
+    @FXML
+    public Label placeOfDepartureValidationLabel;
+    @FXML
+    public Text actiontarget;
     /**
      * Formatuje date w postaci string do odpowiedniego formatu
      */
     DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    @FXML
-    public Label firstNameValidationLabel, lastNameValidationLabel,
-            countryValidationLabel, cityValidationLabel, streetValidationLabel,
-            postalCodeValidationLabel, phoneNumberValidationLabel, emailAddressValidationLabel;
 
-    /**
-     * Etykieta do wyświetlania komunikatu o sukcesie dodawania klienta
-     */
-    @FXML
-    public Text actiontarget;
+
+
 
     private FlightService flightService;
     private Flight flight;
 
     /**
-     * Metoda ustawiająca klienta do edycji
+     * Metoda ustawiająca lotów do edycji
      * @param flight lot do edycji, może być nullem
      */
     public void setData(Flight flight) {
@@ -86,7 +80,7 @@ public class AddFlightController {
     }
 
     /**
-     * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego klienta do edycji
+     * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego lotu do edycji
      */
     private void updateControls() {
         departureTime.setValue(LocalDate.parse( flight.getDepartureTime(),formatter));
@@ -97,7 +91,7 @@ public class AddFlightController {
     }
 
     /**
-     * Metoda aktualizująca klienta po edycji
+     * Metoda aktualizująca lotu po edycji
      */
     private void updateModel() {
         flight.setPlaceOfDeparture(placeOfDeparture.textProperty().getValue());
@@ -108,7 +102,7 @@ public class AddFlightController {
     }
 
     /**
-     * Metoda obsługująca dodawanie klienta po naciśnięciu przycisku "submit" w formularzu
+     * Metoda obsługująca dodawanie lotu po naciśnięciu przycisku "submit" w formularzu
      * Zaimplementowana została podstawowa obsługa sprawdzania poprawności wpisanych wartości
      * @param actionEvent event emitowany przez przycisk
      */
@@ -117,16 +111,15 @@ public class AddFlightController {
 
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
-        //boolean firstNameValidation = Validator.validateNotEmpty(firstName, firstNameValidationLabel);
-        //boolean lastNameValidation = Validator.validateNotEmpty(lastName, lastNameValidationLabel);
-        //boolean countryValidation = Validator.validateNotEmpty(country, countryValidationLabel);
-        //boolean cityValidation = Validator.validateNotEmpty(city, cityValidationLabel);
+        boolean placeOfDestinationValidation = Validator.validateNotEmpty(placeOfDestination, placeOfDestinationValidationLabel);
+        boolean placeOfDepartureValidation = Validator.validateNotEmpty(placeOfDeparture, placeOfDepartureValidationLabel);
 
-        //if(!firstNameValidation || !lastNameValidation || !countryValidation || !cityValidation {
-        //    return;
-        //}
 
-        //Stworzenie nowego klienta i wyczyszczenie pól formularza
+        if(!placeOfDestinationValidation || !placeOfDepartureValidation ){
+            return;
+        }
+
+        //Stworzenie nowego lotu i wyczyszczenie pól formularza
         if (flight == null) {
             flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(),departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), null);
         } else {
@@ -134,13 +127,14 @@ public class AddFlightController {
         }
 
         flightService.save(flight);
+        actiontarget.setText("Flight added successfully!");
         placeOfDeparture.clear();
         placeOfDestination.clear();
         //departureTime=null;
         //arrivalTime=null;
 
 
-        //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
+        //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
         showFlightView(actionEvent);
     }
 
@@ -158,7 +152,7 @@ public class AddFlightController {
     }
 
     /**
-     * Metoda służąca do przejścia do widoku listy klientów
+     * Metoda służąca do przejścia do widoku listy lotów
      * @param actionEvent event emitowany przez przycisk
      */
     public void showFlightView(ActionEvent actionEvent) {

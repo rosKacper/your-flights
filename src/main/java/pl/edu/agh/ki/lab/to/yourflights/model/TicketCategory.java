@@ -1,5 +1,8 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -86,5 +89,9 @@ public class TicketCategory {
 
     public void setFlight(Flight flight) {
         this.flight = flight;
+    }
+
+    public StringProperty getFlightIDProperty(){
+        return new SimpleStringProperty(flight.getId().toString());
     }
 }
