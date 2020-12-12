@@ -23,6 +23,7 @@ public class MainViewController {
     private final Resource airlinesView;
     private final Resource customersView;
     private final Resource flightView;
+    private final Resource reservationListView;
     private final Resource mainView;
 
     /**
@@ -35,17 +36,20 @@ public class MainViewController {
      * @param applicationContext kontekst aplikacji Springa
      * @param airlinesView widok tabeli przewoźników
      * @param customersView widok tabeli klientów
+     * @param reservationListView
      */
     public MainViewController(ApplicationContext applicationContext,
                               @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                               @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                               @Value("classpath:/view/CustomersView.fxml") Resource mainView,
-                              @Value("classpath:/view/FlightView.fxml") Resource flightView) {
+                              @Value("classpath:/view/FlightView.fxml") Resource flightView,
+                              @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
         this.flightView=flightView;
         this.mainView = mainView;
+        this.reservationListView = reservationListView;
     }
 
     /**
@@ -87,7 +91,7 @@ public class MainViewController {
 
     public void showReservation(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

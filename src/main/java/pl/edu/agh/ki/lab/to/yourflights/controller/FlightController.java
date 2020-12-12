@@ -9,16 +9,12 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import com.jfoenix.controls.RecursiveTreeItem;
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
-import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.ResourceNotFoundException;
 
@@ -53,6 +48,7 @@ public class FlightController {
     private final Resource mainView;
     private final Resource customersView;
     private final Resource airlinesView;
+    private final Resource reservationListView;
 
     private FlightService flightService;
 
@@ -68,23 +64,23 @@ public class FlightController {
      * Kolumny tabeli
      */
     @FXML
-    private TreeTableColumn<Customer, String> firstNameColumn;
+    private TreeTableColumn<Customer, String> departure;
     @FXML
-    private TreeTableColumn<Customer, String> secondNameColumn;
+    private TreeTableColumn<Customer, String> destination;
     @FXML
-    private TreeTableColumn<Customer, String> countryColumn;
+    private TreeTableColumn<Customer, String> departureTime;
     @FXML
-    private TreeTableColumn<Customer, String> cityColumn;
+    private TreeTableColumn<Customer, String> arrivalTime;
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
      */
     public void setModel() {
         //Ustawienie kolumn
-        firstNameColumn.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
-        secondNameColumn.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
-        countryColumn.setCellValueFactory(data -> data.getValue().getValue().getCountryProperty());
-        cityColumn.setCellValueFactory(data -> data.getValue().getValue().getCityProperty());
+        departure.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
+        destination.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
+        departureTime.setCellValueFactory(data -> data.getValue().getValue().getCountryProperty());
+        arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getCityProperty());
 
         //Pobranie klientów z serwisu
         //ObservableList<Customer> customers = customerService.getMockData();
@@ -95,14 +91,16 @@ public class FlightController {
         //customersTableView.setShowRoot(false);
     }
     public FlightController(FlightService flightService, ApplicationContext applicationContext,
-                              @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
-                              @Value("classpath:/view/CustomersView.fxml") Resource customersView,
-                              @Value("classpath:/view/MainView.fxml") Resource mainView) {
+                            @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                            @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                            @Value("classpath:/view/MainView.fxml") Resource mainView,
+                            @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
         this.mainView = mainView;
         this.flightService = flightService;
+        this.reservationListView = reservationListView;
     }
     /**
      * Metoda wywoływana po inicjalizacji widoku
@@ -159,6 +157,19 @@ public class FlightController {
         }
     }
 
+    public void showReservation(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

@@ -32,6 +32,7 @@ public class CustomersViewController {
     private final Resource mainView;
     private final Resource airlinesView;
     private final Resource addCustomerView;
+    private final Resource reservationList;
 
     /**
      * Serwis pozwalający na pobieranie i zapisywanie klientów
@@ -92,12 +93,14 @@ public class CustomersViewController {
                                    @Value("classpath:/view/MainView.fxml") Resource mainView,
                                    @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                                    @Value("classpath:/view/AddCustomerView.fxml") Resource addCustomerView,
+                                   @Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                    ApplicationContext applicationContext) {
         this.customerService = customerService;
         this.mainView = mainView;
         this.airlinesView = airlinesView;
         this.addCustomerView = addCustomerView;
         this.applicationContext = applicationContext;
+        this.reservationList=reservationList;
     }
 
     /**
@@ -151,6 +154,20 @@ public class CustomersViewController {
     public void showAddCustomer(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(addCustomerView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showReservation(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(reservationList.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
