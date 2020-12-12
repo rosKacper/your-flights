@@ -26,7 +26,7 @@ import java.io.IOException;
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
-public class addCustomersController {
+public class AddCustomerController {
 
     /**
      * Widok klientów
@@ -103,7 +103,7 @@ public class addCustomersController {
      * @param customerView widok tabeli klientów
      * @param applicationContext kontekst aplikacji Springa
      */
-    public addCustomersController(@Value("classpath:/view/CustomerView.fxml") Resource customerView, ApplicationContext applicationContext){
+    public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView, ApplicationContext applicationContext){
         this.customerView = customerView;
         this.applicationContext = applicationContext;
     }
@@ -127,7 +127,7 @@ public class addCustomersController {
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
             //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {

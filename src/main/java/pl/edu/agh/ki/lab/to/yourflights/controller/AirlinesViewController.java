@@ -31,6 +31,7 @@ public class AirlinesViewController {
 
     private AirlineService airlineService;
     private final Resource mainView;
+    private final Resource customersView;
     private final Resource addAirlineView;
     private final ApplicationContext applicationContext;
 
@@ -79,12 +80,15 @@ public class AirlinesViewController {
      */
     public AirlinesViewController(AirlineService airlineService,
                                   @Value("classpath:/view/MainView.fxml") Resource mainView,
-                                  @Value("classpath:/view/addAirlineView.fxml") Resource addAirlineView,
+                                  @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                                  @Value("classpath:/view/AddAirlineView.fxml") Resource addAirlineView,
+
                                   ApplicationContext applicationContext) {
         this.airlineService = airlineService;
         this.mainView = mainView;
         this.addAirlineView = addAirlineView;
         this.applicationContext = applicationContext;
+        this.customersView = customersView;
     }
 
     /**
@@ -105,7 +109,7 @@ public class AirlinesViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -123,7 +127,25 @@ public class AirlinesViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku tabeli klientów
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showCustomersView(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(customersView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {

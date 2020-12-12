@@ -22,6 +22,7 @@ public class MainViewController {
 
     private final Resource airlinesView;
     private final Resource customersView;
+    private final Resource mainView;
 
     /**
      * Kontekst aplikacji Springa
@@ -36,10 +37,12 @@ public class MainViewController {
      */
     public MainViewController(ApplicationContext applicationContext,
                               @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
-                              @Value("classpath:/view/CustomerView.fxml") Resource customersView) {
+                              @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                              @Value("classpath:/view/CustomersView.fxml") Resource mainView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
+        this.mainView = mainView;
     }
 
     /**
@@ -52,13 +55,14 @@ public class MainViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Metoda służąca do przejścia do widoku tabeli klientów
@@ -70,7 +74,7 @@ public class MainViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
