@@ -3,6 +3,9 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sun.istack.NotNull;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
@@ -106,5 +109,18 @@ public class Flight extends RecursiveTreeObject<Flight> {
 
     public List<TicketCategory> getTicketCategories() {
         return ticketCategories;
+    }
+
+    public StringProperty getplaceOfDepartureProperty(){
+        return new SimpleStringProperty(placeOfDeparture);
+    }
+    public StringProperty getplaceOfDestinationProperty(){
+        return new SimpleStringProperty(placeOfDestination);
+    }
+    public StringProperty getdepartureTimeProperty(){
+        return new SimpleStringProperty(departureTime);
+    }
+    public StringProperty getarrivalTimeProperty(){
+        return new SimpleStringProperty(arrivalTime);
     }
 }

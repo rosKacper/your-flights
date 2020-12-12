@@ -59,23 +59,23 @@ public class FlightController {
      * Kolumny tabeli
      */
     @FXML
-    private TreeTableColumn<Customer, String> departure;
+    private TreeTableColumn<Flight, String> departure;
     @FXML
-    private TreeTableColumn<Customer, String> destination;
+    private TreeTableColumn<Flight, String> destination;
     @FXML
-    private TreeTableColumn<Customer, String> departureTime;
+    private TreeTableColumn<Flight, String> departureTime;
     @FXML
-    private TreeTableColumn<Customer, String> arrivalTime;
+    private TreeTableColumn<Flight, String> arrivalTime;
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
      */
     public void setModel() {
         //Ustawienie kolumn
-        departure.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
-        destination.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
-        departureTime.setCellValueFactory(data -> data.getValue().getValue().getCountryProperty());
-        arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getCityProperty());
+        departure.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDepartureProperty());
+        destination.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDestinationProperty());
+        departureTime.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
+        arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getarrivalTimeProperty());
 
         //Pobranie przewoźników z serwisu
         ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
