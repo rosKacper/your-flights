@@ -3,7 +3,7 @@ package pl.edu.agh.ki.lab.to.yourflights.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 
 import java.util.UUID;
 
@@ -12,5 +12,5 @@ import java.util.UUID;
  * Na późniejszym etapie będzie służyć do pobierania danych z bazy danych
  */
 @Repository
-public interface FlightRepository extends JpaRepository<Customer, UUID> {
+public interface FlightRepository extends JpaRepository<Flight, UUID> {
 }

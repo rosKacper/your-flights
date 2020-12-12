@@ -58,4 +58,52 @@ public class Flight {
     public Flight() {
 
     }
+
+    public void setPlaceOfDeparture(String placeOfDeparture) {
+        this.placeOfDeparture = placeOfDeparture;
+    }
+
+    public void setPlaceOfDestination(String placeOfDestination) {
+        this.placeOfDestination = placeOfDestination;
+    }
+
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public void setArrivalTime(Date arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public void setAirline(Airline airline) {
+        this.airline = airline;
+    }
+
+    public void setTicketCategories(List<TicketCategory> ticketCategories) {
+        this.ticketCategories = ticketCategories;
+    }
+
+    public String getPlaceOfDeparture() {
+        return placeOfDeparture;
+    }
+
+    public String getPlaceOfDestination() {
+        return placeOfDestination;
+    }
+
+    public Date getDepartureTime() {
+        return departureTime;
+    }
+
+    public Date getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public Airline getAirline() {
+        return airline;
+    }
+
+    public List<TicketCategory> getTicketCategories() {
+        return ticketCategories;
+    }
 }
