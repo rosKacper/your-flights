@@ -1,10 +1,13 @@
 package pl.edu.agh.ki.lab.to.yourflights;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -62,7 +65,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
             Stage stage = event.getStage();
 
             //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.setTitle(applicationTitle);
             stage.show();

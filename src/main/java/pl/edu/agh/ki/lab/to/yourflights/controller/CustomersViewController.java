@@ -27,9 +27,10 @@ import java.io.IOException;
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
-public class CustomerViewController {
+public class CustomersViewController {
 
     private final Resource mainView;
+    private final Resource airlinesView;
     private final Resource addCustomerView;
 
     /**
@@ -87,12 +88,14 @@ public class CustomerViewController {
      * @param addCustomerView widok formularza do dodawania klientów
      * @param applicationContext kontekst aplikacji Springa
      */
-    public CustomerViewController(CustomerService customerService,
-                                  @Value("classpath:/view/MainView.fxml") Resource mainView,
-                                  @Value("classpath:/view/addCustomers.fxml") Resource addCustomerView,
-                                  ApplicationContext applicationContext) {
+    public CustomersViewController(CustomerService customerService,
+                                   @Value("classpath:/view/MainView.fxml") Resource mainView,
+                                   @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                                   @Value("classpath:/view/AddCustomerView.fxml") Resource addCustomerView,
+                                   ApplicationContext applicationContext) {
         this.customerService = customerService;
         this.mainView = mainView;
+        this.airlinesView = airlinesView;
         this.addCustomerView = addCustomerView;
         this.applicationContext = applicationContext;
     }
@@ -115,7 +118,25 @@ public class CustomerViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku tabeli przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showAirlinesView(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -133,12 +154,14 @@ public class CustomerViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 
 }

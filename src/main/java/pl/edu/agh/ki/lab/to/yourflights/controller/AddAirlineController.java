@@ -24,7 +24,7 @@ import java.io.IOException;
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
-public class addAirlineController {
+public class AddAirlineController {
 
     /**
      * Widok przewoźników
@@ -79,7 +79,7 @@ public class addAirlineController {
      * @param airlinesView widok przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public addAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView, ApplicationContext applicationContext){
+    public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView, ApplicationContext applicationContext){
         this.airlinesView = airlinesView;
         this.applicationContext = applicationContext;
     }
@@ -103,7 +103,7 @@ public class addAirlineController {
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
             //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
