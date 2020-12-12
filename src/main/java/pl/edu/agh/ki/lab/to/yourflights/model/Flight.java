@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sun.istack.NotNull;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -13,7 +14,7 @@ import java.util.UUID;
  * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
  */
 @Entity
-public class Flight {
+public class Flight extends RecursiveTreeObject<Flight> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,9 +26,9 @@ public class Flight {
     private String placeOfDestination;
 
     @NotNull
-    private Date departureTime;
+    private String departureTime;
     @NotNull
-    private Date arrivalTime;
+    private String arrivalTime;
 
     /**
      * Mapowanie relacji do przewoźnika realizującego dany lot
@@ -47,7 +48,7 @@ public class Flight {
     )
     private List<TicketCategory> ticketCategories;
 
-    public Flight(String placeOfDeparture, String placeOfDestination, Date departureTime, Date arrivalTime, Airline airline) {
+    public Flight(String placeOfDeparture, String placeOfDestination, String departureTime, String arrivalTime, Airline airline) {
         this.placeOfDeparture = placeOfDeparture;
         this.placeOfDestination = placeOfDestination;
         this.departureTime = departureTime;
@@ -67,11 +68,11 @@ public class Flight {
         this.placeOfDestination = placeOfDestination;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(String departureTime) {
         this.departureTime = departureTime;
     }
 
-    public void setArrivalTime(Date arrivalTime) {
+    public void setArrivalTime(String arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -91,11 +92,11 @@ public class Flight {
         return placeOfDestination;
     }
 
-    public Date getDepartureTime() {
+    public String getDepartureTime() {
         return departureTime;
     }
 
-    public Date getArrivalTime() {
+    public String getArrivalTime() {
         return arrivalTime;
     }
 

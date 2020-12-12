@@ -1,14 +1,11 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
+import com.jfoenix.controls.JFXTreeTableView;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,13 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,9 +26,6 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
-import pl.edu.agh.ki.lab.to.yourflights.utils.ResourceNotFoundException;
-
-
 
 
 @RestController
@@ -49,6 +36,7 @@ public class FlightController {
     private final Resource customersView;
     private final Resource airlinesView;
     private final Resource reservationListView;
+    private final Resource addFlightView;
 
     private FlightService flightService;
 
@@ -59,7 +47,8 @@ public class FlightController {
      * Kontekst aplikacji Springa
      */
     private final ApplicationContext applicationContext;
-
+    @FXML
+    private JFXTreeTableView<Flight> flightsTableView;
     /**
      * Kolumny tabeli
      */
@@ -94,13 +83,15 @@ public class FlightController {
                             @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                             @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
-                            @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView) {
+                            @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
+                            @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
         this.mainView = mainView;
         this.flightService = flightService;
         this.reservationListView = reservationListView;
+        this.addFlightView = addFlightView;
     }
     /**
      * Metoda wywoływana po inicjalizacji widoku
@@ -169,5 +160,49 @@ public class FlightController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku formularza do dodawania/edycji klientów
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showAddFlight(ActionEvent actionEvent, Flight flight) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(addFlightView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            if(flight != null) {
+                AddFlightController controller = fxmlloader.getController();
+                controller.setData(flight);
+            }
+
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        var flights = flightsTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
+        flightService.deleteAll(FXCollections.observableList(flights));
+        this.setModel();
+    }
+
+    @FXML
+    private void handleUpdateAction(ActionEvent event) {
+        var flight = flightsTableView.getSelectionModel().getSelectedItem();
+        if(flight != null) {
+            this.showAddFlight(event, flight.getValue());
+        }
+    }
+
+    @FXML
+    private void handleAddAction(ActionEvent event) {
+        this.showAddFlight(event, null);
     }
 }

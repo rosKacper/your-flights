@@ -3,8 +3,11 @@ package pl.edu.agh.ki.lab.to.yourflights.service;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
+
+import java.util.List;
 
 /**
  * Klasa definiująca serwis ze Spring Data Jpa dla lotów
@@ -30,21 +33,36 @@ public class FlightService {
     }
 
     /**
-     * Tymczasowa lista lotów, dopóki nie ma zapisywania do bazy danych
+     * Metoda zwracająca wszystkich użytkowników z bazy danych
+     * @return lista wszystkich użytkowników
      */
-    public static ObservableList<Flight> flights = FXCollections.observableArrayList();
-
-    /**
-     * Metoda dodająca loty do tymczasowej listy
-     */
-    public static void addFlight(Flight flight){
-        flights.add(flight);
+    public List<Flight> findAll() {
+        return flightRepository.findAll();
     }
 
     /**
-     * Metoda zwracająca klientów z tymczasowej listy
+     * Metoda usuwająca dany lot z bazy danych
+     * @param flight lot do usunięcia
      */
-    public ObservableList<Flight> getMockData() {
-        return flights;
+    public void delete(Flight flight) {
+        flightRepository.delete(flight);
+    }
+
+    /**
+     * Metoda usuwająca dane loty z bazy danych
+     * @param flights lista lotów do usunięcia
+     */
+    public void deleteAll(ObservableList<Flight> flights) {
+        flightRepository.deleteAll(flights);
+    }
+
+    /**
+     * Metoda zapisująca klienta w bazie danych
+     * @param flight lot do zapisania w bazie danych
+     */
+    public void save(Flight flight) {
+        if(flight != null) {
+            flightRepository.save(flight);
+        }
     }
 }
