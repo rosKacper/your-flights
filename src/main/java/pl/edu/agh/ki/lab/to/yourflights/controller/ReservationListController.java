@@ -67,9 +67,9 @@ public class ReservationListController {
     public void setModel() {
         //Ustawienie kolumn
         reservationDate.setCellValueFactory(data -> data.getValue().getValue().getReservationDateProperty());
-        firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
-        lastName.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
-        flight_ID.setCellValueFactory(data -> data.getValue().getValue().getFlightIDProperty());
+        //firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
+        //lastName.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
+        //flight_ID.setCellValueFactory(data -> data.getValue().getValue().getFlightIDProperty());
 
         //Pobranie rezerwacje z serwisu
         //ObservableList<Airline> airlines = airlineService.getMockData();
