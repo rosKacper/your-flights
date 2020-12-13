@@ -3,6 +3,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler widoku tabeli klientów
@@ -32,6 +34,7 @@ public class CustomersViewController {
     private final Resource mainView;
     private final Resource airlinesView;
     private final Resource addCustomerView;
+    private final Resource reservationList;
 
     /**
      * Serwis pozwalający na pobieranie i zapisywanie klientów
@@ -73,7 +76,7 @@ public class CustomersViewController {
         cityColumn.setCellValueFactory(data -> data.getValue().getValue().getCityProperty());
 
         //Pobranie klientów z serwisu
-        ObservableList<Customer> customers = customerService.getMockData();
+        ObservableList<Customer> customers = FXCollections.observableList(customerService.findAll());
 
         //Przekazanie danych do tabeli
         final TreeItem<Customer> root = new RecursiveTreeItem<>(customers, RecursiveTreeObject::getChildren);
@@ -92,12 +95,14 @@ public class CustomersViewController {
                                    @Value("classpath:/view/MainView.fxml") Resource mainView,
                                    @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                                    @Value("classpath:/view/AddCustomerView.fxml") Resource addCustomerView,
+                                   @Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                    ApplicationContext applicationContext) {
         this.customerService = customerService;
         this.mainView = mainView;
         this.airlinesView = airlinesView;
         this.addCustomerView = addCustomerView;
         this.applicationContext = applicationContext;
+        this.reservationList=reservationList;
     }
 
     /**
@@ -145,12 +150,32 @@ public class CustomersViewController {
     }
 
     /**
-     * Metoda służąca do przejścia do widoku formularza do dodawania klientów
+     * Metoda służąca do przejścia do widoku formularza do dodawania/edycji klientów
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showAddCustomer(ActionEvent actionEvent) {
+    public void showAddCustomer(ActionEvent actionEvent, Customer customer) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(addCustomerView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            if(customer != null) {
+                AddCustomerController controller = fxmlloader.getController();
+                controller.setData(customer);
+            }
+
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showReservation(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(reservationList.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -162,6 +187,23 @@ public class CustomersViewController {
         }
     }
 
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        var customers = customersTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
+        customerService.deleteAll(FXCollections.observableList(customers));
+        this.setModel();
+    }
 
+    @FXML
+    private void handleUpdateAction(ActionEvent event) {
+        var customer = customersTableView.getSelectionModel().getSelectedItem();
+        if(customer != null) {
+            this.showAddCustomer(event, customer.getValue());
+        }
+    }
 
+    @FXML
+    private void handleAddAction(ActionEvent event) {
+        this.showAddCustomer(event, null);
+    }
 }

@@ -1,28 +1,26 @@
 package pl.edu.agh.ki.lab.to.yourflights.service;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.repository.AirlineRepository;
 
+import java.util.List;
+
 /**
  * Klasa definiująca serwis ze Spring Data Jpa dla przewoźników
- * Pozwala na pobieranie przewoźników
- * Na późniejszym etapie będzie służyć do pośrednictwa pomiędzy modelem a repozytorium
+ * Pozwala na pobieranie/usuwanie/zapisywanie przewoźników
  */
 @Service
 public class AirlineService {
 
     /**
      * Repozytorium przewoźników
-     * Nie jest na razie wykorzystywane, ponieważ nie ma połączenia z bazą danych
      */
     private final AirlineRepository airlineRepository;
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie repozytorium
-     * Nie jest na razie wykorzystywane, ponieważ nie ma połączenia z bazą danych
      * @param airlineRepository repozytorium przewoźników
      */
     public AirlineService(AirlineRepository airlineRepository) {
@@ -30,23 +28,36 @@ public class AirlineService {
     }
 
     /**
-     * Tymczasowa lista przewoźników, dopóki nie ma zapisywania do bazy danych
+     * Metoda zwracająca wszystkich przewoźników z bazy danych
+     * @return lista wszystkich przewoźników
      */
-    public static ObservableList<Airline> airlines = FXCollections.observableArrayList();
-
-    /**
-     * Metoda zwracająca tymczasową listę przwoźników
-     * @return lista przewoźników
-     */
-    public ObservableList<Airline> getMockData() {
-        return airlines;
+    public List<Airline> findAll() {
+        return airlineRepository.findAll();
     }
 
     /**
-     * Metoda dodająca przewoźnika do tymczasowej listy
-     * @param airline przewoźnik do dodania
+     * Metoda usuwająca danego przewoźnika z bazy danych
+     * @param airline przewoźnik do usunięcia
      */
-    public static void addAirline(Airline airline){
-        airlines.add(airline);
+    public void delete(Airline airline) {
+        airlineRepository.delete(airline);
+    }
+
+    /**
+     * Metoda usuwająca danych przewoźników z bazy danych
+     * @param airlines lista przewoźników do usunięcia
+     */
+    public void deleteAll(ObservableList<Airline> airlines) {
+        airlineRepository.deleteAll(airlines);
+    }
+
+    /**
+     * Metoda zapisująca przewoźnika w bazie danych
+     * @param airline przewoźnik do zapisania w bazie danych
+     */
+    public void save(Airline airline) {
+        if(airline != null) {
+            airlineRepository.save(airline);
+        }
     }
 }

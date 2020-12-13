@@ -58,6 +58,45 @@ public class AddCustomerController {
     @FXML
     public Text actiontarget;
 
+    private CustomerService customerService;
+    private Customer customer;
+
+    /**
+     * Metoda ustawiająca klienta do edycji
+     * @param customer klient do edycji, może być nullem
+     */
+    public void setData(Customer customer) {
+        this.customer = customer;
+        updateControls();
+    }
+
+    /**
+     * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego klienta do edycji
+     */
+    private void updateControls() {
+        firstName.textProperty().setValue(customer.getFirstName());
+        lastName.textProperty().setValue(customer.getSecondName());
+        country.textProperty().setValue(customer.getCountry());
+        city.textProperty().setValue(customer.getCity());
+        street.textProperty().setValue(customer.getStreet());
+        postalCode.textProperty().setValue(customer.getPostalCode());
+        phoneNumber.textProperty().setValue(customer.getPhoneNumber());
+        emailAddress.textProperty().setValue(customer.getEmailAddress());
+    }
+
+    /**
+     * Metoda aktualizująca klienta po edycji
+     */
+    private void updateModel() {
+        customer.setFirstName(firstName.textProperty().getValue());
+        customer.setSecondName(lastName.textProperty().getValue());
+        customer.setCountry(country.textProperty().getValue());
+        customer.setCity(city.textProperty().getValue());
+        customer.setStreet(street.textProperty().getValue());
+        customer.setPostalCode(postalCode.textProperty().getValue());
+        customer.setPhoneNumber(phoneNumber.textProperty().getValue());
+        customer.setEmailAddress(emailAddress.textProperty().getValue());
+    }
 
     /**
      * Metoda obsługująca dodawanie klienta po naciśnięciu przycisku "submit" w formularzu
@@ -65,6 +104,7 @@ public class AddCustomerController {
      * @param actionEvent event emitowany przez przycisk
      */
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
+
 
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
@@ -82,8 +122,13 @@ public class AddCustomerController {
         }
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
-        Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(), null);
-        CustomerService.addCustomer(customer);
+        if (customer == null) {
+            customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(), null);
+        } else {
+            updateModel();
+        }
+
+        customerService.save(customer);
         actiontarget.setText("Customer added successfully!");
         firstName.clear();
         lastName.clear();
@@ -93,6 +138,7 @@ public class AddCustomerController {
         postalCode.clear();
         phoneNumber.clear();
         emailAddress.clear();
+        customer=null;
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
         showCustomersView(actionEvent);
@@ -103,9 +149,12 @@ public class AddCustomerController {
      * @param customerView widok tabeli klientów
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView, ApplicationContext applicationContext){
+    public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView,
+                                 ApplicationContext applicationContext,
+                                 CustomerService customerService){
         this.customerView = customerView;
         this.applicationContext = applicationContext;
+        this.customerService = customerService;
     }
 
     /**

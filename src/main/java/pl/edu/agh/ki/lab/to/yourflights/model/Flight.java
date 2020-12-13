@@ -1,7 +1,11 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sun.istack.NotNull;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
@@ -13,7 +17,9 @@ import java.util.UUID;
  * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
  */
 @Entity
-public class Flight {
+public class Flight extends RecursiveTreeObject<Flight> {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,9 +31,9 @@ public class Flight {
     private String placeOfDestination;
 
     @NotNull
-    private Date departureTime;
+    private String departureTime;
     @NotNull
-    private Date arrivalTime;
+    private String arrivalTime;
 
     /**
      * Mapowanie relacji do przewoźnika realizującego dany lot
@@ -47,7 +53,7 @@ public class Flight {
     )
     private List<TicketCategory> ticketCategories;
 
-    public Flight(String placeOfDeparture, String placeOfDestination, Date departureTime, Date arrivalTime, Airline airline) {
+    public Flight(String placeOfDeparture, String placeOfDestination, String departureTime, String arrivalTime, Airline airline) {
         this.placeOfDeparture = placeOfDeparture;
         this.placeOfDestination = placeOfDestination;
         this.departureTime = departureTime;
@@ -57,5 +63,74 @@ public class Flight {
 
     public Flight() {
 
+    }
+
+    public void setPlaceOfDeparture(String placeOfDeparture) {
+        this.placeOfDeparture = placeOfDeparture;
+    }
+
+    public void setPlaceOfDestination(String placeOfDestination) {
+        this.placeOfDestination = placeOfDestination;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public void setAirline(Airline airline) {
+        this.airline = airline;
+    }
+
+    public void setTicketCategories(List<TicketCategory> ticketCategories) {
+        this.ticketCategories = ticketCategories;
+    }
+
+    public String getPlaceOfDeparture() {
+        return placeOfDeparture;
+    }
+
+    public String getPlaceOfDestination() {
+        return placeOfDestination;
+    }
+
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public Airline getAirline() {
+        return airline;
+    }
+
+    public List<TicketCategory> getTicketCategories() {
+        return ticketCategories;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public StringProperty getplaceOfDepartureProperty(){
+        return new SimpleStringProperty(placeOfDeparture);
+    }
+    public StringProperty getplaceOfDestinationProperty(){
+        return new SimpleStringProperty(placeOfDestination);
+    }
+    public StringProperty getdepartureTimeProperty(){
+        return new SimpleStringProperty(departureTime);
+    }
+    public StringProperty getarrivalTimeProperty(){
+        return new SimpleStringProperty(arrivalTime);
     }
 }
