@@ -53,11 +53,11 @@
     </VBox>
     <AnchorPane layoutX="220.0" prefHeight="800.0" prefWidth="1060.0">
         <children>
-            <JFXTreeTableView fx:id="reservationListTable" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
+            <JFXTreeTableView fx:id="reservationListTableCustomer" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
                 <columns>
                     <TreeTableColumn fx:id="reservationDate" prefWidth="250.0" text="Reservation date" />
-                    <TreeTableColumn fx:id="firstName" prefWidth="250.0" text="First name" />
-                    <TreeTableColumn fx:id="lastName" prefWidth="250.0" text="Last name" />
+                    <TreeTableColumn fx:id="departure_time" prefWidth="250.0" text="Departure time" />
+                    <TreeTableColumn fx:id="departure_place" prefWidth="250.0" text="Departure place" />
                     <TreeTableColumn fx:id="flight_ID" prefWidth="250.0" text="Flight ID" />
                 </columns>
             </JFXTreeTableView>

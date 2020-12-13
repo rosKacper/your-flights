@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
-import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
-import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
+import pl.edu.agh.ki.lab.to.yourflights.model.*;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 
@@ -46,7 +43,7 @@ public class ReservationListController {
      * Tabela rezerwacji
      */
     @FXML
-    private JFXTreeTableView<Reservation> resevationTableView;
+    private JFXTreeTableView<Reservation> reservationListTable;
 
     /**
      * Kolumny tabeli
@@ -59,6 +56,10 @@ public class ReservationListController {
     private TreeTableColumn<Customer, String> lastName;
     @FXML
     private TreeTableColumn<TicketCategory, String> flight_ID ;
+    @FXML
+    private TreeTableColumn<Flight, String> departure_time ;
+    @FXML
+    private TreeTableColumn<Flight, String> departure_place ;
 
 
     /**
@@ -67,9 +68,11 @@ public class ReservationListController {
     public void setModel() {
         //Ustawienie kolumn
         reservationDate.setCellValueFactory(data -> data.getValue().getValue().getReservationDateProperty());
-        //firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
+        firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
         //lastName.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
         //flight_ID.setCellValueFactory(data -> data.getValue().getValue().getFlightIDProperty());
+        //departure_place.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDepartureProperty());
+        //departure_time.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
 
         //Pobranie rezerwacje z serwisu
         //ObservableList<Airline> airlines = airlineService.getMockData();
