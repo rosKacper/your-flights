@@ -130,8 +130,9 @@ public class AddFlightController {
         actiontarget.setText("Flight added successfully!");
         placeOfDeparture.clear();
         placeOfDestination.clear();
-        //departureTime=null;
-        //arrivalTime=null;
+        departureTime=null;
+        arrivalTime=null;
+        flight=null;
 
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów

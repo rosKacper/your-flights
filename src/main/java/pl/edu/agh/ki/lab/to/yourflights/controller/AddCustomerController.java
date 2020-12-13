@@ -138,6 +138,7 @@ public class AddCustomerController {
         postalCode.clear();
         phoneNumber.clear();
         emailAddress.clear();
+        customer=null;
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
         showCustomersView(actionEvent);

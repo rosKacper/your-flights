@@ -105,6 +105,7 @@ public class AddAirlineController {
         country.clear();
         description.clear();
         name.clear();
+        airline=null;
 
         //Po dodaniu/edycji przewoźnika zakończonym sukcesem, następuje powrót do widoku listy przewoźników
         showAirlinesView(actionEvent);
