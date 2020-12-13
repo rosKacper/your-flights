@@ -6,6 +6,9 @@ import javafx.stage.Stage;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Klasa definiuje aplikację Javafx
@@ -23,8 +26,11 @@ public class JavafxApplication extends Application {
      */
     @Override
     public void start(Stage stage) {
+        initSecurity();
         applicationContext.publishEvent(new StageReadyEvent(stage));
     }
+
+
 
     /**
      * Event emitowany po tym kiedy aplikacja jest gotowa
@@ -55,5 +61,24 @@ public class JavafxApplication extends Application {
     public void stop() {
         applicationContext.stop();
         Platform.exit();
+    }
+
+
+    public static void initSecurity() {
+        SecurityContextHolder.setStrategyName("MODE_GLOBAL");
+        initAnonymous();
+    }
+
+    public static void initAnonymous() {
+        AnonymousAuthenticationToken auth = new AnonymousAuthenticationToken(
+                "anonymous", "anonymous",
+                AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    public static void logout(){
+        SecurityContextHolder.clearContext();
+        initAnonymous();
     }
 }
