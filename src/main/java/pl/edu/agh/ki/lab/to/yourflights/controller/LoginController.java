@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 
@@ -30,6 +32,10 @@ import java.util.stream.Collectors;
 @Component
 public class LoginController {
 
+    /**
+     * TODO
+     * komentarze do tego kontrolera
+     */
 
     @Autowired
     private AuthenticationManager authManager;
@@ -39,7 +45,7 @@ public class LoginController {
     private TextField usernameField;
 
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
 
 
     private final ApplicationContext applicationContext;
@@ -56,8 +62,6 @@ public class LoginController {
         final String userName = usernameField.getText().trim();
         final String userPassword = passwordField.getText().trim();
 
-//        System.out.println(userName);
-//        System.out.println(userPassword);
 
         try {
             Authentication request = new UsernamePasswordAuthenticationToken(userName, userPassword);
@@ -66,23 +70,24 @@ public class LoginController {
 
             updateUserInfo();
 
-            //TEST
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            boolean hasUserRole = authentication.getAuthorities().stream()
-                    .anyMatch(r -> r.getAuthority().equals("ROLE_USER"));
-            if(hasUserRole){
-                System.out.println("User is logged in!");
-            }
-            boolean hasAdminRole = authentication.getAuthorities().stream()
-                    .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-            if(hasAdminRole){
-                System.out.println("Admin is logged in!");
-            }
+//            //TEST
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            boolean hasUserRole = authentication.getAuthorities().stream()
+//                    .anyMatch(r -> r.getAuthority().equals("ROLE_USER"));
+//            if(hasUserRole){
+//                System.out.println("User is logged in!");
+//            }
+//            boolean hasAdminRole = authentication.getAuthorities().stream()
+//                    .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+//            if(hasAdminRole){
+//                System.out.println("Admin is logged in!");
+//            }
             //
 
             usernameField.clear();
             passwordField.clear();
             showMainView(event);
+
 
         } catch (AuthenticationException e) {
             System.out.println("WRONG CREDENTIALS");
@@ -117,11 +122,9 @@ public class LoginController {
     private void updateUserInfo(){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        lblUserName.setText(auth.getName());
-        List<String> grantedAuthorities = auth.getAuthorities().stream().map(a -> a.toString()).collect(Collectors.toList());
+        List<String> grantedAuthorities = auth.getAuthorities().stream().map(Object::toString).collect(Collectors.toList());
         userRoles.clear();
         userRoles.addAll(grantedAuthorities);
-
     }
 
     /**
