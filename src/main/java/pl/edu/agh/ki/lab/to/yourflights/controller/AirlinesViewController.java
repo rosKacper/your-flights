@@ -21,6 +21,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,8 +45,6 @@ public class AirlinesViewController {
     private final Resource reservationList;
     private final ApplicationContext applicationContext;
 
-    //Lista zawierająca predykaty służące do filtrowania danych
-    private final List<Predicate<Airline>> predicates = new LinkedList<>();
 
     // Lista służąca do filtrowania kraju pochodzenia przewoźnika
     private static final List<String> COUNTRIES =
@@ -57,6 +56,7 @@ public class AirlinesViewController {
      */
     @FXML
     private JFXTreeTableView<Airline> airlinesTableView;
+
 
     /**
      * Kolumny tabeli
@@ -123,28 +123,19 @@ public class AirlinesViewController {
      * Metoda która inicjalizuje obsługę filtrowania
      */
     private void setPredicates() {
+        // Generyczna klasa filtrów dla danego modelu
+        GenericFilter<Airline> airlineFilter = new GenericFilter<>(airlinesTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
         //filtrowanie na podstawie nazwy
-        predicates.add( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
+        airlineFilter.addPredicate( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
         //filtrowanie na podstawie kraju
-        predicates.add( testedValue -> countryPicker.getValue() == null ||
+        airlineFilter.addPredicate( testedValue -> countryPicker.getValue() == null ||
                     countryPicker.getValue().length() == 0 ||
-                    testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase()));
+                    testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase())
+        );
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
-        nameInput.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                airlinesTableView.setPredicate(airline -> predicates.stream()
-                        .allMatch(predicate -> predicate.test(airline.getValue())));
-            }
-        });
-        countryPicker.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                airlinesTableView.setPredicate(airline -> predicates.stream()
-                        .allMatch(predicate -> predicate.test(airline.getValue())));
-            }
-        });
+        airlineFilter.setListener(nameInput.textProperty());
+        airlineFilter.setListener(countryPicker.valueProperty());
     }
 
     /**

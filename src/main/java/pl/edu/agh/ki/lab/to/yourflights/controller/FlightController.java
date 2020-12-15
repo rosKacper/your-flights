@@ -43,6 +43,7 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
+import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 
 @RestController
@@ -124,44 +125,25 @@ public class FlightController {
     }
 
     /**
-     * Metoda która inicjalizuje obsługę filtrowania
+     * Metoda która inicjalizuje obsługę filtrowanie
      */
     private void setPredicates() {
+        // Generyczna klasa filtrów dla danego modelu
+        GenericFilter<Flight> airlineFilter = new GenericFilter<>(flightsTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
         //filtrowanie na podstawie lotniska źródłowego
-        predicates.add(testedValue -> testedValue.getPlaceOfDeparture().toLowerCase().contains(departureInput.getText().toLowerCase()));
+        airlineFilter.addPredicate(testedValue -> testedValue.getPlaceOfDeparture().toLowerCase().contains(departureInput.getText().toLowerCase()));
         //filtrowanie na podstawie lotniska docelowego
-        predicates.add(testedValue -> testedValue.getPlaceOfDestination().toLowerCase().contains(destinationInput.getText().toLowerCase()));
-        predicates.add(new Predicate<Flight>() {
-            @Override
-            public boolean test(Flight testedValue) {
-                //filtrowanie na podstawie daty wylotu
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-                return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureTime(), formatter));
-            }
+        airlineFilter.addPredicate(testedValue -> testedValue.getPlaceOfDestination().toLowerCase().contains(destinationInput.getText().toLowerCase()));
+        //filtrowanie na podstawie daty wylotu
+        airlineFilter.addPredicate(testedValue -> {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureTime(), formatter));
         });
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
-        departureInput.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                flightsTableView.setPredicate(flight -> predicates.stream()
-                        .allMatch(predicate -> predicate.test(flight.getValue())));
-            }
-        });
-        destinationInput.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                flightsTableView.setPredicate(flight -> predicates.stream()
-                        .allMatch(predicate -> predicate.test(flight.getValue())));
-            }
-        });
-        datePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
-            @Override
-            public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
-                flightsTableView.setPredicate(flight -> predicates.stream()
-                        .allMatch(predicate -> predicate.test(flight.getValue())));
-            }
-        });
+        airlineFilter.setListener(departureInput.textProperty());
+        airlineFilter.setListener(destinationInput.textProperty());
+        airlineFilter.setListener(datePicker.valueProperty());
     }
 
     /**
