@@ -124,45 +124,25 @@ public class AirlinesViewController {
      */
     private void setPredicates() {
         // Dodanie do listy predykatów testujących zawartość filtrów
-        predicates.add(new Predicate<Airline>() {
-            @Override
-            //filtrowanie na podstawie nazwy
-            public boolean test(Airline testedValue) {
-                return testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase());
-            }
-        });
-        predicates.add(new Predicate<Airline>() {
-            @Override
-            public boolean test(Airline testedValue) {
-                //filtrowanie na podstawie kraju
-                return countryPicker.getValue() == null ||
-                        countryPicker.getValue().length() == 0 ||
-                        testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase());
-            }
-        });
+        //filtrowanie na podstawie nazwy
+        predicates.add( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
+        //filtrowanie na podstawie kraju
+        predicates.add( testedValue -> countryPicker.getValue() == null ||
+                    countryPicker.getValue().length() == 0 ||
+                    testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase()));
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
         nameInput.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                airlinesTableView.setPredicate(new Predicate<TreeItem<Airline>>() {
-                    @Override
-                    public boolean test(TreeItem<Airline> airline) {
-                        return predicates.stream()
-                                .allMatch(predicate -> predicate.test(airline.getValue()));
-                    }
-                });
+                airlinesTableView.setPredicate(airline -> predicates.stream()
+                        .allMatch(predicate -> predicate.test(airline.getValue())));
             }
         });
         countryPicker.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                airlinesTableView.setPredicate(new Predicate<TreeItem<Airline>>() {
-                    @Override
-                    public boolean test(TreeItem<Airline> airline) {
-                        return predicates.stream()
-                                .allMatch(predicate -> predicate.test(airline.getValue()));
-                    }
-                });
+                airlinesTableView.setPredicate(airline -> predicates.stream()
+                        .allMatch(predicate -> predicate.test(airline.getValue())));
             }
         });
     }

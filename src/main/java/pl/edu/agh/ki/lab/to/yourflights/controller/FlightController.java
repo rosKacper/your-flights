@@ -128,20 +128,10 @@ public class FlightController {
      */
     private void setPredicates() {
         // Dodanie do listy predykatów testujących zawartość filtrów
-        predicates.add(new Predicate<Flight>() {
-            @Override
-            //filtrowanie na podstawie lotniska źródłowego
-            public boolean test(Flight testedValue) {
-                return testedValue.getPlaceOfDeparture().toLowerCase().contains(departureInput.getText().toLowerCase());
-            }
-        });
-        predicates.add(new Predicate<Flight>() {
-            @Override
-            //filtrowanie na podstawie lotniska docelowego
-            public boolean test(Flight testedValue) {
-                return testedValue.getPlaceOfDestination().toLowerCase().contains(destinationInput.getText().toLowerCase());
-            }
-        });
+        //filtrowanie na podstawie lotniska źródłowego
+        predicates.add(testedValue -> testedValue.getPlaceOfDeparture().toLowerCase().contains(departureInput.getText().toLowerCase()));
+        //filtrowanie na podstawie lotniska docelowego
+        predicates.add(testedValue -> testedValue.getPlaceOfDestination().toLowerCase().contains(destinationInput.getText().toLowerCase()));
         predicates.add(new Predicate<Flight>() {
             @Override
             public boolean test(Flight testedValue) {
@@ -154,37 +144,22 @@ public class FlightController {
         departureInput.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                flightsTableView.setPredicate(new Predicate<TreeItem<Flight>>() {
-                    @Override
-                    public boolean test(TreeItem<Flight> flight) {
-                        return predicates.stream()
-                                .allMatch(predicate -> predicate.test(flight.getValue()));
-                    }
-                });
+                flightsTableView.setPredicate(flight -> predicates.stream()
+                        .allMatch(predicate -> predicate.test(flight.getValue())));
             }
         });
         destinationInput.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                flightsTableView.setPredicate(new Predicate<TreeItem<Flight>>() {
-                    @Override
-                    public boolean test(TreeItem<Flight> flight) {
-                        return predicates.stream()
-                                .allMatch(predicate -> predicate.test(flight.getValue()));
-                    }
-                });
+                flightsTableView.setPredicate(flight -> predicates.stream()
+                        .allMatch(predicate -> predicate.test(flight.getValue())));
             }
         });
         datePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
-                flightsTableView.setPredicate(new Predicate<TreeItem<Flight>>() {
-                    @Override
-                    public boolean test(TreeItem<Flight> flight) {
-                        return predicates.stream()
-                                .allMatch(predicate -> predicate.test(flight.getValue()));
-                    }
-                });
+                flightsTableView.setPredicate(flight -> predicates.stream()
+                        .allMatch(predicate -> predicate.test(flight.getValue())));
             }
         });
     }
