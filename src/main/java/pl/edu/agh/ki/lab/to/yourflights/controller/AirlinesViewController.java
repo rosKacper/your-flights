@@ -21,7 +21,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
-import pl.edu.agh.ki.lab.to.yourflights.utils.CustomPredicate;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -45,8 +44,8 @@ public class AirlinesViewController {
     private final Resource reservationList;
     private final ApplicationContext applicationContext;
 
-    //Lista zawierającaa predykaty służące do filtrowania danych
-    private final List<CustomPredicate<Airline>> predicates = new LinkedList<>();
+    //Lista zawierająca predykaty służące do filtrowania danych
+    private final List<Predicate<Airline>> predicates = new LinkedList<>();
 
     // Lista służąca do filtrowania kraju pochodzenia przewoźnika
     private static final List<String> COUNTRIES =
@@ -125,14 +124,14 @@ public class AirlinesViewController {
      */
     private void setPredicates() {
         // Dodanie do listy predykatów testujących zawartość filtrów
-        predicates.add(new CustomPredicate<Airline>() {
+        predicates.add(new Predicate<Airline>() {
             @Override
             //filtrowanie na podstawie nazwy
             public boolean test(Airline testedValue) {
                 return testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase());
             }
         });
-        predicates.add(new CustomPredicate<Airline>() {
+        predicates.add(new Predicate<Airline>() {
             @Override
             public boolean test(Airline testedValue) {
                 //filtrowanie na podstawie kraju
