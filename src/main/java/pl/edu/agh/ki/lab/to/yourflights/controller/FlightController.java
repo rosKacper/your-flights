@@ -2,11 +2,21 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import java.io.IOException;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,6 +25,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -67,6 +79,17 @@ public class FlightController {
     @FXML
     private TreeTableColumn<Flight, String> arrivalTime;
 
+    //Pola filtrów
+    @FXML
+    private JFXTextField departureInput;
+    @FXML
+    private JFXTextField destinationInput;
+    @FXML
+    private JFXDatePicker datePicker;
+
+    //Lista zawierająca predykaty służące do filtrowania danych
+    private final List<Predicate<Flight>> predicates = new LinkedList<>();
+
     /**
      * Metoda która wczytuje dane do tabeli lotów
      */
@@ -99,12 +122,80 @@ public class FlightController {
         this.reservationListView = reservationListView;
         this.addFlightView = addFlightView;
     }
+
+    /**
+     * Metoda która inicjalizuje obsługę filtrowania
+     */
+    private void setPredicates() {
+        // Dodanie do listy predykatów testujących zawartość filtrów
+        predicates.add(new Predicate<Flight>() {
+            @Override
+            //filtrowanie na podstawie lotniska źródłowego
+            public boolean test(Flight testedValue) {
+                return testedValue.getPlaceOfDeparture().toLowerCase().contains(departureInput.getText().toLowerCase());
+            }
+        });
+        predicates.add(new Predicate<Flight>() {
+            @Override
+            //filtrowanie na podstawie lotniska docelowego
+            public boolean test(Flight testedValue) {
+                return testedValue.getPlaceOfDestination().toLowerCase().contains(destinationInput.getText().toLowerCase());
+            }
+        });
+        predicates.add(new Predicate<Flight>() {
+            @Override
+            public boolean test(Flight testedValue) {
+                //filtrowanie na podstawie daty wylotu
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+                return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureTime(), formatter));
+            }
+        });
+        // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
+        departureInput.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                flightsTableView.setPredicate(new Predicate<TreeItem<Flight>>() {
+                    @Override
+                    public boolean test(TreeItem<Flight> flight) {
+                        return predicates.stream()
+                                .allMatch(predicate -> predicate.test(flight.getValue()));
+                    }
+                });
+            }
+        });
+        destinationInput.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                flightsTableView.setPredicate(new Predicate<TreeItem<Flight>>() {
+                    @Override
+                    public boolean test(TreeItem<Flight> flight) {
+                        return predicates.stream()
+                                .allMatch(predicate -> predicate.test(flight.getValue()));
+                    }
+                });
+            }
+        });
+        datePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
+                flightsTableView.setPredicate(new Predicate<TreeItem<Flight>>() {
+                    @Override
+                    public boolean test(TreeItem<Flight> flight) {
+                        return predicates.stream()
+                                .allMatch(predicate -> predicate.test(flight.getValue()));
+                    }
+                });
+            }
+        });
+    }
+
     /**
      * Metoda wywoływana po inicjalizacji widoku
      */
     @FXML
     public void initialize() {
         this.setModel();
+        setPredicates();
     }
 
     public void showMainView(ActionEvent actionEvent) {
