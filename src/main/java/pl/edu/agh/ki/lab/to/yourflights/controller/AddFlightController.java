@@ -55,14 +55,27 @@ public class AddFlightController {
     @FXML
     public Label placeOfDestinationValidationLabel;
     @FXML
+    public Label departureTimeValidationLabel;
+    @FXML
+    public Label arrivalTimeValidationLabel;
+    @FXML
     public Label placeOfDepartureValidationLabel;
     @FXML
     public Text actiontarget;
+    @FXML
+    public Label placeOfDestinationValidation;
+    @FXML
+    public Label placeOfDepartureValidation;
+    @FXML
+    public Label departureTimeValidation;
+    @FXML
+    public Label arrivalTimeValidation;
     /**
      * Formatuje date w postaci string do odpowiedniego formatu
      */
     DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+    String date_blocker = "31/12/9000";
+    DatePicker blocker=new DatePicker();
 
 
 
@@ -107,15 +120,18 @@ public class AddFlightController {
      * @param actionEvent event emitowany przez przycisk
      */
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
-
-
+        //blocker to nieosiągalna data, która sprawi, że walidacja daty przylotu pominie warunek data odlotu później
+        //od daty przylotu
+        blocker.setValue(LocalDate.parse( date_blocker,formatter));
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean placeOfDestinationValidation = Validator.validateNotEmpty(placeOfDestination, placeOfDestinationValidationLabel);
         boolean placeOfDepartureValidation = Validator.validateNotEmpty(placeOfDeparture, placeOfDepartureValidationLabel);
+        boolean departureTimeValidation = Validator.validateDate(departureTime,arrivalTime, departureTimeValidationLabel);
+        boolean arrivalTimeValidation = Validator.validateDate(arrivalTime, blocker, arrivalTimeValidationLabel);
 
 
-        if(!placeOfDestinationValidation || !placeOfDepartureValidation ){
+        if(!placeOfDestinationValidation || !placeOfDepartureValidation || !departureTimeValidation || !arrivalTimeValidation ){
             return;
         }
 

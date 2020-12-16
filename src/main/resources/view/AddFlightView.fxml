@@ -45,6 +45,16 @@
                 <Insets />
             </GridPane.margin>
         </Label>
+        <Label fx:id="departureTimeValidationLabel" prefHeight="17.0" prefWidth="386.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="7">
+            <GridPane.margin>
+                <Insets />
+            </GridPane.margin>
+        </Label>
+        <Label fx:id="arrivalTimeValidationLabel" prefHeight="17.0" prefWidth="386.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="9">
+            <GridPane.margin>
+                <Insets />
+            </GridPane.margin>
+        </Label>
         <JFXButton disable="true" prefHeight="51.0" prefWidth="416.0" text="Enter customer details" textAlignment="CENTER" GridPane.columnSpan="2147483647">
             <font>
                 <Font size="24.0" />
@@ -54,6 +64,10 @@
         <JFXTextField fx:id="placeOfDestination" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         <JFXDatePicker fx:id="departureTime"  GridPane.columnIndex="1" GridPane.rowIndex="6" />
         <JFXDatePicker fx:id="arrivalTime"  GridPane.columnIndex="1" GridPane.rowIndex="8" />
+        <Label fx:id="placeOfDestinationValidation" prefHeight="17.0" prefWidth="184.0" GridPane.rowIndex="3" />
+        <Label fx:id="placeOfDepartureValidation" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="5" />
+        <Label fx:id="departureTimeValidation" prefHeight="17.0" prefWidth="184.0" GridPane.rowIndex="7" />
+        <Label fx:id="arrivalTimeValidation" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="9" />
         <columnConstraints>
             <ColumnConstraints maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
             <ColumnConstraints maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
