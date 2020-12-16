@@ -25,6 +25,7 @@ import java.io.IOException;
 public class StageInitializer implements ApplicationListener<JavafxApplication.StageReadyEvent> {
 
     private final Resource mainView;
+    private final Resource loginView;
     private final String applicationTitle;
 
     /**
@@ -40,9 +41,11 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
      */
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle,
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
+                            @Value("classpath:/view/LoginView.fxml") Resource loginView,
                             ApplicationContext applicationContext) {
         this.applicationTitle = applicationTitle;
         this.mainView = mainView;
+        this.loginView = loginView;
         this.applicationContext = applicationContext;
     }
 

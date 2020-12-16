@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
@@ -223,6 +224,7 @@ public class AirlinesViewController {
     }
 
     @FXML
+
     private void handleDeleteAction(ActionEvent event) {
         var airlines = airlinesTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
         airlineService.deleteAll(FXCollections.observableList(airlines));

@@ -1,14 +1,18 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,10 +24,14 @@ import java.io.IOException;
 @Component
 public class MainViewController {
 
+    public JFXButton loginButton = new JFXButton();
+    public JFXButton boi = new JFXButton();
+
     private final Resource airlinesView;
     private final Resource customersView;
     private final Resource flightView;
     private final Resource reservationListView;
+    private final Resource loginView;
     private final Resource mainView;
 
     /**
@@ -31,26 +39,31 @@ public class MainViewController {
      */
     private final ApplicationContext applicationContext;
 
+
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
      * @param applicationContext kontekst aplikacji Springa
      * @param airlinesView widok tabeli przewoźników
      * @param customersView widok tabeli klientów
-     * @param reservationListView
+     * @param reservationListView widok tabeli rezerwacji
+     * @param loginView widok ekranu logowania
      */
     public MainViewController(ApplicationContext applicationContext,
                               @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                               @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                               @Value("classpath:/view/CustomersView.fxml") Resource mainView,
                               @Value("classpath:/view/FlightView.fxml") Resource flightView,
-                              @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView) {
+                              @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
+                              @Value("classpath:/view/LoginView.fxml") Resource loginView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
         this.flightView=flightView;
         this.mainView = mainView;
         this.reservationListView = reservationListView;
+        this.loginView = loginView;
     }
+
 
     /**
      * Metoda służąca do przejścia do widoku tabeli przewoźników
@@ -69,7 +82,6 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Metoda służąca do przejścia do widoku tabeli klientów
@@ -106,6 +118,21 @@ public class MainViewController {
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(flightView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showLoginView(ActionEvent actionEvent){
+
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
