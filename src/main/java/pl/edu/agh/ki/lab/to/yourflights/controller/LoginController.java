@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,14 +33,24 @@ import java.util.stream.Collectors;
 @Component
 public class LoginController {
 
+
     /**
-     * TODO
-     * komentarze do tego kontrolera
+     * Kontekst aplikacji Springa
+     */
+    private final ApplicationContext applicationContext;
+    private final Resource mainView;
+
+    /**
+     * Pola potrzebne do autentykacji użytkownika
      */
 
     @Autowired
     private AuthenticationManager authManager;
     private ObservableList<String> userRoles = FXCollections.observableArrayList();
+
+    /**
+     * Pola tekstowe do formularza logowania
+     */
 
     @FXML
     private TextField usernameField;
@@ -48,13 +59,11 @@ public class LoginController {
     private PasswordField passwordField;
 
 
-    private final ApplicationContext applicationContext;
-    private final Resource mainView;
-
     public LoginController(ApplicationContext applicationContext, @Value("classpath:/view/MainView.fxml") Resource mainView) {
         this.applicationContext = applicationContext;
         this.mainView = mainView;
     }
+
 
     @FXML
     void handleLogin(ActionEvent event) {
@@ -88,10 +97,8 @@ public class LoginController {
             passwordField.clear();
             showMainView(event);
 
-
         } catch (AuthenticationException e) {
-            System.out.println("WRONG CREDENTIALS");
-//            e.printStackTrace();
+            System.out.println("Incorrect username or password");
         }
 
     }

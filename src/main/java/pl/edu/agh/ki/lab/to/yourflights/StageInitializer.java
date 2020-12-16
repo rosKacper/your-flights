@@ -56,7 +56,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     public void onApplicationEvent(JavafxApplication.StageReadyEvent event) {
         try {
             //ładujemy główny widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
 
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
