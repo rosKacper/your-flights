@@ -1,8 +1,9 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,8 +21,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -38,11 +45,18 @@ public class AirlinesViewController {
     private final Resource reservationList;
     private final ApplicationContext applicationContext;
 
+
+    // Lista służąca do filtrowania kraju pochodzenia przewoźnika
+    private static final List<String> COUNTRIES =
+            Collections.unmodifiableList(Arrays.asList("POLSKA", "HISZPANIA", "NIEMCY"));
+
+
     /**
      * Tabela przewoźników
      */
     @FXML
     private JFXTreeTableView<Airline> airlinesTableView;
+
 
     /**
      * Kolumny tabeli
@@ -53,6 +67,17 @@ public class AirlinesViewController {
     private TreeTableColumn<Airline, String> countryColumn;
     @FXML
     private TreeTableColumn<Airline, String> descriptionColumn;
+
+    /**
+     * Pola służące do filtrowania linii lotniczych
+     * nameInput - nazwa linii lotniczwej
+     * countryPicker - combobox zawierający kraje
+     */
+    @FXML
+    private JFXTextField nameInput;
+    @FXML
+    private JFXComboBox<String> countryPicker;
+
 
 
     /**
@@ -71,7 +96,6 @@ public class AirlinesViewController {
         final TreeItem<Airline> root = new RecursiveTreeItem<Airline>(airlines, RecursiveTreeObject::getChildren);
         airlinesTableView.setRoot(root);
         airlinesTableView.setShowRoot(false);
-
     }
 
     /**
@@ -96,11 +120,32 @@ public class AirlinesViewController {
     }
 
     /**
+     * Metoda która inicjalizuje obsługę filtrowania
+     */
+    private void setPredicates() {
+        // Generyczna klasa filtrów dla danego modelu
+        GenericFilter<Airline> airlineFilter = new GenericFilter<>(airlinesTableView);
+        // Dodanie do listy predykatów testujących zawartość filtrów
+        //filtrowanie na podstawie nazwy
+        airlineFilter.addPredicate( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
+        //filtrowanie na podstawie kraju
+        airlineFilter.addPredicate( testedValue -> countryPicker.getValue() == null ||
+                    countryPicker.getValue().length() == 0 ||
+                    testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase())
+        );
+        // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
+        airlineFilter.setListener(nameInput.textProperty());
+        airlineFilter.setListener(countryPicker.valueProperty());
+    }
+
+    /**
      * Metoda wywoływana po inicjalizacji widoku
      */
     @FXML
     public void initialize() {
         this.setModel();
+        countryPicker.getItems().addAll(COUNTRIES);
+        setPredicates();
     }
 
     /**

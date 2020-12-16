@@ -31,7 +31,7 @@ import java.util.UUID;
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
-public class ReservationListController {
+public class ReservationViewController {
 
     private ReservationService reservationService;
     private final Resource mainView;
@@ -91,7 +91,7 @@ public class ReservationListController {
      * @param AirlineView widok formularza do przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public ReservationListController(ReservationService reservationService,
+    public ReservationViewController(ReservationService reservationService,
                                      @Value("classpath:/view/MainView.fxml") Resource mainView,
                                      @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                                      @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,

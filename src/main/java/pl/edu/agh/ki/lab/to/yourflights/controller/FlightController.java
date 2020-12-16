@@ -2,11 +2,21 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import java.io.IOException;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,6 +25,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -31,6 +43,7 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
+import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 
 @RestController
@@ -67,6 +80,17 @@ public class FlightController {
     @FXML
     private TreeTableColumn<Flight, String> arrivalTime;
 
+    //Pola filtrów
+    @FXML
+    private JFXTextField departureInput;
+    @FXML
+    private JFXTextField destinationInput;
+    @FXML
+    private JFXDatePicker datePicker;
+
+    //Lista zawierająca predykaty służące do filtrowania danych
+    private final List<Predicate<Flight>> predicates = new LinkedList<>();
+
     /**
      * Metoda która wczytuje dane do tabeli lotów
      */
@@ -99,12 +123,36 @@ public class FlightController {
         this.reservationListView = reservationListView;
         this.addFlightView = addFlightView;
     }
+
+    /**
+     * Metoda która inicjalizuje obsługę filtrowanie
+     */
+    private void setPredicates() {
+        // Generyczna klasa filtrów dla danego modelu
+        GenericFilter<Flight> airlineFilter = new GenericFilter<>(flightsTableView);
+        // Dodanie do listy predykatów testujących zawartość filtrów
+        //filtrowanie na podstawie lotniska źródłowego
+        airlineFilter.addPredicate(testedValue -> testedValue.getPlaceOfDeparture().toLowerCase().contains(departureInput.getText().toLowerCase()));
+        //filtrowanie na podstawie lotniska docelowego
+        airlineFilter.addPredicate(testedValue -> testedValue.getPlaceOfDestination().toLowerCase().contains(destinationInput.getText().toLowerCase()));
+        //filtrowanie na podstawie daty wylotu
+        airlineFilter.addPredicate(testedValue -> {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureTime(), formatter));
+        });
+        // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
+        airlineFilter.setListener(departureInput.textProperty());
+        airlineFilter.setListener(destinationInput.textProperty());
+        airlineFilter.setListener(datePicker.valueProperty());
+    }
+
     /**
      * Metoda wywoływana po inicjalizacji widoku
      */
     @FXML
     public void initialize() {
         this.setModel();
+        setPredicates();
     }
 
     public void showMainView(ActionEvent actionEvent) {

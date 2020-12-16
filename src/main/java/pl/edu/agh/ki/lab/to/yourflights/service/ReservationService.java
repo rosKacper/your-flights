@@ -8,6 +8,8 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 
+import java.util.List;
+
 /**
  * Klasa definiująca serwis ze Spring Data Jpa dla lotów
  * Pozwala na pobieranie lotów
@@ -17,36 +19,59 @@ import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 public class ReservationService {
 
     /**
-     * Repozytorium lotów
-     * Nie jest na razie wykorzystywane, ponieważ nie ma połączenia z bazą danych
+     * Repozytorium rezerwacji
      */
     private final ReservationRepository reservationRepository;
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie repozytorium
-     * Nie jest na razie wykorzystywane, ponieważ nie ma połączenia z bazą danych
-     * @param ReservationRepository repozytorium lotów
+     * @param reservationRepository repozytorium rezerwacji
      */
-    public ReservationService(ReservationRepository ReservationRepository) {
-        this.reservationRepository = ReservationRepository;
+    public ReservationService(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     /**
-     * Tymczasowa lista lotów, dopóki nie ma zapisywania do bazy danych
+     * Metoda zwracająca wszystkich przewoźników z bazy danych
+     * @return lista wszystkich przewoźników
      */
-    public static ObservableList<Reservation> reservations = FXCollections.observableArrayList();
-
-    /**
-     * Metoda dodająca loty do tymczasowej listy
-     */
-    public static void addFlight(Reservation reservation){
-        reservations.add(reservation);
+    public List<Reservation> findAll() {
+        return reservationRepository.findAll();
     }
 
     /**
-     * Metoda zwracająca klientów z tymczasowej listy
+     * Metoda usuwająca daną rezerwację z bazy danych
+     * @param reservation rezerwacja do usunięcia
      */
-    public ObservableList<Reservation> getMockData() {
-        return reservations;
+    public void delete(Reservation reservation) {
+        reservationRepository.delete(reservation);
     }
+
+    /**
+     * Metoda usuwająca danych przewoźników z bazy danych
+     * @param reservations lista rezerwacji do usunięcia
+     */
+    public void deleteAll(ObservableList<Reservation> reservations) {
+        reservationRepository.deleteAll(reservations);
+    }
+
+    /**
+     * Metoda zapisująca przewoźnika w bazie danych
+     * @param reservation rezerwacja do zapisania w bazie danych
+     */
+    public boolean save(Reservation reservation) {
+        if(reservation != null) {
+            List<Reservation> reservations = findAll();
+            boolean hasNoCollidingReservations = reservations.stream()
+                    .noneMatch(existingReservation -> existingReservation.getReservationDate().equals(reservation.getReservationDate()));
+            if(hasNoCollidingReservations) {
+                reservationRepository.save(reservation);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
 }
