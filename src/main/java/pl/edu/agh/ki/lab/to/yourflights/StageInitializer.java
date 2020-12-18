@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.service.MockDataService;
 
 import java.io.IOException;
 
@@ -27,6 +28,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     private final Resource mainView;
     private final Resource loginView;
     private final String applicationTitle;
+    private final MockDataService mockDataService;
 
     /**
      * Kontekst aplikacji Springa
@@ -42,11 +44,13 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle,
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/LoginView.fxml") Resource loginView,
-                            ApplicationContext applicationContext) {
+                            ApplicationContext applicationContext,
+                            MockDataService mockDataService) {
         this.applicationTitle = applicationTitle;
         this.mainView = mainView;
         this.loginView = loginView;
         this.applicationContext = applicationContext;
+        this.mockDataService = mockDataService;
     }
 
     /**
@@ -66,6 +70,9 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
 
             //pobieramy stage z którego wywołany został event
             Stage stage = event.getStage();
+
+            //wypełnienie wbudowanej bazy danych przykładowymi danymi startowymi
+            mockDataService.createMockData();
 
             //utworzenie i wyświetlenie sceny
             Scene scene = new Scene(parent);

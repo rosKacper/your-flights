@@ -12,8 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -89,6 +89,16 @@ public class AirlinesViewController {
         nameColumn.setCellValueFactory(data -> data.getValue().getValue().getNameProperty());
         countryColumn.setCellValueFactory(data -> data.getValue().getValue().getCountryProperty());
         descriptionColumn.setCellValueFactory(data -> data.getValue().getValue().getDescriptionProperty());
+
+        //Ustawienie zawijania tekstu w kolumnie 'description'
+        descriptionColumn.setCellFactory(data -> {
+            TreeTableCell<Airline, String> cell = new TreeTableCell<>();
+            Text text = new Text();
+            cell.setGraphic(text);
+            text.wrappingWidthProperty().setValue(descriptionColumn.widthProperty().getValue() - 10);
+            text.textProperty().bind(cell.itemProperty());
+            return cell;
+        });
 
         //Pobranie przewoźników z serwisu
         ObservableList<Airline> airlines = FXCollections.observableList(airlineService.findAll());
