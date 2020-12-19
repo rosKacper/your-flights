@@ -30,6 +30,7 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 
 /**
@@ -56,7 +57,7 @@ public class AddFlightController {
     @FXML
     public TextField placeOfDestination,placeOfDeparture;
     @FXML
-    public ComboBox<Airline> airlineName;
+    public ComboBox<String> airlineName;
 
 
 
@@ -175,10 +176,12 @@ public class AddFlightController {
      */
     public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
                                  ApplicationContext applicationContext,
-                                 FlightService flightService){
+                                 FlightService flightService,
+                               AirlineService airlineService){
         this.flightView = flightView;
         this.applicationContext = applicationContext;
         this.flightService = flightService;
+        this.airlineService = airlineService;
     }
 
     /**
@@ -211,11 +214,18 @@ public class AddFlightController {
     /**
      *
      * @param actionEvent wywołanie po nacisnięciu myszką
-     * Uzupełnia ComboBox danymi
+     * Uzupełnia ComboBox z nazwami linii lotniczych danymi
      */
     public void setComboBox(MouseEvent actionEvent) {
+        //wczytanie przewoźników
         ObservableList<Airline> airlines = FXCollections.observableList(airlineService.findAll());
 
-        this.airlineName.setItems(airlines);
+        //zmapowanie listy przewoźników na listę nazw przewoźników
+        ObservableList<String> airlinesNames = FXCollections.observableList(airlines.stream()
+                .map(airline -> airline.getName())
+                .collect(Collectors.toList()));
+
+        //ustawienie listy nazw przewoźników w ComboBox
+        this.airlineName.setItems(airlinesNames);
     }
 }
