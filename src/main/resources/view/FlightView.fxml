@@ -59,10 +59,11 @@
         <children>
             <JFXTreeTableView fx:id="flightsTableView" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
                 <columns>
-                    <TreeTableColumn fx:id="departure" prefWidth="250.0" text="Departure" />
-                    <TreeTableColumn fx:id="destination" prefWidth="250.0" text="Destination" />
-                    <TreeTableColumn fx:id="departureTime" prefWidth="250.0" text="Departure time" />
-                    <TreeTableColumn fx:id="arrivalTime" prefWidth="250.0" text="Arrival time" />
+                    <TreeTableColumn fx:id="departure" prefWidth="200.0" text="Departure" />
+                    <TreeTableColumn fx:id="destination" prefWidth="200.0" text="Destination" />
+                    <TreeTableColumn fx:id="airlineName" prefWidth="200.0" text="Airline" />
+                    <TreeTableColumn fx:id="departureTime" prefWidth="200.0" text="Departure time" />
+                    <TreeTableColumn fx:id="arrivalTime" prefWidth="200.0" text="Arrival time" />
                 </columns>
             </JFXTreeTableView>
             <Text layoutX="30.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Flights" wrappingWidth="278.0">

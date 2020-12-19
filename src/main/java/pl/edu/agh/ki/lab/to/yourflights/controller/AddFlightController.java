@@ -1,30 +1,35 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import org.springframework.stereotype.Repository;
+import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
+import pl.edu.agh.ki.lab.to.yourflights.repository.AirlineRepository;
+import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 
 /**
@@ -38,6 +43,7 @@ public class AddFlightController {
      * Widok lotów
      */
     private final Resource flightView;
+    private AirlineService airlineService;
 
     /**
      * Kontekst aplikacji Springowej
@@ -49,11 +55,15 @@ public class AddFlightController {
      */
     @FXML
     public TextField placeOfDestination,placeOfDeparture;
+    @FXML
+    public ComboBox<Airline> airlineName;
+
+
 
     @FXML
     public DatePicker departureTime, arrivalTime ;
     @FXML
-    public Label placeOfDestinationValidationLabel;
+    public Label placeOfDestinationValidationLabel, airlineNameValidationLabel;
     @FXML
     public Label departureTimeValidationLabel;
     @FXML
@@ -63,7 +73,7 @@ public class AddFlightController {
     @FXML
     public Text actiontarget;
     @FXML
-    public Label placeOfDestinationValidation;
+    public Label placeOfDestinationValidation, airlineNameValidation;
     @FXML
     public Label placeOfDepartureValidation;
     @FXML
@@ -78,19 +88,22 @@ public class AddFlightController {
     DatePicker blocker=new DatePicker();
 
 
-
-
     private FlightService flightService;
     private Flight flight;
 
+
+
     /**
-     * Metoda ustawiająca lotów do edycji
+     * Metoda ustawiająca lot do edycji
      * @param flight lot do edycji, może być nullem
      */
     public void setData(Flight flight) {
         this.flight = flight;
         updateControls();
+
     }
+
+
 
     /**
      * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego lotu do edycji
@@ -193,5 +206,16 @@ public class AddFlightController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     *
+     * @param actionEvent wywołanie po nacisnięciu myszką
+     * Uzupełnia ComboBox danymi
+     */
+    public void setComboBox(MouseEvent actionEvent) {
+        ObservableList<Airline> airlines = FXCollections.observableList(airlineService.findAll());
+
+        this.airlineName.setItems(airlines);
     }
 }

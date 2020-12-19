@@ -25,10 +25,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +53,7 @@ public class FlightController {
     private final Resource reservationListView;
     private final Resource addFlightView;
 
+
     private FlightService flightService;
 
     @Autowired
@@ -79,6 +77,8 @@ public class FlightController {
     private TreeTableColumn<Flight, String> departureTime;
     @FXML
     private TreeTableColumn<Flight, String> arrivalTime;
+    @FXML
+    private TreeTableColumn<Flight, String> airlineName;
 
     //Pola filtrów
     @FXML
@@ -88,9 +88,16 @@ public class FlightController {
     @FXML
     private JFXDatePicker datePicker;
 
+
     //Lista zawierająca predykaty służące do filtrowania danych
     private final List<Predicate<Flight>> predicates = new LinkedList<>();
 
+
+    public void setComboBox(ComboBox<String> comboBox){
+        ObservableList<String> airlines = FXCollections.observableArrayList("Test1", "Test2");
+
+
+    }
     /**
      * Metoda która wczytuje dane do tabeli lotów
      */
@@ -100,6 +107,7 @@ public class FlightController {
         destination.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDestinationProperty());
         departureTime.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
         arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getarrivalTimeProperty());
+        //airlineName.setCellValueFactory(data -> data.getValue().getValue().getAirlineProperty());
 
         //Pobranie lotów z serwisu
         ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
@@ -235,6 +243,8 @@ public class FlightController {
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
