@@ -38,7 +38,7 @@ public class Flight extends RecursiveTreeObject<Flight> {
     /**
      * Mapowanie relacji do przewoźnika realizującego dany lot
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "airlineID")
     private Airline airline;
 
