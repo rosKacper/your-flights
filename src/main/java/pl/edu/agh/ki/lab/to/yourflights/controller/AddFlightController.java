@@ -87,8 +87,10 @@ public class AddFlightController {
      * Formatuje date w postaci string do odpowiedniego formatu
      */
     DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("hh/mm");
+    DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("H:mm");
     String date_blocker = "31/12/9000";
+    String time_Blocker= "00:00";
+    JFXTimePicker timeBlocker=new JFXTimePicker();
     DatePicker blocker=new DatePicker();
 
 
@@ -146,15 +148,19 @@ public class AddFlightController {
         //blocker to nieosiągalna data, która sprawi, że walidacja daty przylotu pominie warunek data odlotu później
         //od daty przylotu
         blocker.setValue(LocalDate.parse( date_blocker,formatter));
+        timeBlocker.setValue(LocalTime.parse(time_Blocker,timeFormatter));
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean placeOfDestinationValidation = Validator.validateNotEmpty(placeOfDestination, placeOfDestinationValidationLabel);
         boolean placeOfDepartureValidation = Validator.validateNotEmpty(placeOfDeparture, placeOfDepartureValidationLabel);
-        boolean departureTimeValidation = Validator.validateDate(departureDate, arrivalDate, departureDateValidationLabel);
-        boolean arrivalTimeValidation = Validator.validateDate(arrivalDate, blocker, arrivalDateValidationLabel);
+        boolean departureDateValidation = Validator.validateDate(departureDate, arrivalDate, departureDateValidationLabel);
+        boolean arrivalDateValidation = Validator.validateDate(arrivalDate, blocker, arrivalDateValidationLabel);
+        boolean departureTimeValidation = Validator.validateTime(departureTime, arrivalTime,departureDate,arrivalDate, departureTimeValidationLabel);
+        boolean arrivalTimeValidation = Validator.validateTime(timeBlocker, arrivalTime,departureDate,arrivalDate,arrivalTimeValidationLabel);
 
 
-        if(!placeOfDestinationValidation || !placeOfDepartureValidation || !departureTimeValidation || !arrivalTimeValidation ){
+        if(!placeOfDestinationValidation || !placeOfDepartureValidation || !departureDateValidation || !arrivalDateValidation ||
+                !departureTimeValidation || !arrivalTimeValidation){
             return;
         }
 

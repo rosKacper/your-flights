@@ -59,7 +59,7 @@
                 <Insets />
             </GridPane.margin>
         </Label>
-        <Label fx:id="airlineNameValidationLabel" prefHeight="17.0" prefWidth="386.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="5">
+        <Label fx:id="airlineNameValidationLabel" prefHeight="17.0" prefWidth="386.0" textFill="#d0454c" GridPane.columnSpan="2" GridPane.rowIndex="7">
             <GridPane.margin>
                 <Insets />
             </GridPane.margin>
