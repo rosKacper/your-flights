@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
@@ -44,6 +45,10 @@ public class AirlinesViewController {
     private final Resource customersView;
     private final Resource addAirlineView;
     private final Resource reservationList;
+    private final Resource anonymousMainView;
+    private final Resource flightView;
+    private final Resource anonymousFlightView;
+    private final Resource loginView;
     private final ApplicationContext applicationContext;
 
 
@@ -104,7 +109,7 @@ public class AirlinesViewController {
         ObservableList<Airline> airlines = FXCollections.observableList(airlineService.findAll());
 
         //Przekazanie danych do tabeli
-        final TreeItem<Airline> root = new RecursiveTreeItem<Airline>(airlines, RecursiveTreeObject::getChildren);
+        final TreeItem<Airline> root = new RecursiveTreeItem<>(airlines, RecursiveTreeObject::getChildren);
         airlinesTableView.setRoot(root);
         airlinesTableView.setShowRoot(false);
     }
@@ -121,13 +126,21 @@ public class AirlinesViewController {
                                   @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                                   @Value("classpath:/view/AddAirlineView.fxml") Resource addAirlineView,
                                   @Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
+                                  @Value("classpath:/view/AnonymousMainView.fxml") Resource anonymousMainView,
+                                  @Value("classpath:/view/FlightView.fxml") Resource flightView,
+                                  @Value("classpath:/view/AnonymousFlightView.fxml") Resource anonymousFlightView,
+                                  @Value("classpath:/view/LoginView.fxml") Resource loginView,
                                   ApplicationContext applicationContext) {
         this.airlineService = airlineService;
         this.mainView = mainView;
         this.addAirlineView = addAirlineView;
         this.applicationContext = applicationContext;
         this.customersView = customersView;
+        this.anonymousMainView = anonymousMainView;
         this.reservationList=reservationList;
+        this.flightView = flightView;
+        this.anonymousFlightView = anonymousFlightView;
+        this.loginView = loginView;
     }
 
     /**
@@ -165,7 +178,13 @@ public class AirlinesViewController {
      */
     public void showMainView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
+            FXMLLoader fxmlloader;
+            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(mainView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -233,10 +252,43 @@ public class AirlinesViewController {
         }
     }
 
-    @FXML
+    public void showFlightView(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader;
+            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousFlightView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(flightView.getURL());
+            }
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void showLoginView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void handleDeleteAction(ActionEvent event) {
-        var airlines = airlinesTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
+        var airlines = airlinesTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
         airlineService.deleteAll(FXCollections.observableList(airlines));
         this.setModel();
     }
@@ -253,4 +305,6 @@ public class AirlinesViewController {
     private void handleAddAction(ActionEvent event) {
         this.showAddAirline(event, null);
     }
+
+
 }
