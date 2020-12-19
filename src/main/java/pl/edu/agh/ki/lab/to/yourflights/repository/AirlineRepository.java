@@ -8,9 +8,9 @@ import java.util.UUID;
 
 /**
  * Klasa definiująca repozytorium ze Spring Data Jpa dla przewoźników
- * Na późniejszym etapie będzie służyć do pobierania danych z bazy danych
+ * Służy do pobierania danych z bazy danych
  */
 @Repository
 public interface AirlineRepository extends JpaRepository<Airline, UUID> {
-
+    Airline findByName(String name);
 }
