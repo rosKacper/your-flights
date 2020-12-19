@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -15,8 +14,6 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,8 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
@@ -74,11 +69,15 @@ public class FlightController {
     @FXML
     private TreeTableColumn<Flight, String> destination;
     @FXML
+    private TreeTableColumn<Flight, String> departureDate;
+    @FXML
+    private TreeTableColumn<Flight, String> arrivalDate;
+    @FXML
+    private TreeTableColumn<Flight, String> airlineName;
+    @FXML
     private TreeTableColumn<Flight, String> departureTime;
     @FXML
     private TreeTableColumn<Flight, String> arrivalTime;
-    @FXML
-    private TreeTableColumn<Flight, String> airlineName;
 
     //Pola filtrów
     @FXML
@@ -93,11 +92,6 @@ public class FlightController {
     private final List<Predicate<Flight>> predicates = new LinkedList<>();
 
 
-    public void setComboBox(ComboBox<String> comboBox){
-        ObservableList<String> airlines = FXCollections.observableArrayList("Test1", "Test2");
-
-
-    }
     /**
      * Metoda która wczytuje dane do tabeli lotów
      */
@@ -105,9 +99,11 @@ public class FlightController {
         //Ustawienie kolumn
         departure.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDepartureProperty());
         destination.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDestinationProperty());
-        departureTime.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
-        arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getarrivalTimeProperty());
+        departureDate.setCellValueFactory(data -> data.getValue().getValue().getdepartureDateProperty());
+        arrivalDate.setCellValueFactory(data -> data.getValue().getValue().getarrivalDateProperty());
         airlineName.setCellValueFactory(data-> data.getValue().getValue().getAirlineNameProperty());
+        departureTime.setCellValueFactory(data-> data.getValue().getValue().getDepartureTimeProperty());
+        arrivalTime.setCellValueFactory(data-> data.getValue().getValue().getArrivalTimeProperty());
 
 
         //Pobranie lotów z serwisu
@@ -147,7 +143,7 @@ public class FlightController {
         //filtrowanie na podstawie daty wylotu
         airlineFilter.addPredicate(testedValue -> {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureTime(), formatter));
+                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureDate(), formatter));
         });
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
         airlineFilter.setListener(departureInput.textProperty());

@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
+import com.jfoenix.controls.JFXTimePicker;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,6 +28,7 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
@@ -60,29 +62,32 @@ public class AddFlightController {
 
 
     @FXML
-    public DatePicker departureTime, arrivalTime ;
+    public DatePicker departureDate, arrivalDate;
     @FXML
-    public Label placeOfDestinationValidationLabel, airlineNameValidationLabel;
+    public JFXTimePicker departureTime, arrivalTime;
     @FXML
-    public Label departureTimeValidationLabel;
+    public Label placeOfDestinationValidationLabel, airlineNameValidationLabel, departureTimeValidationLabel, arrivalTimeValidationLabel;
     @FXML
-    public Label arrivalTimeValidationLabel;
+    public Label departureDateValidationLabel;
+    @FXML
+    public Label arrivalDateValidationLabel;
     @FXML
     public Label placeOfDepartureValidationLabel;
     @FXML
     public Text actiontarget;
     @FXML
-    public Label placeOfDestinationValidation, airlineNameValidation;
+    public Label placeOfDestinationValidation, airlineNameValidation, departureTimeValidation, arrivalTimeValidation;
     @FXML
     public Label placeOfDepartureValidation;
     @FXML
-    public Label departureTimeValidation;
+    public Label departureDateValidation;
     @FXML
-    public Label arrivalTimeValidation;
+    public Label arrivalDateValidation;
     /**
      * Formatuje date w postaci string do odpowiedniego formatu
      */
     DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("hh/mm");
     String date_blocker = "31/12/9000";
     DatePicker blocker=new DatePicker();
 
@@ -109,11 +114,12 @@ public class AddFlightController {
      * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego lotu do edycji
      */
     private void updateControls() {
-        departureTime.setValue(LocalDate.parse( flight.getDepartureTime(),formatter));
+        departureDate.setValue(LocalDate.parse( flight.getDepartureDate(),formatter));
         placeOfDeparture.textProperty().setValue(flight.getPlaceOfDeparture());
-        arrivalTime.setValue(LocalDate.parse( flight.getArrivalTime(),formatter));
+        arrivalDate.setValue(LocalDate.parse( flight.getArrivalDate(),formatter));
         placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
-
+        departureTime.setValue(LocalTime.parse(flight.getDepartureTime(),timeFormatter));
+        arrivalTime.setValue(LocalTime.parse(flight.getArrivalTime(),timeFormatter));
 
     }
 
@@ -123,8 +129,10 @@ public class AddFlightController {
     private void updateModel() {
         flight.setPlaceOfDeparture(placeOfDeparture.textProperty().getValue());
         flight.setPlaceOfDestination(placeOfDestination.textProperty().getValue());
-        flight.setArrivalTime(arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        flight.setDepartureTime(departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        flight.setDepartureTime(departureTime.getValue().toString());
+        flight.setArrivalTime(arrivalTime.getValue().toString());
+        flight.setArrivalDate(arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        flight.setDepartureDate(departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         flight.setAirline(airlineService.findByName(comboBox.getValue()));
 
     }
@@ -142,8 +150,8 @@ public class AddFlightController {
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean placeOfDestinationValidation = Validator.validateNotEmpty(placeOfDestination, placeOfDestinationValidationLabel);
         boolean placeOfDepartureValidation = Validator.validateNotEmpty(placeOfDeparture, placeOfDepartureValidationLabel);
-        boolean departureTimeValidation = Validator.validateDate(departureTime,arrivalTime, departureTimeValidationLabel);
-        boolean arrivalTimeValidation = Validator.validateDate(arrivalTime, blocker, arrivalTimeValidationLabel);
+        boolean departureTimeValidation = Validator.validateDate(departureDate, arrivalDate, departureDateValidationLabel);
+        boolean arrivalTimeValidation = Validator.validateDate(arrivalDate, blocker, arrivalDateValidationLabel);
 
 
         if(!placeOfDestinationValidation || !placeOfDepartureValidation || !departureTimeValidation || !arrivalTimeValidation ){
@@ -152,7 +160,8 @@ public class AddFlightController {
 
         //Stworzenie nowego lotu i wyczyszczenie pól formularza
         if (flight == null) {
-            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(),departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue()));
+            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue())
+            ,departureTime.getValue().toString(),arrivalTime.getValue().toString());
         } else {
             updateModel();
         }
@@ -161,10 +170,12 @@ public class AddFlightController {
         actiontarget.setText("Flight added successfully!");
         placeOfDeparture.clear();
         placeOfDestination.clear();
-        departureTime=null;
-        arrivalTime=null;
+        departureDate =null;
+        arrivalDate =null;
         flight=null;
         airlineName=null;
+        departureTime=null;
+        arrivalTime=null;
 
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
