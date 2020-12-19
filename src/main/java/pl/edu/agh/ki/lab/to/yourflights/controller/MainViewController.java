@@ -32,6 +32,7 @@ public class MainViewController {
     private final Resource flightView;
     private final Resource reservationListView;
     private final Resource loginView;
+    private final Resource registrationView;
     private final Resource mainView;
     private final Resource anonymousAirlinesView;
     private final Resource anonymousFlightView;
@@ -57,6 +58,7 @@ public class MainViewController {
                               @Value("classpath:/view/FlightView.fxml") Resource flightView,
                               @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
                               @Value("classpath:/view/LoginView.fxml") Resource loginView,
+                              @Value("classpath:/view/RegistrationView.fxml") Resource registrationView,
                               @Value("classpath:/view/AnonymousAirlinesView.fxml") Resource anonymousAirlinesView,
                               @Value("classpath:/view/AnonymousFlightView.fxml") Resource anonymousFlightView) {
         this.applicationContext = applicationContext;
@@ -66,9 +68,9 @@ public class MainViewController {
         this.mainView = mainView;
         this.reservationListView = reservationListView;
         this.loginView = loginView;
+        this.registrationView = registrationView;
         this.anonymousAirlinesView = anonymousAirlinesView;
         this.anonymousFlightView = anonymousFlightView;
-
     }
 
 
@@ -151,6 +153,20 @@ public class MainViewController {
     public void showLoginView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showRegistrationView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(registrationView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
