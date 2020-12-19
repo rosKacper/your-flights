@@ -107,7 +107,8 @@ public class FlightController {
         destination.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDestinationProperty());
         departureTime.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
         arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getarrivalTimeProperty());
-        //airlineName.setCellValueFactory(data -> data.getValue().getValue().getAirlineProperty());
+        airlineName.setCellValueFactory(data-> data.getValue().getValue().getAirlineNameProperty());
+
 
         //Pobranie lotów z serwisu
         ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());

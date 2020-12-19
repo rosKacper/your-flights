@@ -79,7 +79,7 @@
         <Label fx:id="airlineNameValidation" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="7" />
         <Label fx:id="departureTimeValidation" prefHeight="17.0" prefWidth="184.0" GridPane.rowIndex="9" />
         <Label fx:id="arrivalTimeValidation" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="11" />
-      <JFXComboBox fx:id="airlineName" onMouseClicked="#setComboBox" prefHeight="25.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <JFXComboBox fx:id="comboBox" onMouseClicked="#setComboBox"  prefHeight="25.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
         <columnConstraints>
             <ColumnConstraints maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
             <ColumnConstraints maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
@@ -118,7 +118,7 @@
                     <Cursor fx:constant="HAND" />
                 </cursor>
             </JFXButton>
-            <JFXButton alignment="CENTER" buttonType="RAISED" layoutX="231.0" onAction="#handleSubmitButtonAction" prefHeight="60.0" prefWidth="200.0" ripplerFill="#276738" style="-fx-background-color: #529E66;" text="Submit" textFill="WHITE" AnchorPane.rightAnchor="120.0">
+            <JFXButton alignment="CENTER" buttonType="RAISED" layoutX="231.0"  onAction="#handleSubmitButtonAction" prefHeight="60.0" prefWidth="200.0" ripplerFill="#276738" style="-fx-background-color: #529E66;" text="Submit" textFill="WHITE" AnchorPane.rightAnchor="120.0">
                 <font>
                     <Font size="18.0" />
                 </font>

@@ -19,10 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.repository.AirlineRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
@@ -57,7 +55,7 @@ public class AddFlightController {
     @FXML
     public TextField placeOfDestination,placeOfDeparture;
     @FXML
-    public ComboBox<String> airlineName;
+    public ComboBox<String> comboBox;
 
 
 
@@ -91,6 +89,7 @@ public class AddFlightController {
 
     private FlightService flightService;
     private Flight flight;
+    private String airlineName;
 
 
 
@@ -115,16 +114,18 @@ public class AddFlightController {
         arrivalTime.setValue(LocalDate.parse( flight.getArrivalTime(),formatter));
         placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
 
+
     }
 
     /**
-     * Metoda aktualizująca lotu po edycji
+     * Metoda aktualizująca lot po edycji
      */
     private void updateModel() {
         flight.setPlaceOfDeparture(placeOfDeparture.textProperty().getValue());
         flight.setPlaceOfDestination(placeOfDestination.textProperty().getValue());
         flight.setArrivalTime(arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         flight.setDepartureTime(departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        flight.setAirline(airlineService.findByName(comboBox.getValue()));
 
     }
 
@@ -151,7 +152,7 @@ public class AddFlightController {
 
         //Stworzenie nowego lotu i wyczyszczenie pól formularza
         if (flight == null) {
-            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(),departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), null);
+            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(),departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue()));
         } else {
             updateModel();
         }
@@ -163,6 +164,7 @@ public class AddFlightController {
         departureTime=null;
         arrivalTime=null;
         flight=null;
+        airlineName=null;
 
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
@@ -214,7 +216,7 @@ public class AddFlightController {
     /**
      *
      * @param actionEvent wywołanie po nacisnięciu myszką
-     * Uzupełnia ComboBox z nazwami linii lotniczych danymi
+     * Uzupełnia ComboBox nazwami linii lotniczych
      */
     public void setComboBox(MouseEvent actionEvent) {
         //wczytanie przewoźników
@@ -226,6 +228,11 @@ public class AddFlightController {
                 .collect(Collectors.toList()));
 
         //ustawienie listy nazw przewoźników w ComboBox
-        this.airlineName.setItems(airlinesNames);
+        this.comboBox.setItems(airlinesNames);
+
     }
+    public void getComboBoxValue(){
+        this.airlineName=comboBox.getValue();
+    }
+
 }

@@ -133,7 +133,5 @@ public class Flight extends RecursiveTreeObject<Flight> {
     public StringProperty getarrivalTimeProperty(){
         return new SimpleStringProperty(arrivalTime);
     }
-    //public StringProperty getAirlineProperty(){
-        //return new SimpleStringProperty(airline.getName());
-    //}
+    public StringProperty getAirlineNameProperty(){return new SimpleStringProperty(airline.getName());}
 }
