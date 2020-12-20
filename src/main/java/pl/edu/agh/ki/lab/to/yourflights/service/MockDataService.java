@@ -30,9 +30,9 @@ public class MockDataService {
         airlineRepository.save(new Airline("Lufthansa", "Germany", "Lufthansa is the largest German airline which, when combined with its subsidiaries, is the second largest airline in Europe in terms of passengers carried."));
         airlineRepository.save(new Airline("Ryanair", "Ireland", "Ryanair is an Irish Low-cost airline founded in 1984. It has headquartered in Swords, Dublin, with its primary operational bases at Dublin and London Stansted airports."));
 
-        flightRepository.save(new Flight("Warsaw", "Lisbon", "15/12/2020", "16/12/2020", airlineRepository.findByName("LOT")));
-        flightRepository.save(new Flight("London", "New York", "17/12/2020", "18/12/2020", airlineRepository.findByName("Lufthansa")));
-        flightRepository.save(new Flight("Miami", "New Jersey", "18/12/2020", "19/12/2020", airlineRepository.findByName("Ryanair")));
-        flightRepository.save(new Flight("Cracow", "Warsaw", "19/12/2020", "20/12/2020", airlineRepository.findByName("LOT")));
+//        flightRepository.save(new Flight("Warsaw", "Lisbon", "15/12/2020", "16/12/2020", airlineRepository.findByName("LOT")));
+//        flightRepository.save(new Flight("London", "New York", "17/12/2020", "18/12/2020", airlineRepository.findByName("Lufthansa")));
+//        flightRepository.save(new Flight("Miami", "New Jersey", "18/12/2020", "19/12/2020", airlineRepository.findByName("Ryanair")));
+//        flightRepository.save(new Flight("Cracow", "Warsaw", "19/12/2020", "20/12/2020", airlineRepository.findByName("LOT")));
     }
 }

@@ -124,9 +124,9 @@ public class FlightController {
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
                             @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView,
-                            @Value("classpath:/view/LoginView.fxml") Resource loginView,
-                            @Value("classpath:/view/AnonymousMainView.fxml") Resource anonymousMainView,
-                            @Value("classpath:/view/AnonymousAirlinesView.fxml") Resource anonymousAirlineView) {
+                            @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
+                            @Value("classpath:/view/AnonymousView/AnonymousMainView.fxml") Resource anonymousMainView,
+                            @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;

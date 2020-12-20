@@ -55,10 +55,10 @@ public class MainViewController {
                               @Value("classpath:/view/CustomersView.fxml") Resource mainView,
                               @Value("classpath:/view/FlightView.fxml") Resource flightView,
                               @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
-                              @Value("classpath:/view/LoginView.fxml") Resource loginView,
-                              @Value("classpath:/view/RegistrationView.fxml") Resource registrationView,
-                              @Value("classpath:/view/AnonymousAirlinesView.fxml") Resource anonymousAirlinesView,
-                              @Value("classpath:/view/AnonymousFlightView.fxml") Resource anonymousFlightView) {
+                              @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
+                              @Value("classpath:/view/AuthView/RegistrationView.fxml") Resource registrationView,
+                              @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlinesView,
+                              @Value("classpath:/view/AnonymousView/AnonymousFlightView.fxml") Resource anonymousFlightView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;

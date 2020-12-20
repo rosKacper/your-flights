@@ -38,7 +38,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
      */
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle,
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
-                            @Value("classpath:/view/AnonymousMainView.fxml") Resource anonymousMainView,
+                            @Value("classpath:/view/AnonymousView/AnonymousMainView.fxml") Resource anonymousMainView,
                             ApplicationContext applicationContext,
                             MockDataService mockDataService) {
         this.applicationTitle = applicationTitle;
