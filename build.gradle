@@ -2,11 +2,12 @@ plugins {
     id 'org.springframework.boot' version '2.4.0'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 group = 'pl.edu.agh.ki.lab.to'
-version = '1.0.0-m1'
+version = '2.0.0-m2'
 sourceCompatibility = '11'
 
 repositories {
@@ -20,18 +21,28 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    compile 'com.jfoenix:jfoenix:9.0.10'
+    implementation 'com.jfoenix:jfoenix:9.0.10'
 }
+
+javafx {
+    version = '11'
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']
+}
+
+applicationDefaultJvmArgs = ["--add-opens=javafx.base/com.sun.javafx.runtime=ALL-UNNAMED",
+                             "--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED",
+                             "--add-opens=javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED",
+                             "--add-opens=javafx.base/com.sun.javafx.binding=ALL-UNNAMED",
+                             "--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED",
+                             "--add-opens=javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED"
+]
 
 test {
     useJUnitPlatform()
 }
 
-javafx {
-    version = '15'
-    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']
-}
-
 bootJar {
     launchScript()
 }
+
+mainClassName = 'pl.edu.agh.ki.lab.to.yourflights.YourflightsApplication'
