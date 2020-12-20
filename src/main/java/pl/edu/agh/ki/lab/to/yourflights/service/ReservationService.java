@@ -74,7 +74,7 @@ public class ReservationService {
      */
     public boolean save(Reservation reservation) {
         if(reservation != null) {
-            List<Reservation> reservations = findAll();
+            List<Reservation> reservations = findByUserName(reservation.getUserName());
             boolean hasNoCollidingReservations = reservations.stream()
                     .noneMatch(existingReservation -> existingReservation.getReservationDate().equals(reservation.getReservationDate()));
             if(hasNoCollidingReservations) {
