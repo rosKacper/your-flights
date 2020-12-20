@@ -36,6 +36,13 @@ public class AirlineService {
     }
 
     /**
+     *
+     * @param value nazwa linii lotniczej
+     * @return obiekt Airline o podanej nazwie
+     */
+    public Airline findByName(String value){ return airlineRepository.findByName(value);}
+
+    /**
      * Metoda usuwająca danego przewoźnika z bazy danych
      * @param airline przewoźnik do usunięcia
      */

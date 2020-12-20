@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -15,8 +14,6 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,10 +22,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,8 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
@@ -51,13 +43,15 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 @RestController
 @RequestMapping("/api/v1")
 public class FlightController {
-
     private final Resource mainView;
     private final Resource customersView;
     private final Resource airlinesView;
     private final Resource reservationListView;
     private final Resource addFlightView;
     private final Resource addReservationView;
+    private final Resource anonymousMainView;
+    private final Resource anonymousAirlineView;
+    private final Resource loginView;
 
 
     private FlightService flightService;
@@ -80,6 +74,12 @@ public class FlightController {
     @FXML
     private TreeTableColumn<Flight, String> destination;
     @FXML
+    private TreeTableColumn<Flight, String> departureDate;
+    @FXML
+    private TreeTableColumn<Flight, String> arrivalDate;
+    @FXML
+    private TreeTableColumn<Flight, String> airlineName;
+    @FXML
     private TreeTableColumn<Flight, String> departureTime;
     @FXML
     private TreeTableColumn<Flight, String> arrivalTime;
@@ -92,8 +92,10 @@ public class FlightController {
     @FXML
     private JFXDatePicker datePicker;
 
+
     //Lista zawierająca predykaty służące do filtrowania danych
     private final List<Predicate<Flight>> predicates = new LinkedList<>();
+
 
     /**
      * Metoda która wczytuje dane do tabeli lotów
@@ -102,14 +104,18 @@ public class FlightController {
         //Ustawienie kolumn
         departure.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDepartureProperty());
         destination.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDestinationProperty());
-        departureTime.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
-        arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getarrivalTimeProperty());
+        departureDate.setCellValueFactory(data -> data.getValue().getValue().getdepartureDateProperty());
+        arrivalDate.setCellValueFactory(data -> data.getValue().getValue().getarrivalDateProperty());
+        airlineName.setCellValueFactory(data-> data.getValue().getValue().getAirlineNameProperty());
+        departureTime.setCellValueFactory(data-> data.getValue().getValue().getDepartureTimeProperty());
+        arrivalTime.setCellValueFactory(data-> data.getValue().getValue().getArrivalTimeProperty());
+
 
         //Pobranie lotów z serwisu
         ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
 
         //Przekazanie danych do tabeli
-        final TreeItem<Flight> root = new RecursiveTreeItem<Flight>(flights, RecursiveTreeObject::getChildren);
+        final TreeItem<Flight> root = new RecursiveTreeItem<>(flights, RecursiveTreeObject::getChildren);
         flightsTableView.setRoot(root);
         flightsTableView.setShowRoot(false);
     }
@@ -119,7 +125,10 @@ public class FlightController {
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
                             @Value("classpath:/view/AddReservationView.fxml") Resource addReservationView,
-                            @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView) {
+                            @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView,
+                            @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
+                            @Value("classpath:/view/AnonymousView/AnonymousMainView.fxml") Resource anonymousMainView,
+                            @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -128,6 +137,9 @@ public class FlightController {
         this.reservationListView = reservationListView;
         this.addReservationView = addReservationView;
         this.addFlightView = addFlightView;
+        this.loginView = loginView;
+        this.anonymousMainView = anonymousMainView;
+        this.anonymousAirlineView = anonymousAirlineView;
     }
 
     /**
@@ -144,7 +156,7 @@ public class FlightController {
         //filtrowanie na podstawie daty wylotu
         airlineFilter.addPredicate(testedValue -> {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureTime(), formatter));
+                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureDate(), formatter));
         });
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
         airlineFilter.setListener(departureInput.textProperty());
@@ -163,7 +175,13 @@ public class FlightController {
 
     public void showMainView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
+            FXMLLoader fxmlloader;
+            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(mainView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -177,7 +195,13 @@ public class FlightController {
 
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
+            FXMLLoader fxmlloader;
+            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousAirlineView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(airlinesView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -265,6 +289,22 @@ public class FlightController {
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showLoginView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -272,7 +312,7 @@ public class FlightController {
 
     @FXML
     private void handleDeleteAction(ActionEvent event) {
-        var flights = flightsTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
+        var flights = flightsTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
         flightService.deleteAll(FXCollections.observableList(flights));
         this.setModel();
     }
@@ -298,4 +338,5 @@ public class FlightController {
             this.showAddReservation(event, flight.getValue());
         }
     }
+
 }

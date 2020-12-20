@@ -23,12 +23,14 @@ public class Customer extends RecursiveTreeObject<Customer> {
     @NotEmpty
     private String firstName, secondName, country, city, street, postalCode, phoneNumber, emailAddress;
 
-    /**
-     * Mapowanie relacji do użytkownika
-     */
-    @OneToOne
-    @JoinColumn(name="account_id")
-    private User user;
+    private String username;
+
+//    /**
+//     * Mapowanie relacji do użytkownika
+//     */
+//    @OneToOne
+//    @JoinColumn(name="account_id")
+//    private User user;
 
     /**
      * Mapowanie relacji do rezerwacji danego klienta
@@ -43,7 +45,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     public Customer(String firstName, String secondName, String country,
                     String city, String street, String postalCode,
-                    String phoneNumber, String emailAddress, User user) {
+                    String phoneNumber, String emailAddress) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.country = country;
@@ -52,7 +54,21 @@ public class Customer extends RecursiveTreeObject<Customer> {
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
-        this.user = user;
+        this.username = null;
+    }
+
+    public Customer(String firstName, String secondName, String country,
+                    String city, String street, String postalCode,
+                    String phoneNumber, String emailAddress, String username) {
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.country = country;
+        this.city = city;
+        this.street = street;
+        this.postalCode = postalCode;
+        this.phoneNumber = phoneNumber;
+        this.emailAddress = emailAddress;
+        this.username = username;
     }
 
     public Customer(){}
@@ -102,6 +118,10 @@ public class Customer extends RecursiveTreeObject<Customer> {
         return emailAddress;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -132,5 +152,9 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

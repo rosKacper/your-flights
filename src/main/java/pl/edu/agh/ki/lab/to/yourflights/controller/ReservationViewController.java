@@ -13,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -22,16 +21,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.*;
-import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 
 /**
  * Kontroler widoku tabeli rezerwacji

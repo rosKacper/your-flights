@@ -6,12 +6,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +30,10 @@ public class MainViewController {
     private final Resource flightView;
     private final Resource reservationListView;
     private final Resource loginView;
+    private final Resource registrationView;
     private final Resource mainView;
+    private final Resource anonymousAirlinesView;
+    private final Resource anonymousFlightView;
 
     /**
      * Kontekst aplikacji Springa
@@ -54,7 +55,10 @@ public class MainViewController {
                               @Value("classpath:/view/CustomersView.fxml") Resource mainView,
                               @Value("classpath:/view/FlightView.fxml") Resource flightView,
                               @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
-                              @Value("classpath:/view/LoginView.fxml") Resource loginView) {
+                              @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
+                              @Value("classpath:/view/AuthView/RegistrationView.fxml") Resource registrationView,
+                              @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlinesView,
+                              @Value("classpath:/view/AnonymousView/AnonymousFlightView.fxml") Resource anonymousFlightView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -62,6 +66,9 @@ public class MainViewController {
         this.mainView = mainView;
         this.reservationListView = reservationListView;
         this.loginView = loginView;
+        this.registrationView = registrationView;
+        this.anonymousAirlinesView = anonymousAirlinesView;
+        this.anonymousFlightView = anonymousFlightView;
     }
 
 
@@ -71,7 +78,13 @@ public class MainViewController {
      */
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
+            FXMLLoader fxmlloader;
+            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousAirlinesView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(airlinesView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -117,7 +130,13 @@ public class MainViewController {
 
     public void showFlightView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(flightView.getURL());
+            FXMLLoader fxmlloader;
+            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousFlightView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(flightView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -130,9 +149,22 @@ public class MainViewController {
     }
 
     public void showLoginView(ActionEvent actionEvent){
-
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showRegistrationView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(registrationView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
