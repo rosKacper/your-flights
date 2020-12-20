@@ -3,6 +3,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,6 +26,7 @@ import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler widoku tabeli rezerwacji
@@ -160,6 +162,26 @@ public class ReservationViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        var airlines = reservationListTable.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
+        reservationService.deleteAll(FXCollections.observableList(airlines));
+        this.setModel();
+    }
+
+    @FXML
+    private void handleUpdateAction(ActionEvent event) {
+        var reservation = reservationListTable.getSelectionModel().getSelectedItem();
+//        if(airline != null) {
+//            this.showAddAirline(event, airline.getValue());
+//        }
+    }
+
+    @FXML
+    private void handleAddAction(ActionEvent event) {
+//        this.(event, null);
     }
 
 

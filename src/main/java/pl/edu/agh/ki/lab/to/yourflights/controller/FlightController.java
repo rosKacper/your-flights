@@ -55,6 +55,8 @@ public class FlightController {
     private final Resource airlinesView;
     private final Resource reservationListView;
     private final Resource addFlightView;
+    private final Resource addReservationView;
+
 
     private FlightService flightService;
 
@@ -114,6 +116,7 @@ public class FlightController {
                             @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
+                            @Value("classpath:/view/addReservationView.fxml") Resource addReservationView,
                             @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
@@ -121,6 +124,7 @@ public class FlightController {
         this.mainView = mainView;
         this.flightService = flightService;
         this.reservationListView = reservationListView;
+        this.addReservationView = addReservationView;
         this.addFlightView = addFlightView;
     }
 
@@ -216,6 +220,23 @@ public class FlightController {
         }
     }
 
+    public void showAddReservation(ActionEvent actionEvent, Flight flight) {
+        try {
+
+            FXMLLoader fxmlLoader = new FXMLLoader(addReservationView.getURL());
+            fxmlLoader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlLoader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            AddFlightController controller = fxmlLoader.getController();
+            controller.setData(flight);
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Metoda służąca do przejścia do widoku formularza do dodawania/edycji lotów
      * @param actionEvent event emitowany przez przycisk
@@ -258,5 +279,13 @@ public class FlightController {
     @FXML
     private void handleAddAction(ActionEvent event) {
         this.showAddFlight(event, null);
+    }
+
+    @FXML
+    private void handleAddReservationAction(ActionEvent event) {
+        var flight = flightsTableView.getSelectionModel().getSelectedItem();
+        if(flight != null) {
+            this.showAddReservation(event, flight.getValue());
+        }
     }
 }

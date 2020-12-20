@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 
@@ -37,6 +38,15 @@ public class ReservationService {
      */
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
+    }
+
+    /**
+     * Metoda zwracająca rezerwacje danego użytkownika
+     * @param userName nazwa użytkownika
+     * @return lista zamówień
+     */
+    public List<Reservation> findByUserName(String userName) {
+        return reservationRepository.findByUserName(userName);
     }
 
     /**

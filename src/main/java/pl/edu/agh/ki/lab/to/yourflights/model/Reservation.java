@@ -24,6 +24,9 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
     @NotEmpty
     private String reservationDate;
 
+    @NotEmpty
+    private String userName;
+
     /**
      * Mapowanie relacji do zamówień na bilety przypisanych do danej rezerwacji
      */
@@ -42,7 +45,8 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
     @JoinColumn(name = "customerID")
     private Customer customer;
 
-    public Reservation(String reservationDate, Customer customer) {
+    public Reservation(String reservationDate, Customer customer, String userName) {
+        this.userName = userName;
         this.reservationDate = reservationDate;
         this.customer = customer;
     }
@@ -69,4 +73,11 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
         return new SimpleStringProperty(reservationDate);
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }
