@@ -56,7 +56,7 @@ public class LoginController {
     private PasswordField passwordField;
 
 
-    public LoginController(ApplicationContext applicationContext, @Value("classpath:/view/MainView.fxml") Resource mainView) {
+    public LoginController(ApplicationContext applicationContext, @Value("classpath:/view/MainView/MainView.fxml") Resource mainView) {
         this.applicationContext = applicationContext;
         this.mainView = mainView;
     }

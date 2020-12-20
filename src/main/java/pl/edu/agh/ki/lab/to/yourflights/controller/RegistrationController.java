@@ -128,8 +128,8 @@ public class RegistrationController {
      * @param mainView widok główny
      * @param applicationContext kontekst aplikacji Springa
      */
-    public RegistrationController(@Value("classpath:/view/AnonymousView/AnonymousMainView.fxml") Resource anonymousMainView,
-                                  @Value("classpath:/view/MainView.fxml") Resource mainView,
+    public RegistrationController(@Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
+                                  @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                   ApplicationContext applicationContext,
                                   CustomerService customerService){
         this.mainView = mainView;

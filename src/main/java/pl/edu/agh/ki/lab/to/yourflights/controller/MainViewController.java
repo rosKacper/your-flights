@@ -34,6 +34,9 @@ public class MainViewController {
     private final Resource mainView;
     private final Resource anonymousAirlinesView;
     private final Resource anonymousFlightView;
+    private final Resource userFlightView;
+    private final Resource userAirlineView;
+    private final Resource userCustomersView;
 
     /**
      * Kontekst aplikacji Springa
@@ -50,15 +53,18 @@ public class MainViewController {
      * @param loginView widok ekranu logowania
      */
     public MainViewController(ApplicationContext applicationContext,
-                              @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
-                              @Value("classpath:/view/CustomersView.fxml") Resource customersView,
-                              @Value("classpath:/view/CustomersView.fxml") Resource mainView,
-                              @Value("classpath:/view/FlightView.fxml") Resource flightView,
-                              @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
+                              @Value("classpath:/view/AdminView/AirlinesView.fxml") Resource airlinesView,
+                              @Value("classpath:/view/AdminView/CustomersView.fxml") Resource customersView,
+                              @Value("classpath:/view/AdminView/CustomersView.fxml") Resource mainView,
+                              @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
+                              @Value("classpath:/view/AdminView/ReservationListView.fxml") Resource reservationListView,
                               @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                               @Value("classpath:/view/AuthView/RegistrationView.fxml") Resource registrationView,
                               @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlinesView,
-                              @Value("classpath:/view/AnonymousView/AnonymousFlightView.fxml") Resource anonymousFlightView) {
+                              @Value("classpath:/view/AnonymousView/AnonymousFlightView.fxml") Resource anonymousFlightView,
+                              @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
+                              @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlineView,
+                              @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -69,6 +75,9 @@ public class MainViewController {
         this.registrationView = registrationView;
         this.anonymousAirlinesView = anonymousAirlinesView;
         this.anonymousFlightView = anonymousFlightView;
+        this.userAirlineView = userAirlineView;
+        this.userFlightView = userFlightView;
+        this.userCustomersView = userCustomersView;
     }
 
 
@@ -79,11 +88,15 @@ public class MainViewController {
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
-            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousAirlinesView.getURL());
             }
-            else{
+            else if(role.equals("[ROLE_ADMIN]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userAirlineView.getURL());
             }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
@@ -102,7 +115,14 @@ public class MainViewController {
      */
     public void showCustomersView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(customersView.getURL());
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ADMIN]")){
+                fxmlloader = new FXMLLoader(customersView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userCustomersView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -131,11 +151,15 @@ public class MainViewController {
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
-            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousFlightView.getURL());
             }
-            else{
+            else if(role.equals("[ROLE_ADMIN]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userFlightView.getURL());
             }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();

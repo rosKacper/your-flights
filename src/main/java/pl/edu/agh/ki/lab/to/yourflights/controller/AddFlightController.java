@@ -193,7 +193,7 @@ public class AddFlightController {
      * @param flightService widok tabeli lotów
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
+    public AddFlightController(@Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
                                  ApplicationContext applicationContext,
                                  FlightService flightService,
                                AirlineService airlineService){
