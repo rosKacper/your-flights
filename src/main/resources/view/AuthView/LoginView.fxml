@@ -9,7 +9,7 @@
    <children>
       <JFXTextField fx:id="usernameField" layoutX="547.0" layoutY="242.0" />
       <JFXPasswordField fx:id="passwordField" layoutX="547.0" layoutY="306.0" />
-      <JFXButton fx:id="loginButton" layoutX="547.0" layoutY="388.0" onAction="#handleLogin" prefHeight="25.0" prefWidth="135.0" style="-fx-background-color: #1d3557;" text="Login" textFill="WHITE" />
-      <JFXButton layoutX="547.0" layoutY="423.0" onAction="#showMainView" prefHeight="25.0" prefWidth="135.0" style="-fx-background-color: #95353a;" text="Cancel" textFill="WHITE" />
+      <JFXButton fx:id="loginButton" layoutX="537.0" layoutY="379.0" onAction="#handleLogin" prefHeight="42.0" prefWidth="154.0" style="-fx-background-color: #1d3557;" text="Login" textFill="WHITE" />
+      <JFXButton layoutX="537.0" layoutY="436.0" onAction="#showMainView" prefHeight="42.0" prefWidth="154.0" style="-fx-background-color: #95353a;" text="Cancel" textFill="WHITE" />
    </children>
 </AnchorPane>
