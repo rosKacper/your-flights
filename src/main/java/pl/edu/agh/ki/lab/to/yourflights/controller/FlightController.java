@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -206,6 +208,10 @@ public class FlightController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku tabeli rezerwacji
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
@@ -220,10 +226,12 @@ public class FlightController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do formularza dodawania rezerwacji
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showAddReservation(ActionEvent actionEvent, Flight flight) {
         try {
-            System.out.println(addReservationView.getURL());
-
             FXMLLoader fxmlLoader = new FXMLLoader(addReservationView.getURL());
             fxmlLoader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlLoader.load();
@@ -285,8 +293,8 @@ public class FlightController {
     @FXML
     private void handleAddReservationAction(ActionEvent event) {
         var flight = flightsTableView.getSelectionModel().getSelectedItem();
-        if(flight != null) {
-            System.out.println(flight.getValue());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!authentication.getName().equals("anonymous") && flight != null) {
             this.showAddReservation(event, flight.getValue());
         }
     }
