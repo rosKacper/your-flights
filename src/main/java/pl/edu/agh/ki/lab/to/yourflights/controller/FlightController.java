@@ -116,7 +116,7 @@ public class FlightController {
                             @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                             @Value("classpath:/view/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
-                            @Value("classpath:/view/addReservationView.fxml") Resource addReservationView,
+                            @Value("classpath:/view/AddReservationView.fxml") Resource addReservationView,
                             @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
@@ -222,12 +222,13 @@ public class FlightController {
 
     public void showAddReservation(ActionEvent actionEvent, Flight flight) {
         try {
+            System.out.println(addReservationView.getURL());
 
             FXMLLoader fxmlLoader = new FXMLLoader(addReservationView.getURL());
             fxmlLoader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlLoader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            AddFlightController controller = fxmlLoader.getController();
+            AddReservationController controller = fxmlLoader.getController();
             controller.setData(flight);
             Scene scene = new Scene(parent);
             stage.setScene(scene);
@@ -285,6 +286,7 @@ public class FlightController {
     private void handleAddReservationAction(ActionEvent event) {
         var flight = flightsTableView.getSelectionModel().getSelectedItem();
         if(flight != null) {
+            System.out.println(flight.getValue());
             this.showAddReservation(event, flight.getValue());
         }
     }

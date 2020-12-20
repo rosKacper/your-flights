@@ -59,10 +59,13 @@
         <children>
             <JFXTreeTableView fx:id="reservationListTable" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
                 <columns>
-                    <TreeTableColumn fx:id="reservationDate" prefWidth="250.0" text="Reservation date" />
-                    <TreeTableColumn fx:id="firstName" prefWidth="250.0" text="First name" />
-                    <TreeTableColumn fx:id="lastName" prefWidth="250.0" text="Last name" />
-                    <TreeTableColumn fx:id="flight_ID" prefWidth="250.0" text="Flight ID" />
+                    <TreeTableColumn fx:id="reservationDate" prefWidth="141.0" text="Reservation date" />
+                    <TreeTableColumn fx:id="userName" prefWidth="141.0" text="Username" />
+                    <TreeTableColumn fx:id="flightID" prefWidth="141.0" text="FlightID" />
+               <TreeTableColumn fx:id="departure" prefWidth="141.0" text="Departure" />
+                    <TreeTableColumn fx:id="destination" prefWidth="141.0" text="Destination" />
+               <TreeTableColumn fx:id="departureDate" prefWidth="141.0" text="DepartureDate" />
+               <TreeTableColumn fx:id="destinationDate" prefWidth="148.0" text="DestinationDate" />
                 </columns>
             </JFXTreeTableView>
             <Text layoutX="30.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reservations" wrappingWidth="278.0">
@@ -118,7 +121,20 @@
             <children>
                <VBox spacing="5.0">
                   <children>
-                     <Label text="From:">
+                     <Label text="User">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Label>
+                     <JFXTextField />
+                  </children>
+                  <padding>
+                     <Insets top="3.0" />
+                  </padding>
+               </VBox>
+               <VBox spacing="5.0">
+                  <children>
+                     <Label text="Departure">
                         <font>
                            <Font size="14.0" />
                         </font>
@@ -144,7 +160,7 @@
                </VBox>
                <VBox spacing="5.0">
                   <children>
-                     <Label text="Depart">
+                     <Label text="Reservation date">
                         <font>
                            <Font size="14.0" />
                         </font>

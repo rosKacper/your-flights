@@ -80,4 +80,8 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public StringProperty getUserNameProperty() {
+        return new SimpleStringProperty(userName);
+    }
 }

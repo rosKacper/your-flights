@@ -102,7 +102,7 @@
                             <Insets left="20.0" />
                         </HBox.margin>
                     </JFXButton>
-               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddReservationAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#c746d0" style="-fx-border-color: #c746d0; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
+               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddReservationAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#c746d0" style="-fx-border-color: #c746d0; -fx-border-width: 2px;" text="Add reservation" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>

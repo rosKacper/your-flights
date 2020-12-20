@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @Component
 public class ReservationViewController {
 
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
     private final Resource mainView;
     private final Resource customersView;
     private final Resource airlineView;
@@ -53,15 +53,17 @@ public class ReservationViewController {
     @FXML
     private TreeTableColumn<Reservation, String> reservationDate;
     @FXML
-    private TreeTableColumn<Customer, String> firstName;
+    private TreeTableColumn<Reservation, String> userName;
     @FXML
-    private TreeTableColumn<Customer, String> lastName;
+    private TreeTableColumn<Flight, String> flightID;
     @FXML
-    private TreeTableColumn<TicketCategory, String> flight_ID ;
+    private TreeTableColumn<Flight, String> departure;
     @FXML
-    private TreeTableColumn<Flight, String> departure_time ;
+    private TreeTableColumn<Flight, String> departureDate;
     @FXML
-    private TreeTableColumn<Flight, String> departure_place ;
+    private TreeTableColumn<Flight, String> destination;
+    @FXML
+    private TreeTableColumn<Flight, String> destinationDate;
 
 
     /**
@@ -70,7 +72,8 @@ public class ReservationViewController {
     public void setModel() {
         //Ustawienie kolumn
         reservationDate.setCellValueFactory(data -> data.getValue().getValue().getReservationDateProperty());
-        firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
+        userName.setCellValueFactory(data -> data.getValue().getValue().getUserNameProperty());
+        //firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
         //lastName.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
         //flight_ID.setCellValueFactory(data -> data.getValue().getValue().getFlightIDProperty());
         //departure_place.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDepartureProperty());
@@ -78,11 +81,13 @@ public class ReservationViewController {
 
         //Pobranie rezerwacje z serwisu
         //ObservableList<Airline> airlines = airlineService.getMockData();
+        ObservableList<Reservation> reservations = FXCollections.observableList(reservationService.findAll());
 
-        //Przekazanie danych do tabeli
-        //final TreeItem<Airline> root = new RecursiveTreeItem<Airline>(airlines, RecursiveTreeObject::getChildren);
-        //airlinesTableView.setRoot(root);
-        //airlinesTableView.setShowRoot(false);
+
+//        Przekazanie danych do tabeli
+        final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservations, RecursiveTreeObject::getChildren);
+        reservationListTable.setRoot(root);
+        reservationListTable.setShowRoot(false);
 
     }
 

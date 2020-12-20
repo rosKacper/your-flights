@@ -14,7 +14,7 @@
 
 <!-- Widok formularza do dodawania przewoźników-->
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.AddAirlineController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.AddReservationController">
     <GridPane alignment="center" hgap="10.0" layoutX="300.0" layoutY="213.0" prefHeight="200.0" prefWidth="680.0" vgap="5.0" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="200.0">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
@@ -29,16 +29,17 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
         </JFXButton>
-        <Label fx:id="nameLabel" text="From" GridPane.rowIndex="4" />
-        <JFXTextField fx:id="name" disable="true" editable="false" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-        <Label fx:id="countryLabel" text="To:" GridPane.rowIndex="7" />
+
+        <Label fx:id="placeOfDepartureLabel" text="From" GridPane.rowIndex="4" />
+        <JFXTextField fx:id="placeOfDeparture" disable="true" editable="false" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <Label fx:id="placeOfDestinationLabel" text="To:" GridPane.rowIndex="7" />
         <Label fx:id="descriptionLabel" text="Departure Time:" GridPane.rowIndex="9" />
        <Label fx:id="nameValidationLabel" prefHeight="17.0" prefWidth="184.0" GridPane.rowIndex="6" />
        <Label fx:id="countryValidationLabel" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="8" />
        <Label prefHeight="17.0" prefWidth="163.0" GridPane.rowIndex="10" />
-       <JFXTextField fx:id="country" disable="true" editable="false" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-       <JFXTextField fx:id="description" disable="true" editable="false" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-      <JFXComboBox fx:id="seats" prefHeight="26.0" prefWidth="273.0" promptText="234" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+       <JFXTextField fx:id="placeOfDestination" disable="true" editable="false" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+       <JFXTextField fx:id="departureTime" disable="true" editable="false" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+      <JFXComboBox fx:id="seats" prefHeight="26.0" prefWidth="273.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
       <Label fx:id="seatsLabel" prefHeight="17.0" prefWidth="163.0" text="Number of seats" GridPane.rowIndex="11" />
 
        <rowConstraints>
@@ -63,7 +64,7 @@
     </GridPane>
    <AnchorPane layoutX="294.0" layoutY="489.0" prefHeight="60.0" prefWidth="680.0" AnchorPane.bottomAnchor="251.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0">
       <children>
-           <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#showAirlinesView" prefHeight="60.0" prefWidth="200.0" ripplerFill="#95353a" style="-fx-border-color: #D0454C; -fx-border-width: 2px;" text="Cancel" textAlignment="CENTER" AnchorPane.leftAnchor="120.0">
+           <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#showReservationList" prefHeight="60.0" prefWidth="200.0" ripplerFill="#95353a" style="-fx-border-color: #D0454C; -fx-border-width: 2px;" text="Cancel" textAlignment="CENTER" AnchorPane.leftAnchor="120.0">
                <font>
                    <Font size="18.0" />
                </font>

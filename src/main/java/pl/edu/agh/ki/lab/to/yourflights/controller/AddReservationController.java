@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
@@ -37,9 +39,9 @@ import java.util.stream.IntStream;
 public class AddReservationController {
 
     /**
-     * Widok lotów
+     * Widok rezerwacji
      */
-    private final Resource flightView;
+    private final Resource reservationList;
 
     /**
      * Kontekst aplikacji Springowej
@@ -52,17 +54,17 @@ public class AddReservationController {
      * Pola formularza
      */
     @FXML
-    public TextField placeOfDestination,placeOfDeparture, departureTime,arrivalTime;
+    public TextField placeOfDestination, placeOfDeparture, departureTime;
 
     @FXML
-    public ComboBox<Integer> numberOfSeats;
+    public ComboBox<Integer> seats;
 
     private Flight flight;
 
     /**
      * Formatuje date w postaci string do odpowiedniego formatu
      */
-    DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     /**
      * Metoda ustawiająca lotów dla którego zostanie utworzona rezerwacja
@@ -70,22 +72,24 @@ public class AddReservationController {
      */
     public void setData(Flight flight) {
         this.flight = flight;
-        updateControls();
+        this.updateControls();
+
     }
 
     /**
      * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego lotu
      */
     private void updateControls() {
+
         departureTime.textProperty().setValue(String.valueOf(LocalDate.parse( flight.getDepartureTime(),formatter)));
         placeOfDeparture.textProperty().setValue(flight.getPlaceOfDeparture());
-        arrivalTime.textProperty().setValue(String.valueOf(LocalDate.parse( flight.getArrivalTime(),formatter)));
         placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
-        numberOfSeats.getItems().setAll(
+        seats.getItems().setAll(
                 IntStream.rangeClosed(1, 50).boxed().collect(Collectors.toList())
         );
 
     }
+
 
     /**
      * Metoda obsługująca dodawanie lotu po naciśnięciu przycisku "submit" w formularzu
@@ -96,35 +100,20 @@ public class AddReservationController {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
 
-        if(numberOfSeats.getValue() < 1 || numberOfSeats.getValue() > 50 ){
+        if(seats.getValue() < 1 || seats.getValue() > 50 ){
             return;
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
+        String userName = authentication.getName();
         //Stworzenie nowego lotu i wyczyszczenie pól formularza
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        Reservation reservation = new Reservation(LocalDate.parse(new Date().toString(), formatter).toString()
-        , null, );
+        Reservation reservation = new Reservation(LocalDate.now().toString(),
+        null,
+                userName);
         reservationService.save(reservation);
 
-        if (flight == null) {
-            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(),departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), null);
-        } else {
-            updateModel();
-        }
-
-        flightService.save(flight);
-        actiontarget.setText("Flight added successfully!");
-        placeOfDeparture.clear();
-        placeOfDestination.clear();
-        departureTime=null;
-        arrivalTime=null;
-        flight=null;
-
-
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
-        showFlightView(actionEvent);
+        showReservationList(actionEvent);
     }
 
     /**
@@ -132,36 +121,23 @@ public class AddReservationController {
      * @param reservationService serwis zapisujący rezerwacje
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddReservationController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
+    public AddReservationController(@Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                ApplicationContext applicationContext,
                                ReservationService reservationService)
     {
-        this.flightView = flightView;
+        this.reservationList = reservationList;
         this.applicationContext = applicationContext;
         this.reservationService = reservationService;
     }
 
-
-
-
-
-}
-
-/**
- * Kontroler obsługujący formularz do dodawania lotów
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
- */
-@Component
-public class AddFlightController {
-
     /**
-     * Metoda służąca do przejścia do widoku listy lotów
+     * Metoda służąca do przejścia do widoku listy rezerwacji
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showFlightView(ActionEvent actionEvent) {
+    public void showReservationList(ActionEvent actionEvent) {
         try {
             //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(flightView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(reservationList.getURL());
 
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
@@ -180,4 +156,10 @@ public class AddFlightController {
             e.printStackTrace();
         }
     }
+
+
+
+
+
 }
+
