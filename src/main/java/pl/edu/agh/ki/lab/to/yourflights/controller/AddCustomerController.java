@@ -150,7 +150,7 @@ public class AddCustomerController {
      * @param customerView widok tabeli klientów
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView,
+    public AddCustomerController(@Value("classpath:/view/AdminView/CustomersView.fxml") Resource customerView,
                                  ApplicationContext applicationContext,
                                  CustomerService customerService){
         this.customerView = customerView;

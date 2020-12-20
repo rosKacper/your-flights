@@ -14,10 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
-import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
-import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
@@ -118,7 +115,7 @@ public class AddAirlineController {
      * @param airlinesView widok przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+    public AddAirlineController(@Value("classpath:/view/AdminView/AirlinesView.fxml") Resource airlinesView,
                                 ApplicationContext applicationContext,
                                 AirlineService airlineService){
         this.airlinesView = airlinesView;
