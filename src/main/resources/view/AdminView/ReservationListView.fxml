@@ -138,12 +138,12 @@
                </VBox>
                <VBox spacing="5.0">
                   <children>
-                     <Label text="Destination:" fx:id="destinationFilter">
+                     <Label text="Destination:" >
                         <font>
                            <Font size="14.0" />
                         </font>
                      </Label>
-                     <JFXTextField />
+                     <JFXTextField fx:id="destinationFilter"/>
                   </children>
                   <padding>
                      <Insets top="3.0" />

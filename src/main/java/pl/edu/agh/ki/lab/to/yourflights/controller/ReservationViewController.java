@@ -77,6 +77,12 @@ public class ReservationViewController {
     private JFXTextField userNameFilter;
 
     @FXML
+    private JFXTextField departureFilter;
+
+    @FXML
+    private JFXTextField destinationFilter;
+
+    @FXML
     private JFXDatePicker datePicker;
 
 
@@ -109,7 +115,9 @@ public class ReservationViewController {
         //filtrowanie na podstawie nazwy użytkownika
         reservationFilter.addPredicate(testedValue -> testedValue.getUserName().toLowerCase().contains(userNameFilter.getText().toLowerCase()));
         //filtrowanie na podstawie lotniska docelowego
-//        reservationFilter.addPredicate(testedValue -> testedValue.getPlaceOfDestination().toLowerCase().contains(destinationInput.getText().toLowerCase()));
+        reservationFilter.addPredicate(testedValue -> testedValue.getTicketOrders().get(0).getTicketCategory().getFlight().getPlaceOfDeparture().toLowerCase().contains(departureFilter.getText().toLowerCase()));
+        //filtrowanie na podstawie lotniska źródłowego
+        reservationFilter.addPredicate(testedValue -> testedValue.getTicketOrders().get(0).getTicketCategory().getFlight().getPlaceOfDestination().toLowerCase().contains(destinationFilter.getText().toLowerCase()));
         //filtrowanie na podstawie daty rezerwacji
         reservationFilter.addPredicate(testedValue -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -117,7 +125,8 @@ public class ReservationViewController {
         });
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
         reservationFilter.setListener(userNameFilter.textProperty());
-//        reservationFilter.setListener(destinationInput.textProperty());
+        reservationFilter.setListener(departureFilter.textProperty());
+        reservationFilter.setListener(destinationFilter.textProperty());
         reservationFilter.setListener(datePicker.valueProperty());
     }
 
