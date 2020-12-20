@@ -10,10 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
@@ -35,10 +36,13 @@ public class RegistrationController {
     private final Resource mainView;
     private final Resource anonymousMainView;
 
+    @Autowired
+    private AuthenticationManager authManager;
     /**
      * Kontekst aplikacji Springowej
      */
     private final ApplicationContext applicationContext;
+
 
     /**
      * Pola formularza
@@ -105,6 +109,15 @@ public class RegistrationController {
         emailAddress.clear();
         username.clear();
         password.clear();
+
+        //Zarejestrowanie konta
+//        UserDetails newUser = User.withUsername(username.toString())
+//                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
+//                .password(password.toString()).roles("USER").build();
+//
+//        InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
+//        userDetailsManager.createUser(newUser);
+
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
         showMainView(actionEvent);
