@@ -91,7 +91,7 @@ public class ReservationViewController {
         destinationDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getarrivalDateProperty());
 
         //Pobranie rezerwacje z serwisu
-        ObservableList<Reservation> reservations = FXCollections.observableList(reservationService.findAll());
+        ObservableList<Reservation> reservations = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> reservation.getTicketOrders().size() > 0).collect(Collectors.toList()));
 
 //        Przekazanie danych do tabeli
         final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservations, RecursiveTreeObject::getChildren);

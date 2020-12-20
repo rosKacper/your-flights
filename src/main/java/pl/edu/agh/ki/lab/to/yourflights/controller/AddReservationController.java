@@ -139,8 +139,6 @@ public class AddReservationController {
             // Zapisujemy w bazie odpowiednie relacje
 
             reservationService.save(reservation);
-            flight.getTicketCategories().get(0).getTicketOrders().add(ticketOrder);
-
         }
         else {
             reservation.getTicketOrders().get(0).setNumberOfSeats(seats.getValue());

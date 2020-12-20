@@ -2,6 +2,7 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -42,10 +43,11 @@ public class TicketCategory {
      * Mapowanie relacji do zamówień na bilety dotyczące danej kategorii biletu
      */
     @OneToMany(
+            cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "ticketCategory"
     )
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TicketOrder> ticketOrders;
 
     public TicketCategory(){}
