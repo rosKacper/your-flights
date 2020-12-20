@@ -32,7 +32,7 @@ public class TicketCategory {
     /**
      * Mapowanie relacji do lotu którego dotyczy dana kategoria biletu
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "flightID")
     private Flight flight;
 
@@ -40,9 +40,7 @@ public class TicketCategory {
      * Mapowanie relacji do zamówień na bilety dotyczące danej kategorii biletu
      */
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "ticketCategory"
     )
     private List<TicketOrder> ticketOrders;
@@ -56,8 +54,15 @@ public class TicketCategory {
         this.flight = flight;
     }
 
+    public List<TicketOrder> getTicketOrders() {
+        return ticketOrders;
+    }
 
-    //getters and setters
+    public void setTicketOrders(List<TicketOrder> ticketOrders) {
+        this.ticketOrders = ticketOrders;
+    }
+
+//getters and setters
 
     public String getCategoryName() {
         return categoryName;

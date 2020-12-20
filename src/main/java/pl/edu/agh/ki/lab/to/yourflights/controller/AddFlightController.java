@@ -22,11 +22,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketCategoryService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -44,7 +47,9 @@ public class AddFlightController {
      * Widok lotów
      */
     private final Resource flightView;
-    private AirlineService airlineService;
+    private final AirlineService airlineService;
+    private final TicketCategoryService ticketCategoryService;
+
 
     /**
      * Kontekst aplikacji Springowej
@@ -164,15 +169,22 @@ public class AddFlightController {
             return;
         }
 
+        TicketCategory ticketCategory = null;
+
         //Stworzenie nowego lotu i wyczyszczenie pól formularza
         if (flight == null) {
             flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue())
             ,departureTime.getValue().toString(),arrivalTime.getValue().toString());
+            ticketCategory = new TicketCategory("normal", new BigDecimal(10), 80, flight);
         } else {
             updateModel();
         }
 
         flightService.save(flight);
+        if(ticketCategory != null) {
+            ticketCategoryService.save(ticketCategory);
+            flight.getTicketCategories().add(ticketCategory);
+        }
         actiontarget.setText("Flight added successfully!");
         placeOfDeparture.clear();
         placeOfDestination.clear();
@@ -190,17 +202,20 @@ public class AddFlightController {
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
+     * @param ticketCategoryService serwis zapisu kategorii lotu
      * @param flightService widok tabeli lotów
      * @param applicationContext kontekst aplikacji Springa
      */
     public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
                                  ApplicationContext applicationContext,
                                  FlightService flightService,
-                               AirlineService airlineService){
+                                 TicketCategoryService ticketCategoryService,
+                                 AirlineService airlineService){
         this.flightView = flightView;
         this.applicationContext = applicationContext;
         this.flightService = flightService;
         this.airlineService = airlineService;
+        this.ticketCategoryService = ticketCategoryService;
     }
 
     /**

@@ -20,8 +20,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
@@ -50,6 +52,8 @@ public class AddReservationController {
 
     private final ReservationService reservationService;
 
+    private final TicketOrderService ticketOrderService;
+
     /**
      * Pola formularza
      */
@@ -60,6 +64,8 @@ public class AddReservationController {
     public ComboBox<Integer> seats;
 
     private Flight flight;
+
+    private Reservation reservation = null;
 
     /**
      * Formatuje date w postaci string do odpowiedniego formatu
@@ -73,7 +79,17 @@ public class AddReservationController {
     public void setData(Flight flight) {
         this.flight = flight;
         this.updateControls();
+    }
 
+    /**
+     * Metoda modyfikująca istniejącą rezerwację
+     * @param flight lot dla rezerwacji
+     * @param reservation lot dla rezerwacji
+     */
+    public void setData(Flight flight, Reservation reservation) {
+        this.flight = flight;
+        this.reservation = reservation;
+        this.updateControls();
     }
 
     /**
@@ -81,9 +97,13 @@ public class AddReservationController {
      */
     private void updateControls() {
 
-        departureTime.textProperty().setValue(String.valueOf(LocalDate.parse( flight.getDepartureTime(),formatter)));
+        departureTime.textProperty().setValue(String.valueOf(LocalDate.parse( flight.getDepartureDate(),formatter)));
         placeOfDeparture.textProperty().setValue(flight.getPlaceOfDeparture());
         placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
+
+        if(reservation != null) {
+            seats.setValue(reservation.getTicketOrders().get(0).getNumberOfSeats());
+        }
         seats.getItems().setAll(
                 IntStream.rangeClosed(1, 50).boxed().collect(Collectors.toList())
         );
@@ -107,10 +127,25 @@ public class AddReservationController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         //Stworzenie nowego lotu i wyczyszczenie pól formularza
-        Reservation reservation = new Reservation(LocalDate.now().toString(),
-        null,
-                userName);
-        reservationService.save(reservation);
+        if(reservation == null) {
+            // Tworzymy rezerwację i zamówienie biletów dla niej
+            Reservation reservation = new Reservation(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    null,
+
+                    userName);
+            reservationService.save(reservation);
+
+            // Zapisujemy w bazie odpowiednie relacje
+
+            TicketOrder ticketOrder = new TicketOrder(seats.getValue(), null, reservation, flight.getTicketCategories().get(0));
+            ticketOrderService.save(ticketOrder);
+            reservation.getTicketOrders().add(ticketOrder);
+            flight.getTicketCategories().get(0).getTicketOrders().add(ticketOrder);
+
+        }
+        else {
+            reservation.getTicketOrders().get(0).setNumberOfSeats(seats.getValue());
+        }
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
         showReservationList(actionEvent);
@@ -123,11 +158,13 @@ public class AddReservationController {
      */
     public AddReservationController(@Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                ApplicationContext applicationContext,
+                               TicketOrderService ticketOrderService,
                                ReservationService reservationService)
     {
         this.reservationList = reservationList;
         this.applicationContext = applicationContext;
         this.reservationService = reservationService;
+        this.ticketOrderService = ticketOrderService;
     }
 
     /**

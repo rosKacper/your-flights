@@ -29,14 +29,14 @@ public class TicketOrder {
     /**
      * Mapowanie relacji do rezerwacji której dotyczy zamówienie na bilety
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reservationID")
     private Reservation reservation;
 
     /**
      * Mapowanie relacji do kategorii biletów której dotyczy zamówienie na bilety
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ticketCategoryID")
     private TicketCategory ticketCategory;
 

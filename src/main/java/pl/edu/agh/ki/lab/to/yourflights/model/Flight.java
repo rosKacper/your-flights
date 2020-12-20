@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,12 +52,10 @@ public class Flight extends RecursiveTreeObject<Flight> {
      * Mapowanie relacji do dostępnych kategorii biletów w danym locie
      */
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "flight"
     )
-    private List<TicketCategory> ticketCategories;
+    private List<TicketCategory> ticketCategories = new LinkedList<>();
 
     public Flight(String placeOfDeparture, String placeOfDestination, String departureDate, String arrivalDate, Airline airline, String departureTime, String arrivalTime) {
         this.placeOfDeparture = placeOfDeparture;

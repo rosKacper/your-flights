@@ -61,15 +61,15 @@ public class ReservationViewController {
     @FXML
     private TreeTableColumn<Reservation, String> userName;
     @FXML
-    private TreeTableColumn<Flight, String> flightID;
+    private TreeTableColumn<Reservation, String> Status;
     @FXML
-    private TreeTableColumn<Flight, String> departure;
+    private TreeTableColumn<Reservation, String> departure;
     @FXML
-    private TreeTableColumn<Flight, String> departureDate;
+    private TreeTableColumn<Reservation, String> departureDate;
     @FXML
-    private TreeTableColumn<Flight, String> destination;
+    private TreeTableColumn<Reservation, String> destination;
     @FXML
-    private TreeTableColumn<Flight, String> destinationDate;
+    private TreeTableColumn<Reservation, String> destinationDate;
 
     @FXML
     private JFXTextField userNameFilter;
@@ -85,16 +85,13 @@ public class ReservationViewController {
         //Ustawienie kolumn
         reservationDate.setCellValueFactory(data -> data.getValue().getValue().getReservationDateProperty());
         userName.setCellValueFactory(data -> data.getValue().getValue().getUserNameProperty());
-        //firstName.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
-        //lastName.setCellValueFactory(data -> data.getValue().getValue().getSecondNameProperty());
-        //flight_ID.setCellValueFactory(data -> data.getValue().getValue().getFlightIDProperty());
-        //departure_place.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDepartureProperty());
-        //departure_time.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
+        departure.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getplaceOfDepartureProperty());
+        destination.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getplaceOfDestinationProperty());
+        departureDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getdepartureDateProperty());
+        destinationDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getarrivalDateProperty());
 
         //Pobranie rezerwacje z serwisu
-        //ObservableList<Airline> airlines = airlineService.getMockData();
         ObservableList<Reservation> reservations = FXCollections.observableList(reservationService.findAll());
-
 
 //        Przekazanie danych do tabeli
         final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservations, RecursiveTreeObject::getChildren);
@@ -202,14 +199,14 @@ public class ReservationViewController {
         }
     }
 
-    public void showAddReservation(ActionEvent actionEvent, Flight flight) {
+    public void showAddReservation(ActionEvent actionEvent, Flight flight, Reservation reservation) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(addReservationView.getURL());
             fxmlLoader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlLoader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
             AddReservationController controller = fxmlLoader.getController();
-            controller.setData(flight);
+            controller.setData(flight, reservation);
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
@@ -228,9 +225,9 @@ public class ReservationViewController {
     @FXML
     private void handleUpdateAction(ActionEvent event) {
         var reservation = reservationListTable.getSelectionModel().getSelectedItem();
-//        if(reservation != null) {
-//            this.showAddReservation(event, reservation.getValue());
-//        }
+        if(reservation != null) {
+            this.showAddReservation(event, reservation.getValue().getTicketOrders().get(0).getTicketCategory().getFlight(), reservation.getValue());
+        }
     }
 
 }

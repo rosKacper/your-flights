@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,12 +32,10 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
      * Mapowanie relacji do zamówień na bilety przypisanych do danej rezerwacji
      */
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "reservation"
     )
-    private List<TicketOrder> ticketOrders;
+    private List<TicketOrder> ticketOrders = new LinkedList<>();
 
     /**
      * Mapowanie relacji do klienta który składa daną rezerwację
@@ -79,6 +78,14 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public List<TicketOrder> getTicketOrders() {
+        return ticketOrders;
+    }
+
+    public void setTicketOrders(List<TicketOrder> ticketOrders) {
+        this.ticketOrders = ticketOrders;
     }
 
     public StringProperty getUserNameProperty() {
