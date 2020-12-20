@@ -114,7 +114,7 @@ public class AddAirlineController {
      * @param airlinesView widok przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddAirlineController(@Value("classpath:/view/AdminView/AirlinesView.fxml") Resource airlinesView,
+    public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                                 ApplicationContext applicationContext,
                                 AirlineService airlineService){
         this.airlinesView = airlinesView;

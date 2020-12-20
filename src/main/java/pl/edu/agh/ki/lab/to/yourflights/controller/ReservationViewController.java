@@ -88,9 +88,9 @@ public class ReservationViewController {
      */
     public ReservationViewController(ReservationService reservationService,
                                      @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                                     @Value("classpath:/view/AdminView/CustomersView.fxml") Resource customersView,
-                                     @Value("classpath:/view/AdminView/AirlinesView.fxml") Resource AirlineView,
-                                     @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
+                                     @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                                     @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,
+                                     @Value("classpath:/view/FlightView.fxml") Resource flightView,
                                      @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;

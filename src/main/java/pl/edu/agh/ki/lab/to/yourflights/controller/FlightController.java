@@ -123,11 +123,11 @@ public class FlightController {
         flightsTableView.setShowRoot(false);
     }
     public FlightController(FlightService flightService, ApplicationContext applicationContext,
-                            @Value("classpath:/view/AdminView/AirlinesView.fxml") Resource airlinesView,
-                            @Value("classpath:/view/AdminView/CustomersView.fxml") Resource customersView,
+                            @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                            @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                             @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                            @Value("classpath:/view/AdminView/ReservationListView.fxml") Resource reservationListView,
-                            @Value("classpath:/view/AdminView/AddFlightView.fxml") Resource addFlightView,
+                            @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
+                            @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView,
                             @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                             @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                             @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlineView,
