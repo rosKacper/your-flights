@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 
@@ -39,6 +40,7 @@ public class CustomersViewController {
     private final Resource flightView;
     private final Resource userFlightView;
     private final Resource userAirlinesView;
+    private final Resource anonymousMainView;
 
     /**
      * Serwis pozwalający na pobieranie i zapisywanie klientów
@@ -102,6 +104,7 @@ public class CustomersViewController {
                                    @Value("classpath:/view/AdminView/ReservationListView.fxml") Resource reservationList,
                                    @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
                                    @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
+                                   @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                    @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
                                    ApplicationContext applicationContext) {
         this.customerService = customerService;
@@ -113,6 +116,7 @@ public class CustomersViewController {
         this.flightView = flightView;
         this.userFlightView = userFlightView;
         this.userAirlinesView = userAirlinesView;
+        this.anonymousMainView = anonymousMainView;
     }
 
     /**
@@ -245,5 +249,24 @@ public class CustomersViewController {
         this.showAddCustomer(event, null);
     }
 
+    /**
+     * Metoda zapewniająca możliwość wylogowania użytkownika
+     * @param event event emitowany przez przycisk
+     */
+    @FXML
+    void handleLogout(ActionEvent event) {
+        JavafxApplication.logout();
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

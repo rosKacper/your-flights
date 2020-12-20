@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
@@ -331,5 +332,24 @@ public class FlightController {
         this.showAddFlight(event, null);
     }
 
+    /**
+     * Metoda zapewniająca możliwość wylogowania użytkownika
+     * @param event event emitowany przez przycisk
+     */
+    @FXML
+    void handleLogout(ActionEvent event) {
+        JavafxApplication.logout();
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

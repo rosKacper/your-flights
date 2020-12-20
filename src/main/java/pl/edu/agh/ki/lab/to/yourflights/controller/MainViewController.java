@@ -210,7 +210,7 @@ public class MainViewController {
 
     /**
      * Metoda zapewniająca możliwość wylogowania użytkownika
-     * @param event event emitowany przez przycisk 
+     * @param event event emitowany przez przycisk
      */
     @FXML
     void handleLogout(ActionEvent event) {
