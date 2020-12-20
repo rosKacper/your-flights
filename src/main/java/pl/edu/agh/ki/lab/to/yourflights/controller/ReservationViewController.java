@@ -48,6 +48,8 @@ public class ReservationViewController {
     private final ApplicationContext applicationContext;
     private final Resource flightView;
     private final Resource userFlightView;
+    private final Resource userCustomersView;
+    private final Resource userAirlinesView;
 
     private GenericFilter<Reservation> reservationFilter;
 
@@ -139,11 +141,13 @@ public class ReservationViewController {
      */
     public ReservationViewController(ReservationService reservationService,
                                      @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+                                     @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                                     @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,
                                      @Value("classpath:/view/AddReservationView.fxml") Resource addReservationView,
-                                     @Value("classpath:/view/AdminView/CustomersView.fxml") Resource customersView,
-                                     @Value("classpath:/view/AdminView/AirlinesView.fxml") Resource AirlineView,
-                                     @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
+                                     @Value("classpath:/view/FlightView.fxml") Resource flightView,
                                      @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
+                                     @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
+                                     @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;
         this.mainView = mainView;
@@ -153,6 +157,8 @@ public class ReservationViewController {
         this.addReservationView = addReservationView;
         this.flightView = flightView;
         this.userFlightView = userFlightView;
+        this.userCustomersView = userCustomersView;
+        this.userAirlinesView = userAirlinesView;
     }
 
     /**
@@ -195,16 +201,19 @@ public class ReservationViewController {
             e.printStackTrace();
         }
     }
-
-    public void showFlightView(ActionEvent actionEvent) {
+    /**
+     * Metoda służąca do przejścia do widoku tabeli klientów
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showCustomersView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
             if(role.equals("[ROLE_ADMIN]")){
-                fxmlloader = new FXMLLoader(flightView.getURL());
+                fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
-                fxmlloader = new FXMLLoader(userFlightView.getURL());
+                fxmlloader = new FXMLLoader(userCustomersView.getURL());
             }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
@@ -217,13 +226,16 @@ public class ReservationViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku tabeli klientów
-     * @param actionEvent event emitowany przez przycisk
-     */
-    public void showCustomersView(ActionEvent actionEvent) {
+    public void showFlightView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(customersView.getURL());
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ADMIN]")){
+                fxmlloader = new FXMLLoader(flightView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userFlightView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
