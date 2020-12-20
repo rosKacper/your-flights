@@ -15,6 +15,5 @@ import java.util.UUID;
  */
 @Repository
 public interface TicketOrderRepository extends JpaRepository<TicketOrder, UUID> {
-
     List<TicketOrder> findByReservation(Reservation reservation);
 }

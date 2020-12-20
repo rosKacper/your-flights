@@ -133,13 +133,12 @@ public class AddReservationController {
                     null,
 
                     userName);
-            reservationService.save(reservation);
+            TicketOrder ticketOrder = new TicketOrder(seats.getValue(), null, reservation, flight.getTicketCategories().get(0));
+            reservation.getTicketOrders().add(ticketOrder);
 
             // Zapisujemy w bazie odpowiednie relacje
 
-            TicketOrder ticketOrder = new TicketOrder(seats.getValue(), null, reservation, flight.getTicketCategories().get(0));
-            ticketOrderService.save(ticketOrder);
-            reservation.getTicketOrders().add(ticketOrder);
+            reservationService.save(reservation);
             flight.getTicketCategories().get(0).getTicketOrders().add(ticketOrder);
 
         }

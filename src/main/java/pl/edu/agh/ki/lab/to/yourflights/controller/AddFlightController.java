@@ -176,15 +176,12 @@ public class AddFlightController {
             flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue())
             ,departureTime.getValue().toString(),arrivalTime.getValue().toString());
             ticketCategory = new TicketCategory("normal", new BigDecimal(10), 80, flight);
+            flight.getTicketCategories().add(ticketCategory);
         } else {
             updateModel();
         }
 
         flightService.save(flight);
-        if(ticketCategory != null) {
-            ticketCategoryService.save(ticketCategory);
-            flight.getTicketCategories().add(ticketCategory);
-        }
         actiontarget.setText("Flight added successfully!");
         placeOfDeparture.clear();
         placeOfDestination.clear();

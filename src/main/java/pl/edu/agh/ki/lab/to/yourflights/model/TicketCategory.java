@@ -2,6 +2,8 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -43,6 +45,7 @@ public class TicketCategory {
             fetch = FetchType.EAGER,
             mappedBy = "ticketCategory"
     )
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     private List<TicketOrder> ticketOrders;
 
     public TicketCategory(){}
@@ -54,15 +57,8 @@ public class TicketCategory {
         this.flight = flight;
     }
 
-    public List<TicketOrder> getTicketOrders() {
-        return ticketOrders;
-    }
 
-    public void setTicketOrders(List<TicketOrder> ticketOrders) {
-        this.ticketOrders = ticketOrders;
-    }
-
-//getters and setters
+    //getters and setters
 
     public String getCategoryName() {
         return categoryName;
@@ -98,5 +94,13 @@ public class TicketCategory {
 
     public StringProperty getFlightIDProperty(){
         return new SimpleStringProperty(flight.getId().toString());
+    }
+
+    public List<TicketOrder> getTicketOrders() {
+        return ticketOrders;
+    }
+
+    public void setTicketOrders(List<TicketOrder> ticketOrders) {
+        this.ticketOrders = ticketOrders;
     }
 }

@@ -3,6 +3,8 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -32,9 +34,12 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
      * Mapowanie relacji do zamówień na bilety przypisanych do danej rezerwacji
      */
     @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
             fetch = FetchType.EAGER,
             mappedBy = "reservation"
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TicketOrder> ticketOrders = new LinkedList<>();
 
     /**

@@ -1,5 +1,8 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
@@ -30,7 +33,7 @@ public class TicketOrder {
      * Mapowanie relacji do rezerwacji której dotyczy zamówienie na bilety
      */
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "reservationID")
+    @JoinColumn(name = "reservationId")
     private Reservation reservation;
 
     /**
