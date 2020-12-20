@@ -136,7 +136,7 @@ public class AddReservationController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        //Stworzenie nowego lotu i wyczyszczenie pól formularza
+        //Stworzenie nowej rezerwacji i wyczyszczenie pól formularza
         if(reservation == null) {
             // sprawdzamy czy nie istnieje już rezerwacja w tym czasie
             List<Reservation> reservationList = reservationService.findAll().stream()
@@ -144,14 +144,17 @@ public class AddReservationController {
                     .filter(reservation1 -> {
                         Flight flightTmp = reservation1.getTicketOrders().get(0).getTicketCategory().getFlight();
                         try {
-
-                            Date dateFromTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getArrivalDate());
+                            Date dateFromTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getDepartureDate());
                             Date dateToTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getArrivalDate());
-                            Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getArrivalDate());
+                            Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getDepartureDate());
                             Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getArrivalDate());
                             System.out.println(dateFromTmp.toString() + "  " +  dateToTmp.toString());
                             System.out.println(dateFrom.toString() + "  " +  dateTo.toString());
-                            return !(dateFrom.after(dateToTmp) && dateTo.before(dateFromTmp));
+//                            return !(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp));
+                            if(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp)) {
+                                return false;
+                            }
+                            return true;
                         } catch (Exception e) {
                             e.printStackTrace();
                             return false;
