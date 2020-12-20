@@ -158,6 +158,7 @@ public class AddReservationController {
                     }).collect(Collectors.toList());
 
             if (reservationList.size() != 0) {
+                // informujemy użytkownika o błędzie
                 formTitle.setText("You have a reservation in this time slot already");
                 formTitle.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
                 return;
