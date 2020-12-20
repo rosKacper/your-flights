@@ -1,6 +1,5 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -22,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 
@@ -39,6 +36,7 @@ public class LoginController {
      */
     private final ApplicationContext applicationContext;
     private final Resource mainView;
+    private final Resource anonymousMainView;
 
     /**
      * Pola potrzebne do autentykacji użytkownika
@@ -59,9 +57,11 @@ public class LoginController {
     private PasswordField passwordField;
 
 
-    public LoginController(ApplicationContext applicationContext, @Value("classpath:/view/MainView.fxml") Resource mainView) {
+    public LoginController(ApplicationContext applicationContext, @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+                           @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView) {
         this.applicationContext = applicationContext;
         this.mainView = mainView;
+        this.anonymousMainView = anonymousMainView;
     }
 
 
@@ -120,14 +120,8 @@ public class LoginController {
 //        passwordField.setText(password);
 //    }
 
-    @FXML
-    void handleLogout(ActionEvent event) {
-        JavafxApplication.logout();
-        updateUserInfo();
-    }
 
     private void updateUserInfo(){
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<String> grantedAuthorities = auth.getAuthorities().stream().map(Object::toString).collect(Collectors.toList());
         userRoles.clear();
@@ -140,7 +134,13 @@ public class LoginController {
      */
     public void showMainView(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
+            FXMLLoader fxmlloader;
+            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(mainView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

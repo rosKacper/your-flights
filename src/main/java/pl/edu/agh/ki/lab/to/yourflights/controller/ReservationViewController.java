@@ -1,30 +1,23 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.*;
-import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Kontroler widoku tabeli rezerwacji
@@ -38,6 +31,8 @@ public class ReservationViewController {
     private final Resource customersView;
     private final Resource airlineView;
     private final ApplicationContext applicationContext;
+    private final Resource flightView;
+    private final Resource userFlightView;
 
     /**
      * Tabela rezerwacji
@@ -92,16 +87,19 @@ public class ReservationViewController {
      * @param applicationContext kontekst aplikacji Springa
      */
     public ReservationViewController(ReservationService reservationService,
-                                     @Value("classpath:/view/MainView.fxml") Resource mainView,
-                                     @Value("classpath:/view/CustomersView.fxml") Resource customersView,
-                                     @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,
-
+                                     @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+                                     @Value("classpath:/view/AdminView/CustomersView.fxml") Resource customersView,
+                                     @Value("classpath:/view/AdminView/AirlinesView.fxml") Resource AirlineView,
+                                     @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
+                                     @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;
         this.mainView = mainView;
         this.airlineView = AirlineView;
         this.applicationContext = applicationContext;
         this.customersView = customersView;
+        this.flightView = flightView;
+        this.userFlightView = userFlightView;
     }
 
     /**
@@ -133,6 +131,27 @@ public class ReservationViewController {
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(airlineView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showFlightView(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ADMIN]")){
+                fxmlloader = new FXMLLoader(flightView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userFlightView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

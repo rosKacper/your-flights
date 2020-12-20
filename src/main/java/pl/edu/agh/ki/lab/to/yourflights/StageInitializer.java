@@ -1,13 +1,8 @@
 package pl.edu.agh.ki.lab.to.yourflights;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -26,7 +21,7 @@ import java.io.IOException;
 public class StageInitializer implements ApplicationListener<JavafxApplication.StageReadyEvent> {
 
     private final Resource mainView;
-    private final Resource loginView;
+    private final Resource anonymousMainView;
     private final String applicationTitle;
     private final MockDataService mockDataService;
 
@@ -42,13 +37,13 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
      * @param applicationContext kontekst aplikacji Springa
      */
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle,
-                            @Value("classpath:/view/MainView.fxml") Resource mainView,
-                            @Value("classpath:/view/LoginView.fxml") Resource loginView,
+                            @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+                            @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                             ApplicationContext applicationContext,
                             MockDataService mockDataService) {
         this.applicationTitle = applicationTitle;
         this.mainView = mainView;
-        this.loginView = loginView;
+        this.anonymousMainView = anonymousMainView;
         this.applicationContext = applicationContext;
         this.mockDataService = mockDataService;
     }
@@ -60,7 +55,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     public void onApplicationEvent(JavafxApplication.StageReadyEvent event) {
         try {
             //ładujemy główny widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
 
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
