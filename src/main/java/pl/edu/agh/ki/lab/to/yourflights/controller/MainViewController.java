@@ -2,6 +2,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -10,10 +11,14 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler głównego widoku aplikacji
@@ -37,6 +42,7 @@ public class MainViewController {
     private final Resource userFlightView;
     private final Resource userAirlineView;
     private final Resource userCustomersView;
+    private final Resource anonymousMainView;
 
     /**
      * Kontekst aplikacji Springa
@@ -64,6 +70,7 @@ public class MainViewController {
                               @Value("classpath:/view/AnonymousView/AnonymousFlightView.fxml") Resource anonymousFlightView,
                               @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                               @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlineView,
+                              @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                               @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
@@ -78,6 +85,7 @@ public class MainViewController {
         this.userAirlineView = userAirlineView;
         this.userFlightView = userFlightView;
         this.userCustomersView = userCustomersView;
+        this.anonymousMainView = anonymousMainView;
     }
 
 
@@ -192,6 +200,26 @@ public class MainViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda zapewniająca możliwość wylogowania użytkownika
+     * @param event event emitowany przez przycisk 
+     */
+    @FXML
+    void handleLogout(ActionEvent event) {
+        JavafxApplication.logout();
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();

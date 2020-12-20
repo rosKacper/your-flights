@@ -120,14 +120,8 @@ public class LoginController {
 //        passwordField.setText(password);
 //    }
 
-    @FXML
-    void handleLogout(ActionEvent event) {
-        JavafxApplication.logout();
-        updateUserInfo();
-    }
 
     private void updateUserInfo(){
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<String> grantedAuthorities = auth.getAuthorities().stream().map(Object::toString).collect(Collectors.toList());
         userRoles.clear();
