@@ -140,6 +140,7 @@ public class AddReservationController {
         if(reservation == null) {
             // sprawdzamy czy nie istnieje już rezerwacja w tym czasie
             List<Reservation> reservationList = reservationService.findAll().stream()
+                    .filter(reservation1 -> reservation1.getUserName().equals(userName))
                     .filter(reservation1 -> {
                         Flight flightTmp = reservation1.getTicketOrders().get(0).getTicketCategory().getFlight();
                         try {
