@@ -5,9 +5,12 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sun.istack.NotNull;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,10 +56,11 @@ public class Flight extends RecursiveTreeObject<Flight> {
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "flight"
     )
-    private List<TicketCategory> ticketCategories;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<TicketCategory> ticketCategories = new LinkedList<>();
 
     public Flight(String placeOfDeparture, String placeOfDestination, String departureDate, String arrivalDate, Airline airline, String departureTime, String arrivalTime) {
         this.placeOfDeparture = placeOfDeparture;

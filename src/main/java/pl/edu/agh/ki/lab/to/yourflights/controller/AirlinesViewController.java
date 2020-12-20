@@ -55,7 +55,7 @@ public class AirlinesViewController {
 
     // Lista służąca do filtrowania kraju pochodzenia przewoźnika
     private static final List<String> COUNTRIES =
-            Collections.unmodifiableList(Arrays.asList("POLSKA", "HISZPANIA", "NIEMCY"));
+            Collections.unmodifiableList(Arrays.asList("Poland", "Spain", "Germany"));
 
 
     /**
