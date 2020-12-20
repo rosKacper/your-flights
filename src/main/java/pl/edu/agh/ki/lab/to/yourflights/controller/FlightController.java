@@ -73,11 +73,15 @@ public class FlightController {
     @FXML
     private TreeTableColumn<Flight, String> destination;
     @FXML
+    private TreeTableColumn<Flight, String> departureDate;
+    @FXML
+    private TreeTableColumn<Flight, String> arrivalDate;
+    @FXML
+    private TreeTableColumn<Flight, String> airlineName;
+    @FXML
     private TreeTableColumn<Flight, String> departureTime;
     @FXML
     private TreeTableColumn<Flight, String> arrivalTime;
-    @FXML
-    private TreeTableColumn<Flight, String> airlineName;
 
     //Pola filtrów
     @FXML
@@ -92,11 +96,6 @@ public class FlightController {
     private final List<Predicate<Flight>> predicates = new LinkedList<>();
 
 
-    public void setComboBox(ComboBox<String> comboBox){
-        ObservableList<String> airlines = FXCollections.observableArrayList("Test1", "Test2");
-
-
-    }
     /**
      * Metoda która wczytuje dane do tabeli lotów
      */
@@ -104,9 +103,12 @@ public class FlightController {
         //Ustawienie kolumn
         departure.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDepartureProperty());
         destination.setCellValueFactory(data -> data.getValue().getValue().getplaceOfDestinationProperty());
-        departureTime.setCellValueFactory(data -> data.getValue().getValue().getdepartureTimeProperty());
-        arrivalTime.setCellValueFactory(data -> data.getValue().getValue().getarrivalTimeProperty());
-        //airlineName.setCellValueFactory(data -> data.getValue().getValue().getAirlineProperty());
+        departureDate.setCellValueFactory(data -> data.getValue().getValue().getdepartureDateProperty());
+        arrivalDate.setCellValueFactory(data -> data.getValue().getValue().getarrivalDateProperty());
+        airlineName.setCellValueFactory(data-> data.getValue().getValue().getAirlineNameProperty());
+        departureTime.setCellValueFactory(data-> data.getValue().getValue().getDepartureTimeProperty());
+        arrivalTime.setCellValueFactory(data-> data.getValue().getValue().getArrivalTimeProperty());
+
 
         //Pobranie lotów z serwisu
         ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
@@ -151,7 +153,7 @@ public class FlightController {
         //filtrowanie na podstawie daty wylotu
         airlineFilter.addPredicate(testedValue -> {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureTime(), formatter));
+                    return datePicker.getValue() == null || datePicker.getValue().isEqual(LocalDate.parse(testedValue.getDepartureDate(), formatter));
         });
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
         airlineFilter.setListener(departureInput.textProperty());

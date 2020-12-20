@@ -8,7 +8,6 @@ import javafx.beans.property.StringProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,14 +30,20 @@ public class Flight extends RecursiveTreeObject<Flight> {
     private String placeOfDestination;
 
     @NotNull
+    private String departureDate;
+    @NotNull
+    private String arrivalDate;
+
+
+
+    @NotNull
     private String departureTime;
     @NotNull
     private String arrivalTime;
-
     /**
      * Mapowanie relacji do przewoźnika realizującego dany lot
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "airlineID")
     private Airline airline;
 
@@ -53,12 +58,14 @@ public class Flight extends RecursiveTreeObject<Flight> {
     )
     private List<TicketCategory> ticketCategories;
 
-    public Flight(String placeOfDeparture, String placeOfDestination, String departureTime, String arrivalTime, Airline airline) {
+    public Flight(String placeOfDeparture, String placeOfDestination, String departureDate, String arrivalDate, Airline airline, String departureTime, String arrivalTime) {
         this.placeOfDeparture = placeOfDeparture;
         this.placeOfDestination = placeOfDestination;
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
         this.airline = airline;
+        this.departureTime=departureTime;
+        this.arrivalTime=arrivalTime;
     }
 
     public Flight() {
@@ -73,12 +80,12 @@ public class Flight extends RecursiveTreeObject<Flight> {
         this.placeOfDestination = placeOfDestination;
     }
 
-    public void setDepartureTime(String departureTime) {
-        this.departureTime = departureTime;
+    public void setDepartureDate(String departureTime) {
+        this.departureDate = departureTime;
     }
 
-    public void setArrivalTime(String arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setArrivalDate(String arrivalTime) {
+        this.arrivalDate = arrivalTime;
     }
 
     public void setAirline(Airline airline) {
@@ -97,12 +104,12 @@ public class Flight extends RecursiveTreeObject<Flight> {
         return placeOfDestination;
     }
 
-    public String getDepartureTime() {
-        return departureTime;
+    public String getDepartureDate() {
+        return departureDate;
     }
 
-    public String getArrivalTime() {
-        return arrivalTime;
+    public String getArrivalDate() {
+        return arrivalDate;
     }
 
     public Airline getAirline() {
@@ -112,6 +119,14 @@ public class Flight extends RecursiveTreeObject<Flight> {
     public List<TicketCategory> getTicketCategories() {
         return ticketCategories;
     }
+
+    public String getDepartureTime() { return departureTime; }
+
+    public void setDepartureTime(String departureTime) { this.departureTime = departureTime; }
+
+    public String getArrivalTime() { return arrivalTime; }
+
+    public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
 
     public UUID getId() {
         return id;
@@ -127,13 +142,17 @@ public class Flight extends RecursiveTreeObject<Flight> {
     public StringProperty getplaceOfDestinationProperty(){
         return new SimpleStringProperty(placeOfDestination);
     }
-    public StringProperty getdepartureTimeProperty(){
+    public StringProperty getdepartureDateProperty(){
+        return new SimpleStringProperty(departureDate);
+    }
+    public StringProperty getarrivalDateProperty(){
+        return new SimpleStringProperty(arrivalDate);
+    }
+    public StringProperty getAirlineNameProperty(){return new SimpleStringProperty(airline.getName());}
+    public StringProperty getDepartureTimeProperty(){
         return new SimpleStringProperty(departureTime);
     }
-    public StringProperty getarrivalTimeProperty(){
+    public StringProperty getArrivalTimeProperty(){
         return new SimpleStringProperty(arrivalTime);
     }
-    //public StringProperty getAirlineProperty(){
-        //return new SimpleStringProperty(airline.getName());
-    //}
 }

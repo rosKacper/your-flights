@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
+import com.jfoenix.controls.JFXTimePicker;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,16 +20,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.repository.AirlineRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
@@ -57,40 +57,46 @@ public class AddFlightController {
     @FXML
     public TextField placeOfDestination,placeOfDeparture;
     @FXML
-    public ComboBox<String> airlineName;
+    public ComboBox<String> comboBox;
 
 
 
     @FXML
-    public DatePicker departureTime, arrivalTime ;
+    public DatePicker departureDate, arrivalDate;
     @FXML
-    public Label placeOfDestinationValidationLabel, airlineNameValidationLabel;
+    public JFXTimePicker departureTime, arrivalTime;
     @FXML
-    public Label departureTimeValidationLabel;
+    public Label placeOfDestinationValidationLabel, airlineNameValidationLabel, departureTimeValidationLabel, arrivalTimeValidationLabel;
     @FXML
-    public Label arrivalTimeValidationLabel;
+    public Label departureDateValidationLabel;
+    @FXML
+    public Label arrivalDateValidationLabel;
     @FXML
     public Label placeOfDepartureValidationLabel;
     @FXML
     public Text actiontarget;
     @FXML
-    public Label placeOfDestinationValidation, airlineNameValidation;
+    public Label placeOfDestinationValidation, airlineNameValidation, departureTimeValidation, arrivalTimeValidation;
     @FXML
     public Label placeOfDepartureValidation;
     @FXML
-    public Label departureTimeValidation;
+    public Label departureDateValidation;
     @FXML
-    public Label arrivalTimeValidation;
+    public Label arrivalDateValidation;
     /**
      * Formatuje date w postaci string do odpowiedniego formatu
      */
     DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("H:mm");
     String date_blocker = "31/12/9000";
+    String time_Blocker= "00:00";
+    JFXTimePicker timeBlocker=new JFXTimePicker();
     DatePicker blocker=new DatePicker();
 
 
     private FlightService flightService;
     private Flight flight;
+    private String airlineName;
 
 
 
@@ -110,21 +116,26 @@ public class AddFlightController {
      * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego lotu do edycji
      */
     private void updateControls() {
-        departureTime.setValue(LocalDate.parse( flight.getDepartureTime(),formatter));
+        departureDate.setValue(LocalDate.parse( flight.getDepartureDate(),formatter));
         placeOfDeparture.textProperty().setValue(flight.getPlaceOfDeparture());
-        arrivalTime.setValue(LocalDate.parse( flight.getArrivalTime(),formatter));
+        arrivalDate.setValue(LocalDate.parse( flight.getArrivalDate(),formatter));
         placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
+        departureTime.setValue(LocalTime.parse(flight.getDepartureTime(),timeFormatter));
+        arrivalTime.setValue(LocalTime.parse(flight.getArrivalTime(),timeFormatter));
 
     }
 
     /**
-     * Metoda aktualizująca lotu po edycji
+     * Metoda aktualizująca lot po edycji
      */
     private void updateModel() {
         flight.setPlaceOfDeparture(placeOfDeparture.textProperty().getValue());
         flight.setPlaceOfDestination(placeOfDestination.textProperty().getValue());
-        flight.setArrivalTime(arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        flight.setDepartureTime(departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        flight.setDepartureTime(departureTime.getValue().toString());
+        flight.setArrivalTime(arrivalTime.getValue().toString());
+        flight.setArrivalDate(arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        flight.setDepartureDate(departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        flight.setAirline(airlineService.findByName(comboBox.getValue()));
 
     }
 
@@ -137,21 +148,26 @@ public class AddFlightController {
         //blocker to nieosiągalna data, która sprawi, że walidacja daty przylotu pominie warunek data odlotu później
         //od daty przylotu
         blocker.setValue(LocalDate.parse( date_blocker,formatter));
+        timeBlocker.setValue(LocalTime.parse(time_Blocker,timeFormatter));
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean placeOfDestinationValidation = Validator.validateNotEmpty(placeOfDestination, placeOfDestinationValidationLabel);
         boolean placeOfDepartureValidation = Validator.validateNotEmpty(placeOfDeparture, placeOfDepartureValidationLabel);
-        boolean departureTimeValidation = Validator.validateDate(departureTime,arrivalTime, departureTimeValidationLabel);
-        boolean arrivalTimeValidation = Validator.validateDate(arrivalTime, blocker, arrivalTimeValidationLabel);
+        boolean departureDateValidation = Validator.validateDate(departureDate, arrivalDate, departureDateValidationLabel);
+        boolean arrivalDateValidation = Validator.validateDate(arrivalDate, blocker, arrivalDateValidationLabel);
+        boolean departureTimeValidation = Validator.validateTime(departureTime, arrivalTime,departureDate,arrivalDate, departureTimeValidationLabel);
+        boolean arrivalTimeValidation = Validator.validateTime(timeBlocker, arrivalTime,departureDate,arrivalDate,arrivalTimeValidationLabel);
 
 
-        if(!placeOfDestinationValidation || !placeOfDepartureValidation || !departureTimeValidation || !arrivalTimeValidation ){
+        if(!placeOfDestinationValidation || !placeOfDepartureValidation || !departureDateValidation || !arrivalDateValidation ||
+                !departureTimeValidation || !arrivalTimeValidation){
             return;
         }
 
         //Stworzenie nowego lotu i wyczyszczenie pól formularza
         if (flight == null) {
-            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(),departureTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),arrivalTime.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), null);
+            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue())
+            ,departureTime.getValue().toString(),arrivalTime.getValue().toString());
         } else {
             updateModel();
         }
@@ -160,9 +176,12 @@ public class AddFlightController {
         actiontarget.setText("Flight added successfully!");
         placeOfDeparture.clear();
         placeOfDestination.clear();
+        departureDate =null;
+        arrivalDate =null;
+        flight=null;
+        airlineName=null;
         departureTime=null;
         arrivalTime=null;
-        flight=null;
 
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
@@ -214,7 +233,7 @@ public class AddFlightController {
     /**
      *
      * @param actionEvent wywołanie po nacisnięciu myszką
-     * Uzupełnia ComboBox z nazwami linii lotniczych danymi
+     * Uzupełnia ComboBox nazwami linii lotniczych
      */
     public void setComboBox(MouseEvent actionEvent) {
         //wczytanie przewoźników
@@ -226,6 +245,11 @@ public class AddFlightController {
                 .collect(Collectors.toList()));
 
         //ustawienie listy nazw przewoźników w ComboBox
-        this.airlineName.setItems(airlinesNames);
+        this.comboBox.setItems(airlinesNames);
+
     }
+    public void getComboBoxValue(){
+        this.airlineName=comboBox.getValue();
+    }
+
 }

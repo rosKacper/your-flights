@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.lab.to.yourflights.utils;
 
+import com.jfoenix.controls.JFXTimePicker;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -63,7 +64,7 @@ public class Validator {
                     if(departure.getValue().getDayOfMonth()>arrival.getValue().getDayOfMonth() ||
                             departure.getValue().getMonthValue()>arrival.getValue().getMonthValue() ||
                     departure.getValue().getYear()>arrival.getValue().getYear()){
-                        label.setText("Departure time can not be after arrival time!");
+                        label.setText("Departure date can not be after arrival time!");
                         label.setTextFill(Color.RED);
                         return false;
                     }
@@ -73,7 +74,7 @@ public class Validator {
                         return true;
                     }
                 } catch (ParseException ex) {
-                    label.setText("Date format is  incorrect!");
+                    label.setText("Date format is incorrect!");
                     label.setTextFill(Color.RED);
                     return false;
                 }
@@ -81,6 +82,63 @@ public class Validator {
             }
         }
     }
+
+    /**
+     *
+     * @param departure czas odlotu
+     * @param arrival czas przylotu
+     * @param departureDate data odlotu
+     * @param arrivalDate data przylotu
+     * @param label etykieta do wpisania komunkatu błędu
+     * @return zwraca wartość boolean czy format jest poprawny czy nie, oraz weryfikuje
+     * czy czas odlotu nie jest wcześniej niż czas przylotu. Stąd potrzeba również dat.
+     */
+    public static boolean validateTime(JFXTimePicker departure, JFXTimePicker arrival, DatePicker departureDate, DatePicker arrivalDate,  Label label){
+        if (departure.getValue() == null || departure.getValue().toString().isEmpty() || arrival.getValue()==null) {
+            if(departure.getValue()==null){
+                label.setText(departure.getId() + " cannot be empty!");
+                label.setTextFill(Color.RED);
+                return false;
+            }else{
+                label.setText(arrival.getId() + " cannot be empty!");
+                label.setTextFill(Color.RED);
+                return false;
+            }
+
+        } else {
+            SimpleDateFormat df = new SimpleDateFormat("H:mm");
+            df.setLenient(false);
+            try {
+                df.parse(departure.getValue().toString());
+                if(departureDate.getValue().getYear()==arrivalDate.getValue().getYear() &&
+                    departureDate.getValue().getMonthValue()==arrivalDate.getValue().getMonthValue() &&
+                        departureDate.getValue().getDayOfMonth()==arrivalDate.getValue().getDayOfMonth()) {
+                    if (departure.getValue().getHour() > arrival.getValue().getHour() ||
+                            (departure.getValue().getHour()==arrival.getValue().getHour() &&
+                                    departure.getValue().getMinute()>=arrival.getValue().getMinute())) {
+                        label.setText("Departure time can not be after arrival time!");
+                        label.setTextFill(Color.RED);
+                        return false;
+                    }
+                    else {
+                        label.setText("Correct!");
+                        label.setTextFill(Color.GREEN);
+                        return true;
+                    }
+                }
+                else {
+                    label.setText("Correct!");
+                    label.setTextFill(Color.GREEN);
+                    return true;
+                }
+            } catch (ParseException ex) {
+                label.setText("Time format is incorrect!");
+                label.setTextFill(Color.RED);
+                return false;
+            }
+        }
+    }
+
     /**
      * Metoda sprawdzająca poprawność podanego adresu email w formularzu
      * @param field pole formularza
