@@ -11,14 +11,11 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Kontroler głównego widoku aplikacji
@@ -59,11 +56,11 @@ public class MainViewController {
      * @param loginView widok ekranu logowania
      */
     public MainViewController(ApplicationContext applicationContext,
-                              @Value("classpath:/view/AdminView/AirlinesView.fxml") Resource airlinesView,
-                              @Value("classpath:/view/AdminView/CustomersView.fxml") Resource customersView,
-                              @Value("classpath:/view/AdminView/CustomersView.fxml") Resource mainView,
-                              @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
-                              @Value("classpath:/view/AdminView/ReservationListView.fxml") Resource reservationListView,
+                              @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                              @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                              @Value("classpath:/view/CustomersView.fxml") Resource mainView,
+                              @Value("classpath:/view/FlightView.fxml") Resource flightView,
+                              @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
                               @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                               @Value("classpath:/view/AuthView/RegistrationView.fxml") Resource registrationView,
                               @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlinesView,

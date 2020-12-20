@@ -2,6 +2,9 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -32,7 +35,7 @@ public class TicketCategory {
     /**
      * Mapowanie relacji do lotu którego dotyczy dana kategoria biletu
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "flightID")
     private Flight flight;
 
@@ -41,10 +44,10 @@ public class TicketCategory {
      */
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "ticketCategory"
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TicketOrder> ticketOrders;
 
     public TicketCategory(){}
@@ -93,5 +96,13 @@ public class TicketCategory {
 
     public StringProperty getFlightIDProperty(){
         return new SimpleStringProperty(flight.getId().toString());
+    }
+
+    public List<TicketOrder> getTicketOrders() {
+        return ticketOrders;
+    }
+
+    public void setTicketOrders(List<TicketOrder> ticketOrders) {
+        this.ticketOrders = ticketOrders;
     }
 }

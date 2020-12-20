@@ -45,14 +45,6 @@
                     <Cursor fx:constant="HAND" />
                 </cursor>
             </JFXButton>
-            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showFlightView" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flight" textAlignment="CENTER" textFill="WHITE">
-                <font>
-                    <Font size="18.0" />
-                </font>
-                <cursor>
-                    <Cursor fx:constant="HAND" />
-                </cursor>
-            </JFXButton>
             <JFXButton alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Reservations" textAlignment="CENTER" textFill="WHITE">
                 <font>
                     <Font size="18.0" />
@@ -69,7 +61,6 @@
                 <columns>
                     <TreeTableColumn fx:id="reservationDate" prefWidth="141.0" text="Reservation date" />
                     <TreeTableColumn fx:id="userName" prefWidth="141.0" text="Username" />
-                    <TreeTableColumn fx:id="Status" prefWidth="141.0" text="Status" />
                <TreeTableColumn fx:id="departure" prefWidth="141.0" text="Departure" />
                     <TreeTableColumn fx:id="destination" prefWidth="141.0" text="Destination" />
                <TreeTableColumn fx:id="departureDate" prefWidth="141.0" text="DepartureDate" />
@@ -152,7 +143,7 @@
                            <Font size="14.0" />
                         </font>
                      </Label>
-                     <JFXTextField fx:id="destinationFilter" />
+                     <JFXTextField fx:id="destinationFilter"/>
                   </children>
                   <padding>
                      <Insets top="3.0" />

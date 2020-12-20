@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 
@@ -22,13 +23,16 @@ public class ReservationService {
      * Repozytorium rezerwacji
      */
     private final ReservationRepository reservationRepository;
+    private final TicketOrderService ticketOrderService;
+
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie repozytorium
      * @param reservationRepository repozytorium rezerwacji
      */
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, TicketOrderService ticketOrderService) {
         this.reservationRepository = reservationRepository;
+        this.ticketOrderService = ticketOrderService;
     }
 
     /**
@@ -37,6 +41,15 @@ public class ReservationService {
      */
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
+    }
+
+    /**
+     * Metoda zwracająca rezerwacje danego użytkownika
+     * @param userName nazwa użytkownika
+     * @return lista zamówień
+     */
+    public List<Reservation> findByUserName(String userName) {
+        return reservationRepository.findByUserName(userName);
     }
 
     /**
@@ -61,7 +74,7 @@ public class ReservationService {
      */
     public boolean save(Reservation reservation) {
         if(reservation != null) {
-            List<Reservation> reservations = findAll();
+            List<Reservation> reservations = findByUserName(reservation.getUserName());
             boolean hasNoCollidingReservations = reservations.stream()
                     .noneMatch(existingReservation -> existingReservation.getReservationDate().equals(reservation.getReservationDate()));
             if(hasNoCollidingReservations) {

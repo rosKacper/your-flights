@@ -39,7 +39,8 @@ public class AirlinesViewController {
     private AirlineService airlineService;
     private final Resource mainView;
     private final Resource addAirlineView;
-    private final Resource reservationList;
+    private final Resource reservationListView;
+    private final Resource reservationListViewCustomer;
     private final Resource anonymousMainView;
     private final Resource flightView;
     private final Resource anonymousFlightView;
@@ -55,7 +56,7 @@ public class AirlinesViewController {
 
     // Lista służąca do filtrowania kraju pochodzenia przewoźnika
     private static final List<String> COUNTRIES =
-            Collections.unmodifiableList(Arrays.asList("POLSKA", "HISZPANIA", "NIEMCY"));
+            Collections.unmodifiableList(Arrays.asList("Poland", "Spain", "Germany"));
 
 
     /**
@@ -124,15 +125,16 @@ public class AirlinesViewController {
      */
     public AirlinesViewController(AirlineService airlineService,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                                  @Value("classpath:/view/AdminView/CustomersView.fxml") Resource customersView,
-                                  @Value("classpath:/view/AdminView/AddAirlineView.fxml") Resource addAirlineView,
-                                  @Value("classpath:/view/AdminView/ReservationListView.fxml") Resource reservationList,
+                                  @Value("classpath:/view/CustomersView.fxml") Resource customersView,
+                                  @Value("classpath:/view/AddAirlineView.fxml") Resource addAirlineView,
+                                  @Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                   @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
-                                  @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
+                                  @Value("classpath:/view/FlightView.fxml") Resource flightView,
                                   @Value("classpath:/view/AnonymousView/AnonymousFlightView.fxml") Resource anonymousFlightView,
                                   @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                                   @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                   @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
+                                  @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
 
                                   ApplicationContext applicationContext) {
         this.airlineService = airlineService;
@@ -141,12 +143,13 @@ public class AirlinesViewController {
         this.applicationContext = applicationContext;
         this.customersView = customersView;
         this.anonymousMainView = anonymousMainView;
-        this.reservationList=reservationList;
+        this.reservationListView = reservationList;
         this.flightView = flightView;
         this.anonymousFlightView = anonymousFlightView;
         this.loginView = loginView;
         this.userCustomersView = userCustomersView;
         this.userFlightView = userFlightView;
+        this.reservationListViewCustomer = reservationListViewCustomer;
     }
 
     /**
@@ -253,7 +256,15 @@ public class AirlinesViewController {
 
     public void showReservation(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(reservationList.getURL());
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ADMIN]")){
+                fxmlloader = new FXMLLoader(reservationListView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
+            }
+//            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

@@ -36,7 +36,8 @@ public class CustomersViewController {
     private final Resource mainView;
     private final Resource airlinesView;
     private final Resource addCustomerView;
-    private final Resource reservationList;
+    private final Resource reservationListView;
+    private final Resource reservationListViewCustomer;
     private final Resource flightView;
     private final Resource userFlightView;
     private final Resource userAirlinesView;
@@ -99,24 +100,26 @@ public class CustomersViewController {
      */
     public CustomersViewController(CustomerService customerService,
                                    @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                                   @Value("classpath:/view/AdminView/AirlinesView.fxml") Resource airlinesView,
-                                   @Value("classpath:/view/AdminView/AddCustomerView.fxml") Resource addCustomerView,
-                                   @Value("classpath:/view/AdminView/ReservationListView.fxml") Resource reservationList,
-                                   @Value("classpath:/view/AdminView/FlightView.fxml") Resource flightView,
+                                   @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                                   @Value("classpath:/view/AddCustomerView.fxml") Resource addCustomerView,
+                                   @Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
+                                   @Value("classpath:/view/FlightView.fxml") Resource flightView,
                                    @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                                    @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                    @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
+                                   @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
                                    ApplicationContext applicationContext) {
         this.customerService = customerService;
         this.mainView = mainView;
         this.airlinesView = airlinesView;
         this.addCustomerView = addCustomerView;
         this.applicationContext = applicationContext;
-        this.reservationList=reservationList;
+        this.reservationListView = reservationList;
         this.flightView = flightView;
         this.userFlightView = userFlightView;
         this.userAirlinesView = userAirlinesView;
         this.anonymousMainView = anonymousMainView;
+        this.reservationListViewCustomer = reservationListViewCustomer;
     }
 
     /**
@@ -217,7 +220,15 @@ public class CustomersViewController {
 
     public void showReservation(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(reservationList.getURL());
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ADMIN]")){
+                fxmlloader = new FXMLLoader(reservationListView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
+            }
+//            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
