@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
@@ -32,6 +33,7 @@ public class AddCustomerController {
      * Widok klientów
      */
     private final Resource customerView;
+    private final Resource userCustomerView;
 
     /**
      * Kontekst aplikacji Springowej
@@ -142,7 +144,9 @@ public class AddCustomerController {
         customer=null;
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
+
         showCustomersView(actionEvent);
+
     }
 
     /**
@@ -151,11 +155,13 @@ public class AddCustomerController {
      * @param applicationContext kontekst aplikacji Springa
      */
     public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView,
+                                 @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomerView,
                                  ApplicationContext applicationContext,
                                  CustomerService customerService){
         this.customerView = customerView;
         this.applicationContext = applicationContext;
         this.customerService = customerService;
+        this.userCustomerView = userCustomerView;
     }
 
     /**
@@ -165,8 +171,15 @@ public class AddCustomerController {
     public void showCustomersView(ActionEvent actionEvent) {
         try {
             //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(customerView.getURL());
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
+            if(role.equals("[ROLE_ADMIN]")){
+                fxmlloader = new FXMLLoader(customerView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userCustomerView.getURL());
+            }
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
 
