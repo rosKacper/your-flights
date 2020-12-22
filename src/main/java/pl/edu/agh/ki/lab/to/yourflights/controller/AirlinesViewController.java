@@ -52,6 +52,7 @@ public class AirlinesViewController {
 
 
     private final ApplicationContext applicationContext;
+    GenericFilter<Airline> airlineFilter;
 
 
     // Lista służąca do filtrowania kraju pochodzenia przewoźnika
@@ -157,7 +158,7 @@ public class AirlinesViewController {
      */
     private void setPredicates() {
         // Generyczna klasa filtrów dla danego modelu
-        GenericFilter<Airline> airlineFilter = new GenericFilter<>(airlinesTableView);
+        airlineFilter = new GenericFilter<>(airlinesTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
         //filtrowanie na podstawie nazwy
         airlineFilter.addPredicate( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
@@ -360,5 +361,10 @@ public class AirlinesViewController {
      */
     private void setCountryPickerItems() {
         countryPicker.getItems().setAll(airlineService.getCountries());
+    }
+
+    public void resetFilters() {
+        nameInput.clear();
+        countryPicker.setValue("");
     }
 }

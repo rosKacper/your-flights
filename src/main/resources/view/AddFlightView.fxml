@@ -84,7 +84,7 @@
                 <Insets />
             </GridPane.margin>
         </Label>
-        <JFXButton disable="true" prefHeight="51.0" prefWidth="416.0" text="Enter customer details" textAlignment="CENTER" GridPane.columnSpan="2147483647">
+        <JFXButton disable="true" prefHeight="51.0" prefWidth="416.0" text="Enter flight details" textAlignment="CENTER" GridPane.columnSpan="2147483647">
             <font>
                 <Font size="24.0" />
             </font>

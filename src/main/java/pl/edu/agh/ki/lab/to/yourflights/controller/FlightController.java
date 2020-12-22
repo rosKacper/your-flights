@@ -388,5 +388,12 @@ public class FlightController {
         }
     }
 
-
+    /**
+     * Metoda resetująca filtry
+     */
+    public void resetFilters() {
+        departureInput.clear();
+        destinationInput.clear();
+        datePicker.setValue(null);
+    }
 }

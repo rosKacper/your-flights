@@ -304,4 +304,13 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda resetująca filtry
+     */
+    public void resetFilters() {
+        destinationFilter.clear();
+        departureFilter.clear();
+        userNameFilter.clear();
+        datePicker.setValue(null);
+    }
 }

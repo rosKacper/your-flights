@@ -45,7 +45,7 @@
                     <Cursor fx:constant="HAND" />
                 </cursor>
             </JFXButton>
-            <JFXButton alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flight" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flights" textAlignment="CENTER" textFill="WHITE">
                 <font>
                     <Font size="18.0" />
                 </font>
@@ -142,6 +142,11 @@
                             <JFXDatePicker fx:id="datePicker" defaultColor="#1d3557"/>
                         </children>
                     </VBox>
+                    <JFXButton fx:id="filtersResetButton" alignment="CENTER" onAction="#resetFilters" prefHeight="38.0" prefWidth="122.0" style="-fx-background-color: #9a031e;" text="Reset filters" textFill="WHITE" TilePane.alignment="BOTTOM_CENTER">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </JFXButton>
                 </children>
             </TilePane>
         </children>
