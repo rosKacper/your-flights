@@ -118,6 +118,7 @@ public class AddFlightController {
         arrivalTime.setValue(LocalTime.parse(flight.getArrivalTime(),timeFormatter));
         comboBox.setValue(flight.getAirline().getName());
         comboBox.setPromptText(flight.getAirline().getName());
+        comboBox.setPlaceholder(new Text(flight.getAirline().getName()));
     }
 
     /**
@@ -187,8 +188,8 @@ public class AddFlightController {
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param ticketCategoryService serwis zapisu kategorii lotu
-     * @param flightService widok tabeli lotów
+     * @param ticketCategoryService serwis kategorii lotu
+     * @param flightService serwis przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
     public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
@@ -245,6 +246,12 @@ public class AddFlightController {
 
         //ustawienie listy nazw przewoźników w ComboBox
         this.comboBox.setItems(airlinesNames);
+
+        if(this.flight != null) {
+            comboBox.setValue(flight.getAirline().getName());
+            comboBox.setPromptText(flight.getAirline().getName());
+            comboBox.setPlaceholder(new Text(flight.getAirline().getName()));
+        }
 
     }
 }

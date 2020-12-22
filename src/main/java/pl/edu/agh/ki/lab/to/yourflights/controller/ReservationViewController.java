@@ -13,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -29,10 +28,7 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.UUID;
 import java.util.stream.Collectors;
-
 
 /**
  * Kontroler widoku tabeli rezerwacji
@@ -52,8 +48,6 @@ public class ReservationViewController {
     private final Resource userCustomersView;
     private final Resource userAirlinesView;
     private final Resource anonymousMainView;
-
-    private GenericFilter<Reservation> reservationFilter;
 
     /**
      * Tabela rezerwacji
@@ -77,15 +71,15 @@ public class ReservationViewController {
     @FXML
     private TreeTableColumn<Reservation, String> destinationDate;
 
+    /**
+     * Pola do filtrowania
+     */
     @FXML
     private JFXTextField userNameFilter;
-
     @FXML
     private JFXTextField departureFilter;
-
     @FXML
     private JFXTextField destinationFilter;
-
     @FXML
     private JFXDatePicker datePicker;
 
@@ -102,7 +96,6 @@ public class ReservationViewController {
         departureDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getdepartureDateProperty());
         destinationDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getarrivalDateProperty());
 
-
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
@@ -111,13 +104,15 @@ public class ReservationViewController {
                 .filter(reservation -> reservation.getUserName().equals(name) || role.equals("[ROLE_ADMIN]"))
                 .collect(Collectors.toList()));
 
-//        Przekazanie danych do tabeli
+        //Przekazanie danych do tabeli
         final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservations, RecursiveTreeObject::getChildren);
         reservationListTable.setRoot(root);
         reservationListTable.setShowRoot(false);
-
     }
 
+    /**
+     * Metoda służąca do inicjalizacji filtrowania
+     */
     private void setPredicates() {
         // Generyczna klasa filtrów dla danego modelu
         GenericFilter<Reservation> reservationFilter = new GenericFilter<>(reservationListTable);
@@ -198,6 +193,10 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent
+     */
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(airlineView.getURL());
@@ -236,6 +235,10 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku lotów
+     * @param actionEvent
+     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -257,6 +260,12 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku do dodawania/edycji rezerwacji
+     * @param actionEvent
+     * @param flight
+     * @param reservation - rezerwacja do edycji (może być nullem)
+     */
     public void showAddReservation(ActionEvent actionEvent, Flight flight, Reservation reservation) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(addReservationView.getURL());
@@ -288,6 +297,10 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda obsługująca wylogowywanie użytkownika
+     * @param event
+     */
     @FXML
     void handleLogout(ActionEvent event) {
         JavafxApplication.logout();

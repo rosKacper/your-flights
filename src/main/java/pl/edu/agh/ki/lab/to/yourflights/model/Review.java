@@ -27,17 +27,12 @@ public class Review {
     @JoinColumn(name = "airlineID")
     private Airline airline;
 
-    /**
-     * Mapowanie relacji do użytkownika który dodaje ocenę
-     */
-    @ManyToOne
-    @JoinColumn(name = "userID")
-    private User user;
+    private String userName;
 
-    public Review(double rating, String comment, User user, Airline airline){
+    public Review(double rating, String comment, String userName, Airline airline){
         this.rating=rating;
         this.comment=comment;
-        this.user=user;
+        this.userName=userName;
         this.airline=airline;
     }
 

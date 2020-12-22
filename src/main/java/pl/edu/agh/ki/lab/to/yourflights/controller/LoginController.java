@@ -35,13 +35,16 @@ public class LoginController {
      * Kontekst aplikacji Springa
      */
     private final ApplicationContext applicationContext;
+
+    /**
+     * Widoki
+     */
     private final Resource mainView;
     private final Resource anonymousMainView;
 
     /**
      * Pola potrzebne do autentykacji użytkownika
      */
-
     @Autowired
     private AuthenticationManager authManager;
     private ObservableList<String> userRoles = FXCollections.observableArrayList();
@@ -49,28 +52,35 @@ public class LoginController {
     /**
      * Pola tekstowe do formularza logowania
      */
-
     @FXML
     private TextField usernameField;
-
     @FXML
     private PasswordField passwordField;
 
 
-    public LoginController(ApplicationContext applicationContext, @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+    /**
+     * Konstruktor, Spring wstrzykuje odpowiednie zależności
+     * @param applicationContext
+     * @param mainView
+     * @param anonymousMainView
+     */
+    public LoginController(ApplicationContext applicationContext,
+                           @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                            @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView) {
         this.applicationContext = applicationContext;
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
     }
 
-
+    /**
+     * Metoda obsługująca logowanie
+     * @param event
+     */
     @FXML
     void handleLogin(ActionEvent event) {
 
         final String userName = usernameField.getText().trim();
         final String userPassword = passwordField.getText().trim();
-
 
         try {
             Authentication request = new UsernamePasswordAuthenticationToken(userName, userPassword);
@@ -79,48 +89,18 @@ public class LoginController {
 
             updateUserInfo();
 
-//            //TEST
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            boolean hasUserRole = authentication.getAuthorities().stream()
-//                    .anyMatch(r -> r.getAuthority().equals("ROLE_USER"));
-//            if(hasUserRole){
-//                System.out.println("User is logged in!");
-//            }
-//            boolean hasAdminRole = authentication.getAuthorities().stream()
-//                    .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-//            if(hasAdminRole){
-//                System.out.println("Admin is logged in!");
-//            }
-            //
-
             usernameField.clear();
             passwordField.clear();
             showMainView(event);
 
         } catch (AuthenticationException e) {
-            System.out.println("Incorrect username or password");
+            System.out.println("Incorrect username or password.");
         }
-
     }
 
-//    @FXML
-//    void handleLoginAsAdmin(ActionEvent event) {
-//        System.out.println("Login as admin");
-//        setUserAndPassword("admin", "admin");
-//    }
-//
-//    @FXML
-//    void handleLoginAsUser(ActionEvent event) {
-//        System.out.println("Login as user");
-//        setUserAndPassword("user", "user");
-//    }
-
-//    private void setUserAndPassword(String username, String password){
-//        usernameField.setText(username);
-//        passwordField.setText(password);
-//    }
-
-
+    /**
+     * Metoda do aktualizacji informacji o użytkowniku
+     */
     private void updateUserInfo(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<String> grantedAuthorities = auth.getAuthorities().stream().map(Object::toString).collect(Collectors.toList());

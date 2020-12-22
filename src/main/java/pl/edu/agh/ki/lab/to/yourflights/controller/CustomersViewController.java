@@ -34,6 +34,9 @@ import java.util.stream.Collectors;
 @Component
 public class CustomersViewController {
 
+    /**
+     * Widoki
+     */
     private final Resource mainView;
     private final Resource airlinesView;
     private final Resource addCustomerView;
@@ -71,7 +74,6 @@ public class CustomersViewController {
     private TreeTableColumn<Customer, String> countryColumn;
     @FXML
     private TreeTableColumn<Customer, String> cityColumn;
-
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
@@ -188,6 +190,10 @@ public class CustomersViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -233,6 +239,10 @@ public class CustomersViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku rezerwacji
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -243,7 +253,6 @@ public class CustomersViewController {
             else{
                 fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
             }
-//            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -294,5 +303,4 @@ public class CustomersViewController {
             e.printStackTrace();
         }
     }
-
 }

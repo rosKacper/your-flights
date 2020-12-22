@@ -30,8 +30,6 @@ public class JavafxApplication extends Application {
         applicationContext.publishEvent(new StageReadyEvent(stage));
     }
 
-
-
     /**
      * Event emitowany po tym kiedy aplikacja jest gotowa
      * Pozwala na przechwycenie tego eventu w klasie StageInitializer i zainicjalizowanie aplikacji

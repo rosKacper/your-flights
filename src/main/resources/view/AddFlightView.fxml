@@ -91,7 +91,7 @@
         </JFXButton>
         <JFXTextField fx:id="placeOfDeparture" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         <JFXTextField fx:id="placeOfDestination" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-        <JFXComboBox fx:id="comboBox" onMouseClicked="#setComboBox"  prefHeight="25.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+        <JFXComboBox fx:id="comboBox" editable="true" onMouseClicked="#setComboBox"  prefHeight="25.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
         <JFXDatePicker fx:id="departureDate" GridPane.columnIndex="1" GridPane.rowIndex="8" defaultColor="#1d3557"/>
         <JFXTimePicker fx:id="departureTime" GridPane.columnIndex="1" GridPane.rowIndex="10" defaultColor="#1d3557"/>
         <JFXDatePicker fx:id="arrivalDate" GridPane.columnIndex="1" GridPane.rowIndex="12" defaultColor="#1d3557"/>

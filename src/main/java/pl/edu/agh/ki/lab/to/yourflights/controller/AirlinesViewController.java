@@ -36,7 +36,14 @@ import java.util.stream.Collectors;
 @Component
 public class AirlinesViewController {
 
+    /**
+     * Serwis linii lotniczych
+     */
     private AirlineService airlineService;
+
+    /**
+     * Widoki
+     */
     private final Resource mainView;
     private final Resource addAirlineView;
     private final Resource reservationListView;
@@ -49,23 +56,17 @@ public class AirlinesViewController {
     private final Resource customersView;
     private final Resource userCustomersView;
 
-
-
+    /**
+     * Kontekrs aplikacji Springa
+     */
     private final ApplicationContext applicationContext;
     GenericFilter<Airline> airlineFilter;
-
-
-    // Lista służąca do filtrowania kraju pochodzenia przewoźnika
-    private static final List<String> COUNTRIES =
-            Collections.unmodifiableList(Arrays.asList("Poland", "Spain", "Germany"));
-
 
     /**
      * Tabela przewoźników
      */
     @FXML
     private JFXTreeTableView<Airline> airlinesTableView;
-
 
     /**
      * Kolumny tabeli
@@ -86,8 +87,6 @@ public class AirlinesViewController {
     private JFXTextField nameInput;
     @FXML
     private ComboBox<String> countryPicker;
-
-
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
@@ -136,7 +135,6 @@ public class AirlinesViewController {
                                   @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                   @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                                   @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
-
                                   ApplicationContext applicationContext) {
         this.airlineService = airlineService;
         this.mainView = mainView;
@@ -256,6 +254,10 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku tabeli rezerwacji
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -277,6 +279,10 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -301,6 +307,10 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku logowania
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showLoginView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
@@ -337,7 +347,7 @@ public class AirlinesViewController {
     }
 
     /**
-     * Metoda zapewniająca możliwość wylogowania użytkownika
+     * Metoda obsługująca wylogowanie użytkownika
      * @param event event emitowany przez przycisk
      */
     @FXML
@@ -363,6 +373,9 @@ public class AirlinesViewController {
         countryPicker.getItems().setAll(airlineService.getCountries());
     }
 
+    /**
+     * Metoda służąca do zresetowania filtrów
+     */
     public void resetFilters() {
         nameInput.clear();
         countryPicker.setValue("");

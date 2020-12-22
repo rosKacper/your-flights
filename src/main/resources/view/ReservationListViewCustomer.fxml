@@ -106,7 +106,7 @@
                     </VBox>
                     <VBox spacing="5.0">
                         <children>
-                            <Label text="Username">
+                            <Label text="Username:">
                                 <font>
                                     <Font size="14.0" />
                                 </font>

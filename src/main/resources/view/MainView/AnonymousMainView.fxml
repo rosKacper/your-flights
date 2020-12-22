@@ -21,11 +21,6 @@
                 <Font size="19.0" />
             </font>
         </JFXButton>
-      <JFXButton layoutX="926.0" layoutY="98.0" onAction="#showRegistrationView" prefHeight="43.0" prefWidth="111.0" style="-fx-background-color: #1d3557;" text="Register" textFill="WHITE">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </JFXButton>
     </AnchorPane>
     <VBox prefHeight="300.0" prefWidth="220.0" style="-fx-background-color: #1d3557;" />
     <VBox alignment="TOP_CENTER" layoutY="300.0" prefHeight="500.0" prefWidth="220.0" style="-fx-background-color: #1d3557;">

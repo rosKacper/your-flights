@@ -61,6 +61,11 @@ public class CustomerService {
         }
     }
 
+    /**
+     * Metoda służąca do znalezienia Klienta po jego username
+     * @param username nazwa użytkownika
+     * @return
+     */
     public List<Customer> findByUsername(String username){
         return customerRepository.findByUsername(username);
     }

@@ -37,8 +37,6 @@ public class Flight extends RecursiveTreeObject<Flight> {
     @NotNull
     private String arrivalDate;
 
-
-
     @NotNull
     private String departureTime;
     @NotNull

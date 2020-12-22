@@ -108,7 +108,6 @@ public class AddCustomerController {
      */
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
 
-
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean firstNameValidation = Validator.validateNotEmpty(firstName, firstNameValidationLabel);
@@ -124,7 +123,7 @@ public class AddCustomerController {
             return;
         }
 
-        //Stworzenie nowego klienta i wyczyszczenie pól formularza
+        //Stworzenie nowego klienta (jeśli to było dodawanie) lub edycja istniejącego
         if (customer == null) {
             customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText());
         } else {
@@ -132,6 +131,8 @@ public class AddCustomerController {
         }
 
         customerService.save(customer);
+
+//        wyczyszczenie pól formularza
         actiontarget.setText("Customer added successfully!");
         firstName.clear();
         lastName.clear();
@@ -144,9 +145,7 @@ public class AddCustomerController {
         customer=null;
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
-
         showCustomersView(actionEvent);
-
     }
 
     /**
@@ -174,12 +173,14 @@ public class AddCustomerController {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
+            //ładujemy widok w zależności od roli zalogowanego użytkownika
             if(role.equals("[ROLE_ADMIN]")){
                 fxmlloader = new FXMLLoader(customerView.getURL());
             }
             else{
                 fxmlloader = new FXMLLoader(userCustomerView.getURL());
             }
+
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
 

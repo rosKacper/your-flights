@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.repository.AirlineRepository;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 

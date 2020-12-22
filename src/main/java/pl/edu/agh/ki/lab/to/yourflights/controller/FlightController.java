@@ -24,7 +24,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -32,11 +31,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
@@ -44,6 +40,10 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 @RestController
 @RequestMapping("/api/v1")
 public class FlightController {
+
+    /**
+     * Widoki
+     */
     private final Resource mainView;
     private final Resource customersView;
     private final Resource airlinesView;
@@ -57,20 +57,22 @@ public class FlightController {
     private final Resource userAirlinesView;
     private final Resource userCustomersView;
 
-
-
+    /**
+     * Serwis lotów
+     */
     private FlightService flightService;
-
-    @Autowired
-    private FlightRepository flightRepository;
 
     /**
      * Kontekst aplikacji Springa
      */
     private final ApplicationContext applicationContext;
 
+    /**
+     * Widok lotów
+     */
     @FXML
     private JFXTreeTableView<Flight> flightsTableView;
+
     /**
      * Kolumny tabeli
      */
@@ -97,10 +99,8 @@ public class FlightController {
     @FXML
     private JFXDatePicker datePicker;
 
-
     //Lista zawierająca predykaty służące do filtrowania danych
     private final List<Predicate<Flight>> predicates = new LinkedList<>();
-
 
     /**
      * Metoda która wczytuje dane do tabeli lotów
@@ -115,7 +115,6 @@ public class FlightController {
         departureTime.setCellValueFactory(data-> data.getValue().getValue().getDepartureTimeProperty());
         arrivalTime.setCellValueFactory(data-> data.getValue().getValue().getArrivalTimeProperty());
 
-
         //Pobranie lotów z serwisu
         ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
 
@@ -124,6 +123,24 @@ public class FlightController {
         flightsTableView.setRoot(root);
         flightsTableView.setShowRoot(false);
     }
+
+    /**
+     * Konstruktor, Spring wstrzykuje odpowiedznie zależności
+     * @param flightService
+     * @param applicationContext
+     * @param airlinesView
+     * @param customersView
+     * @param mainView
+     * @param reservationListView
+     * @param addReservationView
+     * @param addFlightView
+     * @param loginView
+     * @param anonymousMainView
+     * @param anonymousAirlineView
+     * @param userAirlinesView
+     * @param reservationListViewCustomer
+     * @param userCustomersView
+     */
     public FlightController(FlightService flightService, ApplicationContext applicationContext,
                             @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                             @Value("classpath:/view/CustomersView.fxml") Resource customersView,
@@ -184,6 +201,10 @@ public class FlightController {
         setPredicates();
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku głównego
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showMainView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -204,6 +225,10 @@ public class FlightController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -227,7 +252,6 @@ public class FlightController {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Metoda służąca do przejścia do widoku tabeli klientów
@@ -281,7 +305,7 @@ public class FlightController {
     }
 
     /**
-     * Metoda służąca do przejścia do formularza dodawania rezerwacji
+     * Metoda służąca do przejścia do formularza dodawania/edycji rezerwacji
      * @param actionEvent event emitowany przez przycisk
      */
     public void showAddReservation(ActionEvent actionEvent, Flight flight) {
@@ -320,12 +344,15 @@ public class FlightController {
             stage.setScene(scene);
             stage.show();
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku logowania
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showLoginView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());

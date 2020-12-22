@@ -24,9 +24,9 @@ import java.io.IOException;
 @Component
 public class MainViewController {
 
-    public JFXButton loginButton = new JFXButton();
-    public JFXButton boi = new JFXButton();
-
+    /**
+     * Widoki
+     */
     private final Resource airlinesView;
     private final Resource customersView;
     private final Resource flightView;
@@ -45,7 +45,6 @@ public class MainViewController {
      * Kontekst aplikacji Springa
      */
     private final ApplicationContext applicationContext;
-
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
@@ -84,7 +83,6 @@ public class MainViewController {
         this.userCustomersView = userCustomersView;
         this.anonymousMainView = anonymousMainView;
     }
-
 
     /**
      * Metoda służąca do przejścia do widoku tabeli przewoźników
@@ -139,6 +137,10 @@ public class MainViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku rezerwacji
+     * @param actionEvent
+     */
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
@@ -153,6 +155,10 @@ public class MainViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku lotów
+     * @param actionEvent
+     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -177,6 +183,10 @@ public class MainViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku logowania
+     * @param actionEvent
+     */
     public void showLoginView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
@@ -191,6 +201,10 @@ public class MainViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku rejestracji - rejestracja nie jest jeszcze zaimplementowana
+     * @param actionEvent
+     */
     public void showRegistrationView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(registrationView.getURL());
@@ -224,5 +238,4 @@ public class MainViewController {
             e.printStackTrace();
         }
     }
-
 }

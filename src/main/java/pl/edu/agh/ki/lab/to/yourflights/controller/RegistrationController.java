@@ -24,14 +24,15 @@ import java.io.IOException;
 
 
 /**
- * Kontroler obsługujący formularz do dodawania klientów
+ * Kontroler obsługujący formularz do rejestracji
+ * Nie jest to na razie wykorzystywane
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class RegistrationController {
 
     /**
-     * Widok klientów
+     * Widoki
      */
     private final Resource mainView;
     private final Resource anonymousMainView;
@@ -42,7 +43,6 @@ public class RegistrationController {
      * Kontekst aplikacji Springowej
      */
     private final ApplicationContext applicationContext;
-
 
     /**
      * Pola formularza
@@ -66,16 +66,13 @@ public class RegistrationController {
     public Text actiontarget;
 
     private final CustomerService customerService;
-//    private Customer customer;
-
 
     /**
-     * Metoda obsługująca dodawanie klienta po naciśnięciu przycisku "submit" w formularzu
+     * Metoda obsługująca dodawanie użytkownika po naciśnięciu przycisku "submit" w formularzu
      * Zaimplementowana została podstawowa obsługa sprawdzania poprawności wpisanych wartości
      * @param actionEvent event emitowany przez przycisk
      */
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
-
 
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
@@ -96,9 +93,7 @@ public class RegistrationController {
         }
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
-        System.out.println("HELLO");
         customerService.save(new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText()));
-        System.out.println("HELLO2");
         firstName.clear();
         lastName.clear();
         country.clear();
@@ -110,7 +105,7 @@ public class RegistrationController {
         username.clear();
         password.clear();
 
-        //Zarejestrowanie konta
+        //Zarejestrowanie konta - todo
 
 //        UserDetails newUser = User.withUsername(username.toString())
 //                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
@@ -138,7 +133,6 @@ public class RegistrationController {
         this.applicationContext = applicationContext;
         this.customerService = customerService;
     }
-
 
     /**
      * Metoda służąca do przejścia do głównego widoku

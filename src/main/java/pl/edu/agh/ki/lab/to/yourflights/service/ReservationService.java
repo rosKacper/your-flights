@@ -23,8 +23,8 @@ public class ReservationService {
      * Repozytorium rezerwacji
      */
     private final ReservationRepository reservationRepository;
-    private final TicketOrderService ticketOrderService;
 
+    private final TicketOrderService ticketOrderService;
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie repozytorium
