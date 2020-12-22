@@ -65,11 +65,15 @@
     </VBox>
     <AnchorPane layoutX="220.0" prefHeight="800.0" prefWidth="1060.0">
         <children>
+            <JFXButton layoutX="923.0" layoutY="34.0" onAction="#handleLogout" prefHeight="43.0" prefWidth="111.0" style="-fx-background-color: #1d3557;" text="Log Out" textFill="WHITE">
+                <font>
+                    <Font size="19.0" />
+                </font>
+            </JFXButton>
             <JFXTreeTableView fx:id="reservationListTable" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
                 <columns>
                     <TreeTableColumn fx:id="reservationDate" prefWidth="141.0" text="Reservation date" />
                     <TreeTableColumn fx:id="userName" prefWidth="141.0" text="Username" />
-                    <TreeTableColumn fx:id="Status" prefWidth="141.0" text="Status" />
                     <TreeTableColumn fx:id="departure" prefWidth="141.0" text="Departure" />
                     <TreeTableColumn fx:id="destination" prefWidth="141.0" text="Destination" />
                     <TreeTableColumn fx:id="departureDate" prefWidth="141.0" text="DepartureDate" />

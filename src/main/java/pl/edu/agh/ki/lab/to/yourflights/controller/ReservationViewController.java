@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.*;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
@@ -50,6 +51,7 @@ public class ReservationViewController {
     private final Resource userFlightView;
     private final Resource userCustomersView;
     private final Resource userAirlinesView;
+    private final Resource anonymousMainView;
 
     private GenericFilter<Reservation> reservationFilter;
 
@@ -154,6 +156,7 @@ public class ReservationViewController {
                                      @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                                      @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                      @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
+                                     @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;
         this.mainView = mainView;
@@ -165,6 +168,7 @@ public class ReservationViewController {
         this.userFlightView = userFlightView;
         this.userCustomersView = userCustomersView;
         this.userAirlinesView = userAirlinesView;
+        this.anonymousMainView = anonymousMainView;
     }
 
     /**
@@ -281,6 +285,22 @@ public class ReservationViewController {
         var reservation = reservationListTable.getSelectionModel().getSelectedItem();
         if(reservation != null) {
             this.showAddReservation(event, reservation.getValue().getTicketOrders().get(0).getTicketCategory().getFlight(), reservation.getValue());
+        }
+    }
+
+    @FXML
+    void handleLogout(ActionEvent event) {
+        JavafxApplication.logout();
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

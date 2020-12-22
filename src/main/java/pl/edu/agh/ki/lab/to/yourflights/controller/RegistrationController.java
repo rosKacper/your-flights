@@ -111,6 +111,7 @@ public class RegistrationController {
         password.clear();
 
         //Zarejestrowanie konta
+
 //        UserDetails newUser = User.withUsername(username.toString())
 //                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
 //                .password(password.toString()).roles("USER").build();
