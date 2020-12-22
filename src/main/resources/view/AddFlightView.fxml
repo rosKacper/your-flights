@@ -92,10 +92,10 @@
         <JFXTextField fx:id="placeOfDeparture" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         <JFXTextField fx:id="placeOfDestination" focusColor="#1d3557" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         <JFXComboBox fx:id="comboBox" onMouseClicked="#setComboBox"  prefHeight="25.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-        <JFXDatePicker fx:id="departureDate" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-        <JFXTimePicker fx:id="departureTime" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-        <JFXDatePicker fx:id="arrivalDate" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-        <JFXTimePicker fx:id="arrivalTime" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+        <JFXDatePicker fx:id="departureDate" GridPane.columnIndex="1" GridPane.rowIndex="8" defaultColor="#1d3557"/>
+        <JFXTimePicker fx:id="departureTime" GridPane.columnIndex="1" GridPane.rowIndex="10" defaultColor="#1d3557"/>
+        <JFXDatePicker fx:id="arrivalDate" GridPane.columnIndex="1" GridPane.rowIndex="12" defaultColor="#1d3557"/>
+        <JFXTimePicker fx:id="arrivalTime" GridPane.columnIndex="1" GridPane.rowIndex="14" defaultColor="#1d3557"/>
         <Label fx:id="placeOfDestinationValidation" prefHeight="17.0" prefWidth="184.0" GridPane.rowIndex="3" />
         <Label fx:id="placeOfDepartureValidation" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="5" />
         <Label fx:id="airlineNameValidation" prefHeight="17.0" prefWidth="166.0" GridPane.rowIndex="7" />
