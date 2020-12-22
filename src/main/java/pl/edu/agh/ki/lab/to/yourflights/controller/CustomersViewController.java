@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
@@ -84,6 +85,20 @@ public class CustomersViewController {
 
         //Pobranie klientów z serwisu
         ObservableList<Customer> customers = FXCollections.observableList(customerService.findAll());
+
+        FXMLLoader fxmlloader;
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        if(role.equals("[ROLE_ADMIN]")){
+            customers = FXCollections.observableList(customerService.findAll());
+        }
+        else{
+            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = "";
+            if(userDetails instanceof UserDetails){
+                username = ((UserDetails)userDetails).getUsername();
+            }
+            customers = FXCollections.observableList(customerService.findByUsername(username));
+        }
 
         //Przekazanie danych do tabeli
         final TreeItem<Customer> root = new RecursiveTreeItem<>(customers, RecursiveTreeObject::getChildren);
