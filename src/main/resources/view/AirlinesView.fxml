@@ -99,7 +99,7 @@
                            <Font size="14.0" />
                         </font>
                      </Label>
-                     <JFXComboBox fx:id="countryPicker" editable="true" prefHeight="26.0" prefWidth="133.0" />
+                     <JFXComboBox fx:id="countryPicker" editable="false" prefHeight="26.0" prefWidth="133.0" />
                   </children>
                   <padding>
                      <Insets top="2.0" />

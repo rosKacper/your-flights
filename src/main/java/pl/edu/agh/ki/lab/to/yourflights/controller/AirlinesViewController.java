@@ -84,7 +84,7 @@ public class AirlinesViewController {
     @FXML
     private JFXTextField nameInput;
     @FXML
-    private JFXComboBox<String> countryPicker;
+    private ComboBox<String> countryPicker;
 
 
 
@@ -162,9 +162,10 @@ public class AirlinesViewController {
         //filtrowanie na podstawie nazwy
         airlineFilter.addPredicate( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
         //filtrowanie na podstawie kraju
-        airlineFilter.addPredicate( testedValue -> countryPicker.getValue() == null ||
-                    countryPicker.getValue().length() == 0 ||
-                    testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase())
+        airlineFilter.addPredicate( testedValue ->
+                countryPicker.getValue() == null ||
+                countryPicker.getValue().length() == 0 ||
+                testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase())
         );
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
         airlineFilter.setListener(nameInput.textProperty());
@@ -177,7 +178,7 @@ public class AirlinesViewController {
     @FXML
     public void initialize() {
         this.setModel();
-        countryPicker.getItems().addAll(COUNTRIES);
+        this.setCountryPickerItems();
         setPredicates();
     }
 
@@ -264,7 +265,6 @@ public class AirlinesViewController {
             else{
                 fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
             }
-//            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -319,6 +319,7 @@ public class AirlinesViewController {
         var airlines = airlinesTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
         airlineService.deleteAll(FXCollections.observableList(airlines));
         this.setModel();
+        this.setCountryPickerItems();
     }
 
     @FXML
@@ -354,4 +355,10 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda ustawiająca listę krajów w liście rozwijanej służącej do filtrowania linii lotniczych po kraju
+     */
+    private void setCountryPickerItems() {
+        countryPicker.getItems().setAll(airlineService.getCountries());
+    }
 }

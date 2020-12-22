@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.repository.AirlineRepository;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Klasa definiująca serwis ze Spring Data Jpa dla przewoźników
@@ -66,5 +68,13 @@ public class AirlineService {
         if(airline != null) {
             airlineRepository.save(airline);
         }
+    }
+
+    /**
+     * Metoda służąca do pobrania listy wszystkich krajów
+     * @return lista wszystkich krajów
+     */
+    public List<String> getCountries() {
+        return this.findAll().stream().map(airline -> airline.getCountry()).distinct().collect(Collectors.toList());
     }
 }
