@@ -81,7 +81,7 @@
             </Text>
             <HBox alignment="CENTER_LEFT" layoutY="700.0" prefHeight="80.0" prefWidth="980.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="720.0">
                 <children>
-                    <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleUpdateAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#e9c46a" style="-fx-border-color: #e9c46a; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
+                    <JFXButton fx:id="buttonUpdateCustomer" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleUpdateAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#e9c46a" style="-fx-border-color: #e9c46a; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
                         <font>
                             <Font size="18.0" />
                         </font>

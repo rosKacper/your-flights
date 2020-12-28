@@ -1,10 +1,8 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -82,6 +81,14 @@ public class ReservationViewController {
     private JFXTextField destinationFilter;
     @FXML
     private JFXDatePicker datePicker;
+
+    /**
+     * Przyciski
+     */
+    @FXML
+    private JFXButton buttonDeleteReservation;
+    @FXML
+    private JFXButton buttonUpdateReservation;
 
 
     /**
@@ -173,6 +180,8 @@ public class ReservationViewController {
     public void initialize() {
         this.setModel();
         this.setPredicates();
+        reservationListTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.setButtonsDisablePropertyBinding();
     }
 
     /**
@@ -325,5 +334,23 @@ public class ReservationViewController {
         departureFilter.clear();
         userNameFilter.clear();
         datePicker.setValue(null);
+    }
+
+    /**
+     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
+     * Po to aby przyciski Delete, Update i AddReservation były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
+     */
+    private void setButtonsDisablePropertyBinding() {
+        if(buttonDeleteReservation != null) {
+            buttonDeleteReservation.disableProperty().bind(
+                    Bindings.isEmpty(reservationListTable.getSelectionModel().getSelectedItems())
+            );
+        }
+        if(buttonUpdateReservation != null) {
+            buttonUpdateReservation.disableProperty().bind(
+                    Bindings.size(reservationListTable.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+
     }
 }

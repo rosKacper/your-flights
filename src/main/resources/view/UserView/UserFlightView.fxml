@@ -88,7 +88,7 @@
             </Text>
             <HBox alignment="CENTER_LEFT" layoutY="700.0" prefHeight="80.0" prefWidth="980.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="720.0">
                 <children>
-                    <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddReservationAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#c746d0" style="-fx-border-color: #c746d0; -fx-border-width: 2px;" text="Add reservation" textAlignment="CENTER">
+                    <JFXButton fx:id="buttonAddReservation" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddReservationAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#c746d0" style="-fx-border-color: #c746d0; -fx-border-width: 2px;" text="Add reservation" textAlignment="CENTER">
                         <font>
                             <Font size="18.0" />
                         </font>

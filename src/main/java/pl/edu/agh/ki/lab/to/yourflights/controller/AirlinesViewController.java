@@ -2,6 +2,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -87,6 +88,14 @@ public class AirlinesViewController {
     private JFXTextField nameInput;
     @FXML
     private ComboBox<String> countryPicker;
+
+    /**
+     * Przyciski
+     */
+    @FXML
+    private JFXButton buttonDeleteAirline;
+    @FXML
+    private JFXButton buttonUpdateAirline;
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
@@ -179,6 +188,8 @@ public class AirlinesViewController {
         this.setModel();
         this.setCountryPickerItems();
         setPredicates();
+        airlinesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.setButtonsDisablePropertyBinding();
     }
 
     /**
@@ -379,5 +390,22 @@ public class AirlinesViewController {
     public void resetFilters() {
         nameInput.clear();
         countryPicker.setValue("");
+    }
+
+    /**
+     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
+     * Po to aby przyciski Delete i Update były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
+     */
+    private void setButtonsDisablePropertyBinding() {
+        if(buttonDeleteAirline != null) {
+            buttonDeleteAirline.disableProperty().bind(
+                    Bindings.isEmpty(airlinesTableView.getSelectionModel().getSelectedItems())
+            );
+        }
+        if(buttonUpdateAirline != null) {
+            buttonUpdateAirline.disableProperty().bind(
+                    Bindings.size(airlinesTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
     }
 }

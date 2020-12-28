@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -101,6 +99,16 @@ public class FlightController {
 
     //Lista zawierająca predykaty służące do filtrowania danych
     private final List<Predicate<Flight>> predicates = new LinkedList<>();
+
+    /**
+     * Przyciski
+     */
+    @FXML
+    private JFXButton buttonAddReservation;
+    @FXML
+    private JFXButton buttonDeleteFlight;
+    @FXML
+    private JFXButton buttonUpdateFlight;
 
     /**
      * Metoda która wczytuje dane do tabeli lotów
@@ -199,6 +207,8 @@ public class FlightController {
     public void initialize() {
         this.setModel();
         setPredicates();
+        flightsTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        setButtonsDisablePropertyBinding();
     }
 
     /**
@@ -422,5 +432,27 @@ public class FlightController {
         departureInput.clear();
         destinationInput.clear();
         datePicker.setValue(null);
+    }
+
+    /**
+     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
+     * Po to aby przyciski Delete, Update i AddReservation były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
+     */
+    private void setButtonsDisablePropertyBinding() {
+        if(buttonAddReservation != null) {
+            buttonAddReservation.disableProperty().bind(
+                    Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+        if(buttonDeleteFlight != null) {
+            buttonDeleteFlight.disableProperty().bind(
+                    Bindings.isEmpty(flightsTableView.getSelectionModel().getSelectedItems())
+            );
+        }
+        if(buttonUpdateFlight != null) {
+            buttonUpdateFlight.disableProperty().bind(
+                    Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
     }
 }

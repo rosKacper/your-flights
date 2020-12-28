@@ -42,7 +42,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </JFXButton>
-               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleDeleteAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#95353a" style="-fx-border-color: #95353a; -fx-border-width: 2px;" text="Delete" textAlignment="CENTER">
+               <JFXButton fx:id="buttonDeleteAirline" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleDeleteAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#95353a" style="-fx-border-color: #95353a; -fx-border-width: 2px;" text="Delete" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
@@ -53,7 +53,7 @@
                      <Insets left="20.0" />
                   </HBox.margin>
                </JFXButton>
-               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleUpdateAction" prefHeight="27.0" prefWidth="211.0" ripplerFill="#e9c46a" style="-fx-border-color: #e9c46a; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
+               <JFXButton fx:id="buttonUpdateAirline" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleUpdateAction" prefHeight="27.0" prefWidth="211.0" ripplerFill="#e9c46a" style="-fx-border-color: #e9c46a; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
