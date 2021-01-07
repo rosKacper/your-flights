@@ -2,6 +2,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,7 +37,14 @@ import java.util.stream.Collectors;
 @Component
 public class AirlinesViewController {
 
+    /**
+     * Serwis linii lotniczych
+     */
     private AirlineService airlineService;
+
+    /**
+     * Widoki
+     */
     private final Resource mainView;
     private final Resource addAirlineView;
     private final Resource reservationListView;
@@ -49,22 +57,17 @@ public class AirlinesViewController {
     private final Resource customersView;
     private final Resource userCustomersView;
 
-
-
+    /**
+     * Kontekrs aplikacji Springa
+     */
     private final ApplicationContext applicationContext;
-
-
-    // Lista służąca do filtrowania kraju pochodzenia przewoźnika
-    private static final List<String> COUNTRIES =
-            Collections.unmodifiableList(Arrays.asList("Poland", "Spain", "Germany"));
-
+    GenericFilter<Airline> airlineFilter;
 
     /**
      * Tabela przewoźników
      */
     @FXML
     private JFXTreeTableView<Airline> airlinesTableView;
-
 
     /**
      * Kolumny tabeli
@@ -84,9 +87,15 @@ public class AirlinesViewController {
     @FXML
     private JFXTextField nameInput;
     @FXML
-    private JFXComboBox<String> countryPicker;
+    private ComboBox<String> countryPicker;
 
-
+    /**
+     * Przyciski
+     */
+    @FXML
+    private JFXButton buttonDeleteAirline;
+    @FXML
+    private JFXButton buttonUpdateAirline;
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
@@ -135,7 +144,6 @@ public class AirlinesViewController {
                                   @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                   @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                                   @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
-
                                   ApplicationContext applicationContext) {
         this.airlineService = airlineService;
         this.mainView = mainView;
@@ -157,14 +165,15 @@ public class AirlinesViewController {
      */
     private void setPredicates() {
         // Generyczna klasa filtrów dla danego modelu
-        GenericFilter<Airline> airlineFilter = new GenericFilter<>(airlinesTableView);
+        airlineFilter = new GenericFilter<>(airlinesTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
         //filtrowanie na podstawie nazwy
         airlineFilter.addPredicate( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
         //filtrowanie na podstawie kraju
-        airlineFilter.addPredicate( testedValue -> countryPicker.getValue() == null ||
-                    countryPicker.getValue().length() == 0 ||
-                    testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase())
+        airlineFilter.addPredicate( testedValue ->
+                countryPicker.getValue() == null ||
+                countryPicker.getValue().length() == 0 ||
+                testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase())
         );
         // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
         airlineFilter.setListener(nameInput.textProperty());
@@ -177,8 +186,10 @@ public class AirlinesViewController {
     @FXML
     public void initialize() {
         this.setModel();
-        countryPicker.getItems().addAll(COUNTRIES);
+        this.setCountryPickerItems();
         setPredicates();
+        airlinesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.setButtonsDisablePropertyBinding();
     }
 
     /**
@@ -254,6 +265,10 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku tabeli rezerwacji
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -264,7 +279,6 @@ public class AirlinesViewController {
             else{
                 fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
             }
-//            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -276,6 +290,10 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -300,6 +318,10 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku logowania
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showLoginView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
@@ -319,6 +341,7 @@ public class AirlinesViewController {
         var airlines = airlinesTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
         airlineService.deleteAll(FXCollections.observableList(airlines));
         this.setModel();
+        this.setCountryPickerItems();
     }
 
     @FXML
@@ -335,7 +358,7 @@ public class AirlinesViewController {
     }
 
     /**
-     * Metoda zapewniająca możliwość wylogowania użytkownika
+     * Metoda obsługująca wylogowanie użytkownika
      * @param event event emitowany przez przycisk
      */
     @FXML
@@ -354,4 +377,35 @@ public class AirlinesViewController {
         }
     }
 
+    /**
+     * Metoda ustawiająca listę krajów w liście rozwijanej służącej do filtrowania linii lotniczych po kraju
+     */
+    private void setCountryPickerItems() {
+        countryPicker.getItems().setAll(airlineService.getCountries());
+    }
+
+    /**
+     * Metoda służąca do zresetowania filtrów
+     */
+    public void resetFilters() {
+        nameInput.clear();
+        countryPicker.setValue("");
+    }
+
+    /**
+     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
+     * Po to aby przyciski Delete i Update były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
+     */
+    private void setButtonsDisablePropertyBinding() {
+        if(buttonDeleteAirline != null) {
+            buttonDeleteAirline.disableProperty().bind(
+                    Bindings.isEmpty(airlinesTableView.getSelectionModel().getSelectedItems())
+            );
+        }
+        if(buttonUpdateAirline != null) {
+            buttonUpdateAirline.disableProperty().bind(
+                    Bindings.size(airlinesTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+    }
 }

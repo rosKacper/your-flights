@@ -25,13 +25,6 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     private String username;
 
-//    /**
-//     * Mapowanie relacji do użytkownika
-//     */
-//    @OneToOne
-//    @JoinColumn(name="account_id")
-//    private User user;
-
     /**
      * Mapowanie relacji do rezerwacji danego klienta
      */

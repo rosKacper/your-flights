@@ -1,8 +1,10 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
@@ -33,6 +37,9 @@ import java.util.stream.Collectors;
 @Component
 public class CustomersViewController {
 
+    /**
+     * Widoki
+     */
     private final Resource mainView;
     private final Resource airlinesView;
     private final Resource addCustomerView;
@@ -71,6 +78,13 @@ public class CustomersViewController {
     @FXML
     private TreeTableColumn<Customer, String> cityColumn;
 
+    /**
+     * Przyciski
+     */
+    @FXML
+    private JFXButton buttonDeleteCustomer;
+    @FXML
+    private JFXButton buttonUpdateCustomer;
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
@@ -84,6 +98,20 @@ public class CustomersViewController {
 
         //Pobranie klientów z serwisu
         ObservableList<Customer> customers = FXCollections.observableList(customerService.findAll());
+
+        FXMLLoader fxmlloader;
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        if(role.equals("[ROLE_ADMIN]")){
+            customers = FXCollections.observableList(customerService.findAll());
+        }
+        else{
+            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = "";
+            if(userDetails instanceof UserDetails){
+                username = ((UserDetails)userDetails).getUsername();
+            }
+            customers = FXCollections.observableList(customerService.findByUsername(username));
+        }
 
         //Przekazanie danych do tabeli
         final TreeItem<Customer> root = new RecursiveTreeItem<>(customers, RecursiveTreeObject::getChildren);
@@ -128,6 +156,8 @@ public class CustomersViewController {
     @FXML
     public void initialize() {
         this.setModel();
+        customersTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.setButtonsDisablePropertyBinding();
     }
 
     /**
@@ -173,6 +203,10 @@ public class CustomersViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -218,6 +252,10 @@ public class CustomersViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku rezerwacji
+     * @param actionEvent event emitowany przez przycisk
+     */
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -228,7 +266,6 @@ public class CustomersViewController {
             else{
                 fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
             }
-//            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -280,4 +317,20 @@ public class CustomersViewController {
         }
     }
 
+    /**
+     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
+     * Po to aby przyciski Delete i Update były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
+     */
+    private void setButtonsDisablePropertyBinding() {
+        if(buttonDeleteCustomer != null) {
+            buttonDeleteCustomer.disableProperty().bind(
+                    Bindings.isEmpty(customersTableView.getSelectionModel().getSelectedItems())
+            );
+        }
+        if(buttonUpdateCustomer != null) {
+            buttonUpdateCustomer.disableProperty().bind(
+                    Bindings.size(customersTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+    }
 }

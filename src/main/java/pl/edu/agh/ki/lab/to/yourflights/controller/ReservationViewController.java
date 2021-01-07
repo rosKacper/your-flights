@@ -1,10 +1,8 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,7 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
@@ -22,16 +20,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.*;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.UUID;
 import java.util.stream.Collectors;
-
 
 /**
  * Kontroler widoku tabeli rezerwacji
@@ -50,8 +46,7 @@ public class ReservationViewController {
     private final Resource userFlightView;
     private final Resource userCustomersView;
     private final Resource userAirlinesView;
-
-    private GenericFilter<Reservation> reservationFilter;
+    private final Resource anonymousMainView;
 
     /**
      * Tabela rezerwacji
@@ -75,17 +70,25 @@ public class ReservationViewController {
     @FXML
     private TreeTableColumn<Reservation, String> destinationDate;
 
+    /**
+     * Pola do filtrowania
+     */
     @FXML
     private JFXTextField userNameFilter;
-
     @FXML
     private JFXTextField departureFilter;
-
     @FXML
     private JFXTextField destinationFilter;
-
     @FXML
     private JFXDatePicker datePicker;
+
+    /**
+     * Przyciski
+     */
+    @FXML
+    private JFXButton buttonDeleteReservation;
+    @FXML
+    private JFXButton buttonUpdateReservation;
 
 
     /**
@@ -100,7 +103,6 @@ public class ReservationViewController {
         departureDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getdepartureDateProperty());
         destinationDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getarrivalDateProperty());
 
-
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
@@ -109,13 +111,15 @@ public class ReservationViewController {
                 .filter(reservation -> reservation.getUserName().equals(name) || role.equals("[ROLE_ADMIN]"))
                 .collect(Collectors.toList()));
 
-//        Przekazanie danych do tabeli
+        //Przekazanie danych do tabeli
         final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservations, RecursiveTreeObject::getChildren);
         reservationListTable.setRoot(root);
         reservationListTable.setShowRoot(false);
-
     }
 
+    /**
+     * Metoda służąca do inicjalizacji filtrowania
+     */
     private void setPredicates() {
         // Generyczna klasa filtrów dla danego modelu
         GenericFilter<Reservation> reservationFilter = new GenericFilter<>(reservationListTable);
@@ -154,6 +158,7 @@ public class ReservationViewController {
                                      @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                                      @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                      @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
+                                     @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;
         this.mainView = mainView;
@@ -165,6 +170,7 @@ public class ReservationViewController {
         this.userFlightView = userFlightView;
         this.userCustomersView = userCustomersView;
         this.userAirlinesView = userAirlinesView;
+        this.anonymousMainView = anonymousMainView;
     }
 
     /**
@@ -174,6 +180,8 @@ public class ReservationViewController {
     public void initialize() {
         this.setModel();
         this.setPredicates();
+        reservationListTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.setButtonsDisablePropertyBinding();
     }
 
     /**
@@ -194,6 +202,10 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent
+     */
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(airlineView.getURL());
@@ -232,6 +244,10 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku lotów
+     * @param actionEvent
+     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -253,6 +269,12 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda służąca do przejścia do widoku do dodawania/edycji rezerwacji
+     * @param actionEvent
+     * @param flight
+     * @param reservation - rezerwacja do edycji (może być nullem)
+     */
     public void showAddReservation(ActionEvent actionEvent, Flight flight, Reservation reservation) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(addReservationView.getURL());
@@ -284,4 +306,51 @@ public class ReservationViewController {
         }
     }
 
+    /**
+     * Metoda obsługująca wylogowywanie użytkownika
+     * @param event
+     */
+    @FXML
+    void handleLogout(ActionEvent event) {
+        JavafxApplication.logout();
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda resetująca filtry
+     */
+    public void resetFilters() {
+        destinationFilter.clear();
+        departureFilter.clear();
+        userNameFilter.clear();
+        datePicker.setValue(null);
+    }
+
+    /**
+     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
+     * Po to aby przyciski Delete, Update i AddReservation były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
+     */
+    private void setButtonsDisablePropertyBinding() {
+        if(buttonDeleteReservation != null) {
+            buttonDeleteReservation.disableProperty().bind(
+                    Bindings.isEmpty(reservationListTable.getSelectionModel().getSelectedItems())
+            );
+        }
+        if(buttonUpdateReservation != null) {
+            buttonUpdateReservation.disableProperty().bind(
+                    Bindings.size(reservationListTable.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+
+    }
 }

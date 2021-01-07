@@ -9,7 +9,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -62,13 +61,17 @@
                                     <Font size="14.0" />
                                 </font>
                             </Label>
-                            <JFXComboBox fx:id="countryPicker" editable="true" prefHeight="26.0" prefWidth="133.0" />
+                            <JFXComboBox fx:id="countryPicker" editable="false" prefHeight="26.0" prefWidth="133.0" />
                         </children>
                         <padding>
                             <Insets top="2.0" />
                         </padding>
                     </VBox>
-                    <VBox />
+               <JFXButton fx:id="filtersResetButton" alignment="CENTER" onAction="#resetFilters" prefHeight="38.0" prefWidth="122.0" style="-fx-background-color: #9a031e;" text="Reset filters" textFill="WHITE" TilePane.alignment="BOTTOM_CENTER">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </JFXButton>
                 </children>
             </TilePane>
         </children>
@@ -92,7 +95,7 @@
                     <Cursor fx:constant="HAND" />
                 </cursor>
             </JFXButton>
-            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showFlightView" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flight" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showFlightView" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flights" textAlignment="CENTER" textFill="WHITE">
                 <font>
                     <Font size="18.0" />
                 </font>

@@ -1,10 +1,10 @@
 package pl.edu.agh.ki.lab.to.yourflights.repository;
 
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -13,4 +13,10 @@ import java.util.UUID;
  */
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, UUID> {
+    /**
+     * Metoda służąca do znalezienia Klienta po jego username
+     * @param username nazwa użytkownika
+     * @return
+     */
+    List<Customer> findByUsername(String username);
 }

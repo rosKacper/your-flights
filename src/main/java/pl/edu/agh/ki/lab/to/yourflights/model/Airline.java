@@ -29,13 +29,6 @@ public class Airline extends RecursiveTreeObject<Airline> {
     private String description;
 
     /**
-     * Mapowanie relacji do użytkownika
-     */
-    @OneToOne
-    @JoinColumn(name="accountID")
-    private User user;
-
-    /**
      * Mapowanie relacji do lotów danego przewoźnika
      */
     @OneToMany(

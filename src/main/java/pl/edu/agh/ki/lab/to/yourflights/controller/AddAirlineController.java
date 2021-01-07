@@ -15,11 +15,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
-import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 /**
  * Kontroler obsługujący formularz do dodawania klientów
@@ -95,13 +93,15 @@ public class AddAirlineController {
             return;
         }
 
-        //Stworzenie nowego przewoźnika i wyczyszczenie pól formularza
+        //Stworzenie nowego przewoźnika (jeśli to było dodawanie nowego przewoźnika), lub zaktualizowanie obecnego lotu
         if(airline == null) {
             airline = new Airline(name.getText(),country.getText(),description.getText());
         } else {
             updateModel();
         }
         airlineService.save(airline);
+
+        //wyczyszczenie pól formularza
         country.clear();
         description.clear();
         name.clear();

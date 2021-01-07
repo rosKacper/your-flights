@@ -19,12 +19,12 @@
 
 <AnchorPane prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.AirlinesViewController">
    <AnchorPane layoutX="220.0" prefHeight="800.0" prefWidth="1060.0">
-      <JFXButton layoutX="923.0" layoutY="34.0" onAction="#handleLogout" prefHeight="43.0" prefWidth="111.0" style="-fx-background-color: #1d3557;" text="Log Out" textFill="WHITE">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </JFXButton>
       <children>
+         <JFXButton layoutX="923.0" layoutY="34.0" onAction="#handleLogout" prefHeight="43.0" prefWidth="111.0" style="-fx-background-color: #1d3557;" text="Log Out" textFill="WHITE">
+            <font>
+               <Font size="19.0" />
+            </font>
+         </JFXButton>
          <JFXTreeTableView fx:id="airlinesTableView" layoutX="48.0" layoutY="163.0" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
             <columns>
                <TreeTableColumn fx:id="nameColumn" prefWidth="135.0" text="Name" />
@@ -42,7 +42,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </JFXButton>
-               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleDeleteAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#95353a" style="-fx-border-color: #95353a; -fx-border-width: 2px;" text="Delete" textAlignment="CENTER">
+               <JFXButton fx:id="buttonDeleteAirline" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleDeleteAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#95353a" style="-fx-border-color: #95353a; -fx-border-width: 2px;" text="Delete" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
@@ -53,7 +53,7 @@
                      <Insets left="20.0" />
                   </HBox.margin>
                </JFXButton>
-               <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleUpdateAction" prefHeight="27.0" prefWidth="211.0" ripplerFill="#e9c46a" style="-fx-border-color: #e9c46a; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
+               <JFXButton fx:id="buttonUpdateAirline" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleUpdateAction" prefHeight="27.0" prefWidth="211.0" ripplerFill="#e9c46a" style="-fx-border-color: #e9c46a; -fx-border-width: 2px;" text="Update" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
@@ -99,13 +99,17 @@
                            <Font size="14.0" />
                         </font>
                      </Label>
-                     <JFXComboBox fx:id="countryPicker" editable="true" prefHeight="26.0" prefWidth="133.0" />
+                     <JFXComboBox fx:id="countryPicker" editable="false" prefHeight="26.0" prefWidth="133.0" />
                   </children>
                   <padding>
                      <Insets top="2.0" />
                   </padding>
                </VBox>
-               <VBox />
+               <JFXButton fx:id="filtersResetButton" alignment="CENTER" onAction="#resetFilters" prefHeight="38.0" prefWidth="122.0" style="-fx-background-color: #9a031e;" text="Reset filters" textFill="WHITE" TilePane.alignment="BOTTOM_CENTER">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </JFXButton>
             </children>
          </TilePane>
       </children>
@@ -137,7 +141,7 @@
                <Cursor fx:constant="HAND" />
             </cursor>
          </JFXButton>
-         <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showFlightView" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flight" textAlignment="CENTER" textFill="WHITE">
+         <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showFlightView" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flights" textAlignment="CENTER" textFill="WHITE">
             <font>
                <Font size="18.0" />
             </font>

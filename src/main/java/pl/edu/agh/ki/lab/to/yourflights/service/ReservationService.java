@@ -23,8 +23,8 @@ public class ReservationService {
      * Repozytorium rezerwacji
      */
     private final ReservationRepository reservationRepository;
-    private final TicketOrderService ticketOrderService;
 
+    private final TicketOrderService ticketOrderService;
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie repozytorium
@@ -75,14 +75,8 @@ public class ReservationService {
     public boolean save(Reservation reservation) {
         if(reservation != null) {
             List<Reservation> reservations = findByUserName(reservation.getUserName());
-            boolean hasNoCollidingReservations = reservations.stream()
-                    .noneMatch(existingReservation -> existingReservation.getReservationDate().equals(reservation.getReservationDate()));
-            if(hasNoCollidingReservations) {
-                reservationRepository.save(reservation);
-                return true;
-            } else {
-                return false;
-            }
+            reservationRepository.save(reservation);
+            return true;
         }
         return false;
     }

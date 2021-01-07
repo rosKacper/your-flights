@@ -19,7 +19,6 @@ public class FlightService {
 
     /**
      * Repozytorium lotów
-     * Nie jest na razie wykorzystywane, ponieważ nie ma połączenia z bazą danych
      */
     private final FlightRepository flightRepository;
 

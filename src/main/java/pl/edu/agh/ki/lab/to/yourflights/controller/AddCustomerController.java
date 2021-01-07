@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
@@ -32,6 +33,7 @@ public class AddCustomerController {
      * Widok klientów
      */
     private final Resource customerView;
+    private final Resource userCustomerView;
 
     /**
      * Kontekst aplikacji Springowej
@@ -106,7 +108,6 @@ public class AddCustomerController {
      */
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
 
-
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean firstNameValidation = Validator.validateNotEmpty(firstName, firstNameValidationLabel);
@@ -122,7 +123,7 @@ public class AddCustomerController {
             return;
         }
 
-        //Stworzenie nowego klienta i wyczyszczenie pól formularza
+        //Stworzenie nowego klienta (jeśli to było dodawanie) lub edycja istniejącego
         if (customer == null) {
             customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText());
         } else {
@@ -130,6 +131,8 @@ public class AddCustomerController {
         }
 
         customerService.save(customer);
+
+//        wyczyszczenie pól formularza
         actiontarget.setText("Customer added successfully!");
         firstName.clear();
         lastName.clear();
@@ -151,11 +154,13 @@ public class AddCustomerController {
      * @param applicationContext kontekst aplikacji Springa
      */
     public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView,
+                                 @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomerView,
                                  ApplicationContext applicationContext,
                                  CustomerService customerService){
         this.customerView = customerView;
         this.applicationContext = applicationContext;
         this.customerService = customerService;
+        this.userCustomerView = userCustomerView;
     }
 
     /**
@@ -165,7 +170,16 @@ public class AddCustomerController {
     public void showCustomersView(ActionEvent actionEvent) {
         try {
             //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(customerView.getURL());
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+
+            //ładujemy widok w zależności od roli zalogowanego użytkownika
+            if(role.equals("[ROLE_ADMIN]")){
+                fxmlloader = new FXMLLoader(customerView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userCustomerView.getURL());
+            }
 
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
