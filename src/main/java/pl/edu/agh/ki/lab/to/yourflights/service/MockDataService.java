@@ -34,7 +34,7 @@ public class MockDataService {
      * Metoda dodająca do bazy przykładowy, startowy zestaw danych
      */
     public void createMockData() {
-        customerRepository.save(new Customer("Adam", "Malysz", "Poland", "Wisla", "Warszawska", "43-460", "102102102", "lec@adamlec.pl", "user"));
+        customerRepository.save(new Customer("Adam", "Malysz", "Poland", "Wisla", "Warszawska", "43-460", "102102102", "amadeusz002@wp.pl", "user"));
 
         airlineRepository.save(new Airline("LOT", "Poland", "Polskie Linie Lotnicze LOT S.A. is the flag carrier of Poland. Based in Warsaw and established on 29 December 1928, it is one of the world's oldest airlines in operation."));
         airlineRepository.save(new Airline("Lufthansa", "Germany", "Lufthansa is the largest German airline which, when combined with its subsidiaries, is the second largest airline in Europe in terms of passengers carried."));
