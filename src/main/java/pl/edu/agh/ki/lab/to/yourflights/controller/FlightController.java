@@ -187,6 +187,7 @@ public class FlightController {
      * Metoda która inicjalizuje obsługę filtrowanie
      */
     private void setPredicates() {
+
         // Generyczna klasa filtrów dla danego modelu
         GenericFilter<Flight> airlineFilter = new GenericFilter<>(flightsTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
@@ -382,11 +383,18 @@ public class FlightController {
         }
     }
 
+    public void handleShowFlightDetailsView(ActionEvent event) {
+        var flight = flightsTableView.getSelectionModel().getSelectedItem();
+        if(flight != null) {
+            this.showFlightDetailsView(event, flight.getValue());
+        }
+    }
+
     /**
      * Metoda służąca do przejścia do widoku szczegółów lotu
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showFlightDetailsView(ActionEvent actionEvent) {
+    public void showFlightDetailsView(ActionEvent actionEvent, Flight flight) {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
@@ -394,6 +402,12 @@ public class FlightController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            if(flight != null) {
+                FlightDetailsController controller = fxmlloader.getController();
+                controller.setData(flight);
+            }
+
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
