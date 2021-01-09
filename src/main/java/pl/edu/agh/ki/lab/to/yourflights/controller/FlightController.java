@@ -54,6 +54,7 @@ public class FlightController {
     private final Resource loginView;
     private final Resource userAirlinesView;
     private final Resource userCustomersView;
+    private final Resource flightDetailsView;
 
     /**
      * Serwis lotów
@@ -109,6 +110,8 @@ public class FlightController {
     private JFXButton buttonDeleteFlight;
     @FXML
     private JFXButton buttonUpdateFlight;
+    @FXML
+    private JFXButton buttonShowFlightDetails;
 
     /**
      * Metoda która wczytuje dane do tabeli lotów
@@ -161,7 +164,8 @@ public class FlightController {
                             @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView,
                             @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
                             @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
-                            @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView) {
+                            @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
+                            @Value("classpath:/view/AdminView/FlightDetailsView.fxml") Resource flightDetailsView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -176,6 +180,7 @@ public class FlightController {
         this.userAirlinesView = userAirlinesView;
         this.userCustomersView = userCustomersView;
         this.reservationListViewCustomer = reservationListViewCustomer;
+        this.flightDetailsView = flightDetailsView;
     }
 
     /**
@@ -246,7 +251,7 @@ public class FlightController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousAirlineView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
             }
             else{
@@ -271,7 +276,7 @@ public class FlightController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -296,7 +301,7 @@ public class FlightController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(reservationListView.getURL());
             }
             else{
@@ -366,6 +371,26 @@ public class FlightController {
     public void showLoginView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku szczegółów lotu
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showFlightDetailsView(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            fxmlloader = new FXMLLoader(flightDetailsView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -451,6 +476,11 @@ public class FlightController {
         }
         if(buttonUpdateFlight != null) {
             buttonUpdateFlight.disableProperty().bind(
+                    Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+        if(buttonShowFlightDetails != null) {
+            buttonShowFlightDetails.disableProperty().bind(
                     Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
             );
         }

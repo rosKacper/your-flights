@@ -186,7 +186,7 @@ public class CustomersViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
             }
             else{
@@ -204,14 +204,14 @@ public class CustomersViewController {
     }
 
     /**
-     * Metoda służąca do przejścia do widoku przewoźników
+     * Metoda służąca do przejścia do widoku lotów
      * @param actionEvent event emitowany przez przycisk
      */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
             }
             else{
@@ -260,7 +260,7 @@ public class CustomersViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(reservationListView.getURL());
             }
             else{
