@@ -19,20 +19,27 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
+import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
-
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import pl.edu.agh.ki.lab.to.yourflights.utils.EmailHandler;
 
 /**
  * Kontroler obsługujący formularz do dodawania rezerwacji
@@ -73,6 +80,7 @@ public class AddReservationController {
     @FXML
     private JFXButton formTitle;
 
+    private CustomerService customerService;
 
     private Flight flight;
 
@@ -177,6 +185,9 @@ public class AddReservationController {
 
             // Zapisujemy w bazie odpowiednie relacje
             reservationService.save(reservation);
+
+           EmailHandler emailHandler=new EmailHandler();
+           emailHandler.sendEmail(this.customerService,this.flight);
         }
         else {
             reservation.getTicketOrders().get(0).setNumberOfSeats(seats.getValue());
@@ -194,11 +205,13 @@ public class AddReservationController {
     public AddReservationController(@Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                ApplicationContext applicationContext,
                                TicketOrderService ticketOrderService,
-                               ReservationService reservationService) {
+                               ReservationService reservationService,
+                                    CustomerService customerService) {
         this.reservationList = reservationList;
         this.applicationContext = applicationContext;
         this.reservationService = reservationService;
         this.ticketOrderService = ticketOrderService;
+        this.customerService=customerService;
     }
 
     /**
