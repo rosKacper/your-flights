@@ -11,6 +11,11 @@ import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -57,8 +62,9 @@ public class EmailHandler {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                 message.setSubject("Reservation");
                 message.setText("You have created reservation for flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving at ");
-                Transport.send(message);
                 reservation.setStatus("Created - informed");
+                Transport.send(message);
+
             } catch (MessagingException mex) {
                 mex.printStackTrace();
             }
@@ -75,9 +81,22 @@ public class EmailHandler {
 
     public void upcomingEmail(){
         List<Reservation> reservations=reservationService.findAll();
-        for (int i=0; i<reservations.size();i++){
-            //if (reservations.get(i).get)
-
+        for (Reservation reservation : reservations) {
+            if (reservation.getStatus().equals("Created - informed")) {
+                Flight flightTmp = reservation.getTicketOrders().get(0).getTicketCategory().getFlight();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+                LocalDate departureDate = LocalDate.parse(flightTmp.getDepartureDate(), formatter);
+                LocalDate localDate = LocalDate.now();
+                LocalTime localTime = LocalTime.now();
+                LocalTime departureTime = LocalTime.parse(flightTmp.getDepartureTime());
+                if(departureDate.getYear()==localDate.getYear() && departureDate.getMonth()==localDate.getMonth()
+                && (departureDate.getDayOfMonth()==localDate.getDayOfMonth() ||
+                        (departureDate.getDayOfMonth()==localDate.getDayOfMonth()+1 && departureTime.getHour()<localTime.getHour())))
+                {
+                    int a=1;
+                }
+            }
+            int x=1;
         }
         int x=2;
     }
