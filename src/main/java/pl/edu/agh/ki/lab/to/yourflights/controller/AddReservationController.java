@@ -179,15 +179,16 @@ public class AddReservationController {
             Reservation reservation = new Reservation(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     null,
 
-                    userName);
+                    userName, "Created");
             TicketOrder ticketOrder = new TicketOrder(seats.getValue(), null, reservation, flight.getTicketCategories().get(0));
             reservation.getTicketOrders().add(ticketOrder);
 
             // Zapisujemy w bazie odpowiednie relacje
             reservationService.save(reservation);
 
-           EmailHandler emailHandler=new EmailHandler();
-           emailHandler.sendEmail(this.customerService,this.flight);
+           EmailHandler emailHandler=new EmailHandler(reservationService);
+           emailHandler.sendEmail(this.customerService,this.flight, reservation);
+           emailHandler.upcomingEmail();
         }
         else {
             reservation.getTicketOrders().get(0).setNumberOfSeats(seats.getValue());

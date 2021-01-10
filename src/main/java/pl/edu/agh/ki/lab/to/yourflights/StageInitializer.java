@@ -9,7 +9,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
 import pl.edu.agh.ki.lab.to.yourflights.service.MockDataService;
+import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
+import pl.edu.agh.ki.lab.to.yourflights.utils.EmailHandler;
 
 import java.io.IOException;
 
@@ -24,6 +27,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     private final Resource anonymousMainView;
     private final String applicationTitle;
     private final MockDataService mockDataService;
+    private final ReservationService reservationService;
 
     /**
      * Kontekst aplikacji Springa
@@ -40,12 +44,14 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
                             @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                             ApplicationContext applicationContext,
-                            MockDataService mockDataService) {
+                            MockDataService mockDataService,
+                            ReservationService reservationService) {
         this.applicationTitle = applicationTitle;
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
         this.applicationContext = applicationContext;
         this.mockDataService = mockDataService;
+        this.reservationService=reservationService;
     }
 
     /**
@@ -74,6 +80,9 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
             stage.setScene(scene);
             stage.setTitle(applicationTitle);
             stage.show();
+
+            EmailHandler emailHandler=new EmailHandler(reservationService);
+            emailHandler.upcomingEmail();
         } catch (IOException e) {
             e.printStackTrace();
         }

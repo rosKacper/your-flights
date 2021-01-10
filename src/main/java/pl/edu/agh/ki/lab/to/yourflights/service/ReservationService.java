@@ -36,7 +36,7 @@ public class ReservationService {
     }
 
     /**
-     * Metoda zwracająca wszystkich przewoźników z bazy danych
+     * Metoda zwracająca wszystkich rezerwacje z bazy danych
      * @return lista wszystkich przewoźników
      */
     public List<Reservation> findAll() {
