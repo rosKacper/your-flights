@@ -60,5 +60,10 @@ public class MockDataService {
         flight4.getTicketCategories().add(ticketCategory4);
         flightRepository.save(flight4);
 
+        Flight flight5 = new Flight("Warsaw", "Cracow", "12/01/2021", "12/01/2021", airlineRepository.findByName("LOT"), "17:30", "18:20");
+        TicketCategory ticketCategory5 = new TicketCategory("normal", new BigDecimal(10), 80, flight5);
+        flight5.getTicketCategories().add(ticketCategory5);
+        flightRepository.save(flight5);
+
     }
 }

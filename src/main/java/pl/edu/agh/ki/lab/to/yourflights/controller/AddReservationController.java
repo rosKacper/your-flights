@@ -188,7 +188,8 @@ public class AddReservationController {
 
            EmailHandler emailHandler=new EmailHandler(reservationService);
            emailHandler.sendEmail(this.customerService,this.flight, reservation);
-           emailHandler.upcomingEmail();
+           reservation.setStatus("Created - informed");
+           //emailHandler.upcomingEmail();
         }
         else {
             reservation.getTicketOrders().get(0).setNumberOfSeats(seats.getValue());
