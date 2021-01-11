@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 
 public class EmailHandler {
 
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
     public EmailHandler(ReservationService reservationService){
         this.reservationService=reservationService;
 
@@ -50,13 +50,42 @@ public class EmailHandler {
                 return new PasswordAuthentication(from, password);
             }
         });
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        ExecutorService executorService1 = Executors.newSingleThreadExecutor();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         LocalDate departureDate = LocalDate.parse(flight.getDepartureDate(), formatter);
         LocalDate localDate = LocalDate.now();
         LocalTime localTime = LocalTime.now();
         LocalTime departureTime = LocalTime.parse(flight.getDepartureTime());
+
+
+        Runnable task = () -> {
+            try {
+                MimeMessage message = new MimeMessage(session);
+                String username = SecurityContextHolder.getContext().getAuthentication().getName();
+                List<Customer> customerList = customerService.findByUsername(username);
+                String to = customerList.get(0).getEmailAddress();
+                message.setFrom(from);
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+                message.setSubject("Reservation");
+                message.setText("You have created reservation for flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving " + flight.getDepartureDate() + " at " + flight.getDepartureTime());
+                reservation.setStatus("Created - informed");
+                reservationService.save(reservation);
+                Transport.send(message);
+
+            } catch (MessagingException mex) {
+                mex.printStackTrace();
+            }
+        };
+
+        if (reservation.getStatus().equals("Created"))
+        {
+            executorService.submit(task);
+        }
+
+        executorService.shutdown();
+
         if(departureDate.getYear()==localDate.getYear() && departureDate.getMonth()==localDate.getMonth()
                 && (departureDate.getDayOfMonth()==localDate.getDayOfMonth() ||
                 (departureDate.getDayOfMonth()==localDate.getDayOfMonth()+1 && departureTime.getHour()<localTime.getHour())))
@@ -81,39 +110,9 @@ public class EmailHandler {
                 }
             };
 
-            executorService.submit(task1);
-            executorService.shutdown();
+            executorService1.submit(task1);
+            executorService1.shutdown();
         }
-        else{
-            Runnable task = () -> {
-
-
-                try {
-                    MimeMessage message = new MimeMessage(session);
-                    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-                    List<Customer> customerList = customerService.findByUsername(username);
-                    String to = customerList.get(0).getEmailAddress();
-                    message.setFrom(from);
-                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-                    message.setSubject("Reservation");
-                    message.setText("You have created reservation for flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving " + flight.getDepartureDate() + " at " + flight.getDepartureTime());
-                    reservation.setStatus("Created - informed");
-                    reservationService.save(reservation);
-                    Transport.send(message);
-
-                } catch (MessagingException mex) {
-                    mex.printStackTrace();
-                }
-            };
-
-            if (reservation.getStatus().equals("Created"))
-            {
-                executorService.submit(task);
-            }
-
-            executorService.shutdown();
-        }
-
 
 
     }
