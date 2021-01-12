@@ -50,12 +50,12 @@
          </HBox>
          <HBox prefHeight="61.0" prefWidth="427.0">
             <children>
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Arrival date:" wrappingWidth="112.0">
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Departure date:" wrappingWidth="144.0">
                   <font>
                      <Font size="18.0" />
                   </font>
                </Text>
-               <Text fx:id="arrivalTime" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="250.0">
+               <Text fx:id="departureTime" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="250.0">
                   <font>
                      <Font name="System Bold" size="18.0" />
                   </font>
@@ -64,12 +64,12 @@
          </HBox>
          <HBox prefHeight="61.0" prefWidth="427.0">
             <children>
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Departure date:" wrappingWidth="144.0">
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Arrival date:" wrappingWidth="112.0">
                   <font>
                      <Font size="18.0" />
                   </font>
                </Text>
-               <Text fx:id="departureTime" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="250.0">
+               <Text fx:id="arrivalTime" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="250.0">
                   <font>
                      <Font name="System Bold" size="18.0" />
                   </font>
