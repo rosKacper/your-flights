@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.hibernate.annotations.Cascade;
@@ -19,7 +20,7 @@ import java.util.UUID;
  * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
  */
 @Entity
-public class TicketCategory {
+public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -96,6 +97,18 @@ public class TicketCategory {
 
     public StringProperty getFlightIDProperty(){
         return new SimpleStringProperty(Long.toString(flight.getId()));
+    }
+
+    public StringProperty getNameProperty(){
+        return new SimpleStringProperty(categoryName);
+    }
+
+    public StringProperty getPriceProperty(){
+        return new SimpleStringProperty(categoryPrice.toString());
+    }
+
+    public StringProperty getNumberOfSeatsProperty(){
+        return new SimpleStringProperty(Integer.toString(totalNumberOfSeats));
     }
 
     public List<TicketOrder> getTicketOrders() {

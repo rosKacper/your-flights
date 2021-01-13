@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class TicketCategoryService {
 
     /**
-     * Repozytorium zamówień biletów
+     * Repozytorium kategorii biletów
      */
     private final TicketCategoryRepository ticketCategoryRepository;
 
@@ -38,33 +38,24 @@ public class TicketCategoryService {
     }
 
     /**
-     * Metoda zwracająca wszystkie zamówienie biletów z bazy danych
-     * @return lista wszystkich przewoźników
+     * Metoda zwracająca wszystkie kategorie biletów z bazy danych
+     * @return lista wszystkich kategorii biletów
      */
     public List<TicketCategory> findAll() {
         return ticketCategoryRepository.findAll();
     }
 
-    /**
-     * Metoda zwracająca zamówienia biletów należące do jednej rezerwacji
-     * @param id kategoria biletów
-     * @return lista kategorii biletów
-     */
-    public List<TicketCategory> findById(Long id) {
-        boolean isPresent = ticketCategoryRepository.findById(id).isPresent();
-        return isPresent ? ticketCategoryRepository.findById(id).stream().collect(Collectors.toList()) : new LinkedList<>();
-    }
 
     /**
-     * Metoda usuwająca daną rezerwację z bazy danych
-     * @param ticketCategory typ biletów do usunięcia
+     * Metoda usuwająca daną kategorię z bazy danych
+     * @param ticketCategory kategoria do usunięcia
      */
     public void delete(TicketCategory ticketCategory) {
         ticketCategoryRepository.delete(ticketCategory);
     }
 
     /**
-     * Metoda usuwająca danych przewoźników z bazy danych
+     * Metoda usuwająca dane kategorie z bazy danych
      * @param ticketCategories lista typów biletów do usunięcia
      */
     public void deleteAll(ObservableList<TicketCategory> ticketCategories) {
