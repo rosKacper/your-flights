@@ -55,6 +55,8 @@ public class TicketCategoryViewController {
     private final Resource loginView;
     private final Resource userAirlinesView;
     private final Resource userCustomersView;
+    private final Resource flightView;
+
 
     private Flight flight;
 
@@ -97,6 +99,10 @@ public class TicketCategoryViewController {
     @FXML
     private JFXButton buttonUpdateTicketCategory;
 
+    @FXML
+    private JFXTextField departureField, destinationField, departureDateField, airlineField;
+
+
     /**
      * Metoda która wczytuje dane do tabeli lotów
      */
@@ -107,7 +113,7 @@ public class TicketCategoryViewController {
         numberOfSeats.setCellValueFactory(data -> data.getValue().getValue().getNumberOfSeatsProperty());
 
         //Pobranie lotów z serwisu
-        ObservableList<TicketCategory> ticketCategories = FXCollections.observableList(ticketCategoryService.findAll());
+        ObservableList<TicketCategory> ticketCategories = FXCollections.observableList(ticketCategoryService.findByFlight(flight));
 
         //Przekazanie danych do tabeli
         final TreeItem<TicketCategory> root = new RecursiveTreeItem<>(ticketCategories, RecursiveTreeObject::getChildren);
@@ -136,6 +142,7 @@ public class TicketCategoryViewController {
                                         FlightService flightService,
                                         ApplicationContext applicationContext,
                                         @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                                        @Value("classpath:/view/FlightView.fxml") Resource flightView,
                                         @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                                         @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                         @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
@@ -149,6 +156,7 @@ public class TicketCategoryViewController {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
+        this.flightView = flightView;
         this.mainView = mainView;
         this.ticketCategoryService = ticketCategoryService;
         this.flightService = flightService;
@@ -243,6 +251,29 @@ public class TicketCategoryViewController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showFlightView(ActionEvent actionEvent) {
+        try {
+            //ładujemy widok z pliku .fxml
+            FXMLLoader fxmlloader = new FXMLLoader(flightView.getURL());
+
+            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+
+            //wczytanie sceny
+            Parent parent = fxmlloader.load();
+
+            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            //utworzenie i wyświetlenie sceny
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
@@ -360,12 +391,23 @@ public class TicketCategoryViewController {
     }
 
     /**
+     * Metoda która ustawia informacje o locie
+     */
+    public void updateControls() {
+        departureField.setText(flight.getPlaceOfDeparture());
+        destinationField.setText(flight.getPlaceOfDestination());
+        departureDateField.setText(flight.getDepartureDate());
+        airlineField.setText(flight.getAirline().getName());
+    }
+
+    /**
      * Metoda która przekazuje do kontrolera dane
      * @param flight lot dla którego dodajemy kategorie biletów
      */
     public void setData(Flight flight) {
         this.flight = flight;
-//        this.updateControls();
+        this.updateControls();
+        this.setModel();
     }
 
     /**

@@ -2,8 +2,10 @@ package pl.edu.agh.ki.lab.to.yourflights.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,5 +14,5 @@ import java.util.Optional;
  */
 @Repository
 public interface TicketCategoryRepository extends JpaRepository<TicketCategory, Long> {
-    Optional<TicketCategory> findById(Long id);
+    List<TicketCategory> findAllByFlight(Flight flight);
 }

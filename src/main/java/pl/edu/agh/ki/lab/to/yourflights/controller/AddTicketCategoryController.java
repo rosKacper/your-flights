@@ -110,8 +110,8 @@ public class AddTicketCategoryController {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean nameValidation = Validator.validateNotEmpty(name, nameValidationLabel);
-        boolean numberOfSeatsValidation = Validator.validateNotEmpty(numberOfSeats, numberOfSeatsValidationLabel);
-        boolean categoryPriceValidation = Validator.validateNotEmpty(price, priceValidationLabel);
+        boolean numberOfSeatsValidation = Validator.validateNotEmpty(numberOfSeats, numberOfSeatsValidationLabel) && Validator.validatePositiveNumber(numberOfSeats, numberOfSeatsValidationLabel);
+        boolean categoryPriceValidation = Validator.validateNotEmpty(price, priceValidationLabel) && Validator.validateMoneyFormat(price, priceValidationLabel);
         if(!nameValidation || !numberOfSeatsValidation || !categoryPriceValidation){
             return;
         }
@@ -119,26 +119,24 @@ public class AddTicketCategoryController {
 
         //Stworzenie nowego lotu (jeśli to było dodawanie nowej kategorii biletów), lub zaktualizowanie obecnej
         if (ticketCategory == null) {
-            System.out.println("It is null");
 
             ticketCategory = new TicketCategory(name.textProperty().getValue(),
                     new BigDecimal(price.textProperty().getValue()),
                     Integer.parseInt(numberOfSeats.textProperty().getValue()), flight);
             //Stworzenie kategorii biletu - na razie jest tylko jedna
             flight.getTicketCategories().add(ticketCategory);
+            flightService.save(flight);
 
         } else {
             updateModel();
+            ticketCategoryService.save(ticketCategory);
         }
-
-
-        ticketCategoryService.save(ticketCategory);
-        flightService.save(flight);
 
         // wyczyszczenie pól formularza
         name.clear();
         numberOfSeats.clear();
         price.clear();
+        ticketCategory = null;
         //Po dodaniu kategorii biletu zakończonym sukcesem, następuje powrót do widoku listy kategorii biletów
         showTicketCategoryView(actionEvent);
     }
@@ -174,6 +172,9 @@ public class AddTicketCategoryController {
 
             //wczytanie sceny
             Parent parent = fxmlloader.load();
+
+            TicketCategoryViewController controller = fxmlloader.getController();
+            controller.setData(flight);
 
             //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

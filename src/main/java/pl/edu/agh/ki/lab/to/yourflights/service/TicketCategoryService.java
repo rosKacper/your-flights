@@ -45,6 +45,11 @@ public class TicketCategoryService {
         return ticketCategoryRepository.findAll();
     }
 
+    public List<TicketCategory> findByFlight(Flight flight) {
+        if(flight == null) return new LinkedList<>();
+        return ticketCategoryRepository.findAllByFlight(flight);
+    }
+
 
     /**
      * Metoda usuwająca daną kategorię z bazy danych
