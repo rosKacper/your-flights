@@ -17,8 +17,8 @@ import java.util.UUID;
 public class TicketOrder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotNull
     private int numberOfSeats;

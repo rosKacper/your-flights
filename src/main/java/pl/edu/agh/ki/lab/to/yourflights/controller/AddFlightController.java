@@ -162,8 +162,8 @@ public class AddFlightController {
 
         //Stworzenie nowego lotu (jeśli to było dodawanie nowego lotu), lub zaktualizowanie obecnego lotu
         if (flight == null) {
-            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue())
-            ,departureTime.getValue().toString(),arrivalTime.getValue().toString());
+            flight = new Flight(placeOfDeparture.getText(), placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    airlineService.findByName(comboBox.getValue()), departureTime.getValue().toString(), arrivalTime.getValue().toString());
             //Stworzenie kategorii biletu - na razie jest tylko jedna
             ticketCategory = new TicketCategory("normal", new BigDecimal(10), 80, flight);
             flight.getTicketCategories().add(ticketCategory);

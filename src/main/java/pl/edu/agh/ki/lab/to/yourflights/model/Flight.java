@@ -5,8 +5,10 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sun.istack.NotNull;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -22,10 +24,14 @@ import java.util.UUID;
 public class Flight extends RecursiveTreeObject<Flight> {
 
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
+
+//    @Id
+//    @GeneratedValue(generator = "uuid2")
+//    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+//    private UUID id;
 
     @NotEmpty
     private String placeOfDeparture;
@@ -130,11 +136,11 @@ public class Flight extends RecursiveTreeObject<Flight> {
 
     public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

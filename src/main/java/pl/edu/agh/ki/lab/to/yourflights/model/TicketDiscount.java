@@ -12,8 +12,8 @@ import java.util.UUID;
 public class TicketDiscount {
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotEmpty
     private double discount;

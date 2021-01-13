@@ -22,8 +22,8 @@ import java.util.UUID;
 public class TicketCategory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotEmpty
     private String categoryName;
@@ -95,7 +95,7 @@ public class TicketCategory {
     }
 
     public StringProperty getFlightIDProperty(){
-        return new SimpleStringProperty(flight.getId().toString());
+        return new SimpleStringProperty(Long.toString(flight.getId()));
     }
 
     public List<TicketOrder> getTicketOrders() {

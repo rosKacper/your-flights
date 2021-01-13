@@ -20,8 +20,8 @@ import java.util.UUID;
 public class Reservation extends RecursiveTreeObject<Reservation> {
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotEmpty
     private String reservationDate;
@@ -38,7 +38,7 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
             fetch = FetchType.EAGER,
             mappedBy = "reservation"
     )
-    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TicketOrder> ticketOrders = new LinkedList<>();
 
     /**

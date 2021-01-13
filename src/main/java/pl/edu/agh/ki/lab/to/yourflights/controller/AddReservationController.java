@@ -148,8 +148,8 @@ public class AddReservationController {
                             Date dateToTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getArrivalDate());
                             Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getDepartureDate());
                             Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getArrivalDate());
-                            System.out.println(dateFromTmp.toString() + "  " +  dateToTmp.toString());
-                            System.out.println(dateFrom.toString() + "  " +  dateTo.toString());
+//                            System.out.println(dateFromTmp.toString() + "  " +  dateToTmp.toString());
+//                            System.out.println(dateFrom.toString() + "  " +  dateTo.toString());
 //                            return !(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp));
                             if(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp)) {
                                 return false;

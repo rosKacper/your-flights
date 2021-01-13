@@ -12,7 +12,9 @@ import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.TicketCategoryRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.TicketOrderRepository;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Klasa definiująca serwis ze Spring Data Jpa dla lotów
@@ -49,7 +51,8 @@ public class TicketCategoryService {
      * @return lista kategorii biletów
      */
     public List<TicketCategory> findById(Long id) {
-        return ticketCategoryRepository.findById(id);
+        boolean isPresent = ticketCategoryRepository.findById(id).isPresent();
+        return isPresent ? ticketCategoryRepository.findById(id).stream().collect(Collectors.toList()) : new LinkedList<>();
     }
 
     /**
