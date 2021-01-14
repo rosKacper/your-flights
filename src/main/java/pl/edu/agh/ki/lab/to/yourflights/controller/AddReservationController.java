@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,6 +33,7 @@ import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -108,7 +111,7 @@ public class AddReservationController {
     @FXML
     private TreeTableColumn<TicketOrder, String> discount;
     @FXML
-    private TreeTableColumn<TicketOrder, Double> totalCost;
+    private TreeTableColumn<TicketOrder, String> totalCost;
 
     private Flight flight;
     private Reservation reservation = null;
@@ -162,13 +165,22 @@ public class AddReservationController {
         discountCombo.getItems().setAll(ticketDiscountService.findAll().stream().map(TicketDiscount::getName)
                 .collect(Collectors.toList())
         );
+        discountCombo.getItems().add("Brak");
     }
 
     private void setModel() {
         //Ustawienie kolumn
         seats.setCellValueFactory(data -> data.getValue().getValue().getNumberOfSeatsProperty());
         category.setCellValueFactory(data -> data.getValue().getValue().getTicketCategory().getNameProperty());
-        discount.setCellValueFactory(data -> null);
+        discount.setCellValueFactory(data -> {
+            TicketOrder order = data.getValue().getValue();
+            return order.getTicketDiscount() != null ? order.getTicketDiscount().getNameProperty() : new SimpleStringProperty("Brak");
+        });
+        totalCost.setCellValueFactory(data -> {
+            TicketCategory ticketCategory = data.getValue().getValue().getTicketCategory();
+            if(ticketCategory == null) return null;
+            return new SimpleStringProperty(ticketCategory.getCategoryPrice().multiply(new BigDecimal(data.getValue().getValue().getNumberOfSeats())).toString());
+        });
 
 
         //Przekazanie danych do tabeli
@@ -186,8 +198,13 @@ public class AddReservationController {
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
-//        Validator.validatePositiveNumber(seats.getValue(), seats)
         if(seatsCombo.getValue() < 1 || seatsCombo.getValue() > 50 ){
+            return;
+        }
+
+        if(ticketOrdersList.size() == 0) {
+            formTitle.setText("You have a reservation in this time slot already");
+            formTitle.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
             return;
         }
 
@@ -224,7 +241,9 @@ public class AddReservationController {
             // Zapisujemy w bazie odpowiednie relacje
         }
         List<TicketDiscount> ticketDiscounts = ticketDiscountService.findByName(discountCombo.getValue());
+
         TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
+        ticketOrderService.deleteAll(FXCollections.observableList(reservation.getTicketOrders()));
         reservation.getTicketOrders().addAll(ticketOrdersList);
         ticketOrdersList.forEach(ticketOrder -> {
             ticketOrder.setReservation(reservation);
@@ -286,6 +305,9 @@ public class AddReservationController {
             //utworzenie i wyświetlenie sceny
             Scene scene = new Scene(parent);
             stage.setScene(scene);
+
+            ticketOrdersList = FXCollections.observableArrayList();
+
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -293,20 +315,28 @@ public class AddReservationController {
     }
 
     public void handleAddAction() {
-        Optional<TicketOrder> existingTicketOrder = ticketOrdersList.stream().filter(ticketOrder ->
-                ticketOrder.getTicketCategory().getCategoryName().equals(ticketCategoryCombo.getValue()))
-                .findFirst();
-        if(existingTicketOrder.isPresent()) {
-          existingTicketOrder.get().setNumberOfSeats(seatsCombo.getValue());
-          ticketOrdersList.remove(existingTicketOrder.get());
-          ticketOrdersList.add(existingTicketOrder.get());
-        }
-        else {
-            TicketCategory ticketCategory = flight.getTicketCategories().stream()
-                    .filter(ticketCategory1 -> ticketCategory1.getCategoryName().equals(ticketCategoryCombo.getValue()))
-                    .findFirst().get();
-            ticketOrdersList.addAll(new TicketOrder(seatsCombo.getValue(), null, reservation, ticketCategory));
-        }
+        TicketCategory ticketCategory = flight.getTicketCategories().stream()
+                .filter(ticketCategory1 -> ticketCategory1.getCategoryName().equals(ticketCategoryCombo.getValue()))
+                .findFirst().get();
+
+        List<TicketDiscount> ticketDiscounts = ticketDiscountService.findByName(discountCombo.getValue());
+        TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
+
+        ticketOrdersList.removeIf(ticketOrder -> {
+            if(ticketOrder.getTicketCategory().getCategoryName().equals(ticketCategory.getCategoryName())) {
+                if(ticketOrder.getTicketDiscount() == null && discountCombo.getValue().equals("Brak")) {
+                    return true;
+                }
+                if(ticketOrder.getTicketDiscount() != null && discountCombo.getValue().equals(ticketOrder.getTicketDiscount().getName())) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        ticketOrdersList.addAll(new TicketOrder(seatsCombo.getValue(), ticketDiscount, reservation, ticketCategory));
+        setModel();
+
     }
 
     public void handleDeleteAction() {

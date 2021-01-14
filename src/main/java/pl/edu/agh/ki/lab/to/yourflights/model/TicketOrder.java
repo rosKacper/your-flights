@@ -29,7 +29,7 @@ public class TicketOrder extends RecursiveTreeObject<TicketOrder> {
     /**
      * Mapowanie relacji do zniżki na bilet
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ticketDiscountID")
     private TicketDiscount ticketDiscount;
 

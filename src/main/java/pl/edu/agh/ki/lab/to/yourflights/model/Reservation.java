@@ -38,7 +38,7 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
             fetch = FetchType.EAGER,
             mappedBy = "reservation"
     )
-//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TicketOrder> ticketOrders = new LinkedList<>();
 
     /**

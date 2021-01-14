@@ -44,11 +44,10 @@ public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
      * Mapowanie relacji do zamówień na bilety dotyczące danej kategorii biletu
      */
     @OneToMany(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.DETACH,
             fetch = FetchType.EAGER,
             mappedBy = "ticketCategory"
     )
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TicketOrder> ticketOrders;
 
     public TicketCategory(){}
