@@ -55,6 +55,8 @@ public class FlightController {
     private final Resource userAirlinesView;
     private final Resource userCustomersView;
     private final Resource ticketCategoryView;
+    private final Resource discountsView;
+
 
     /**
      * Serwis lotów
@@ -152,6 +154,7 @@ public class FlightController {
      * @param userAirlinesView
      * @param reservationListViewCustomer
      * @param userCustomersView
+     * @param discountsView
      */
     public FlightController(FlightService flightService, ApplicationContext applicationContext,
                             @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
@@ -162,6 +165,7 @@ public class FlightController {
                             @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
                             @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView,
                             @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
+                            @Value("classpath:/view/DiscountsView.fxml") Resource discountsView,
                             @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                             @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView,
                             @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
@@ -182,6 +186,7 @@ public class FlightController {
         this.userCustomersView = userCustomersView;
         this.reservationListViewCustomer = reservationListViewCustomer;
         this.ticketCategoryView = ticketCategoryView;
+        this.discountsView = discountsView;
     }
 
     /**
@@ -402,6 +407,29 @@ public class FlightController {
             stage.setScene(scene);
             stage.show();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showDiscountsView(ActionEvent actionEvent) {
+        try {
+            //ładujemy widok z pliku .fxml
+            FXMLLoader fxmlloader = new FXMLLoader(discountsView.getURL());
+
+            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+
+            //wczytanie sceny
+            Parent parent = fxmlloader.load();
+
+            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            //utworzenie i wyświetlenie sceny
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

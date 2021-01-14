@@ -61,8 +61,8 @@ public class Validator {
     public static boolean validatePositiveNumber(TextField field, Label label) {
         String value = field.textProperty().getValue();
         try {
-            int integer = Integer.parseInt(value);
-            if( integer <= 0 || integer >= 500) {
+            double aDouble = Double.parseDouble(value);
+            if( aDouble <= 0 || aDouble >= 500) {
                 label.setText("Wrong number range!");
                 label.setTextFill(Color.RED);
                 return false;

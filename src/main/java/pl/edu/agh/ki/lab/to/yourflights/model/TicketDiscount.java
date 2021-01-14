@@ -1,5 +1,9 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.UUID;
@@ -9,13 +13,12 @@ import java.util.UUID;
  * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
  */
 @Entity
-public class TicketDiscount {
+public class TicketDiscount extends RecursiveTreeObject<TicketDiscount> {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     Long id;
 
-    @NotEmpty
     private double discount;
     @NotEmpty
     private String name;
@@ -42,4 +45,13 @@ public class TicketDiscount {
     public void setDiscount(double discount) {
         this.discount = discount;
     }
+
+    public StringProperty getNameProperty(){
+        return new SimpleStringProperty(name);
+    }
+
+    public StringProperty getDiscountProperty(){
+        return new SimpleStringProperty(Double.toString(discount));
+    }
+
 }
