@@ -12,6 +12,6 @@ import java.util.UUID;
  * Na późniejszym etapie będzie służyć do pobierania danych z bazy danych
  */
 @Repository
-public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     List<Reservation> findByUserName(String userName);
 }

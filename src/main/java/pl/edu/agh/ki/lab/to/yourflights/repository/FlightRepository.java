@@ -12,5 +12,5 @@ import java.util.UUID;
  * Na późniejszym etapie będzie służyć do pobierania danych z bazy danych
  */
 @Repository
-public interface FlightRepository extends JpaRepository<Flight, UUID> {
+public interface FlightRepository extends JpaRepository<Flight, Long> {
 }
