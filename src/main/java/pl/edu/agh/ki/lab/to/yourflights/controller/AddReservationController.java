@@ -244,6 +244,7 @@ public class AddReservationController {
 
         TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
         ticketOrderService.deleteAll(FXCollections.observableList(reservation.getTicketOrders()));
+        reservation.getTicketOrders().removeIf(ticketOrder -> 1==1);
         reservation.getTicketOrders().addAll(ticketOrdersList);
         ticketOrdersList.forEach(ticketOrder -> {
             ticketOrder.setReservation(reservation);
