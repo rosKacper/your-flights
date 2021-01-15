@@ -17,7 +17,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
+import pl.edu.agh.ki.lab.to.yourflights.model.User;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
+import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
@@ -66,6 +69,7 @@ public class RegistrationController {
     public Text actiontarget;
 
     private final CustomerService customerService;
+    private final UserPrincipalService userPrincipalService;
 
     /**
      * Metoda obsługująca dodawanie użytkownika po naciśnięciu przycisku "submit" w formularzu
@@ -94,6 +98,8 @@ public class RegistrationController {
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
         customerService.save(new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText()));
+        userPrincipalService.save(new User(username.getText(), emailAddress.getText(), password.getText(), UserRole.USER));
+
         firstName.clear();
         lastName.clear();
         country.clear();
@@ -104,6 +110,8 @@ public class RegistrationController {
         emailAddress.clear();
         username.clear();
         password.clear();
+
+
 
         //Zarejestrowanie konta - todo
 
@@ -123,15 +131,17 @@ public class RegistrationController {
      * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
      * @param mainView widok główny
      * @param applicationContext kontekst aplikacji Springa
+     * @param userPrincipalService
      */
     public RegistrationController(@Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                   ApplicationContext applicationContext,
-                                  CustomerService customerService){
+                                  CustomerService customerService, UserPrincipalService userPrincipalService){
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
         this.applicationContext = applicationContext;
         this.customerService = customerService;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**
