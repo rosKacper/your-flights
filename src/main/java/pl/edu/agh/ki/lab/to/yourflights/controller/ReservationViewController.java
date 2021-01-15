@@ -230,7 +230,7 @@ public class ReservationViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -255,7 +255,7 @@ public class ReservationViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
             }
             else{

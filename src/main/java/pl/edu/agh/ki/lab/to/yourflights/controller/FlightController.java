@@ -54,6 +54,7 @@ public class FlightController {
     private final Resource loginView;
     private final Resource userAirlinesView;
     private final Resource userCustomersView;
+    private final Resource flightDetailsView;
     private final Resource ticketCategoryView;
     private final Resource discountsView;
 
@@ -113,6 +114,8 @@ public class FlightController {
     @FXML
     private JFXButton buttonUpdateFlight;
     @FXML
+    private JFXButton buttonShowFlightDetails;
+    @FXML
     private JFXButton buttonShowTicketCategories;
 
     /**
@@ -170,7 +173,8 @@ public class FlightController {
                             @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView,
                             @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
                             @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
-                            @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView) {
+                            @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
+                            @Value("classpath:/view/AdminView/FlightDetailsView.fxml") Resource flightDetailsView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -185,6 +189,7 @@ public class FlightController {
         this.userAirlinesView = userAirlinesView;
         this.userCustomersView = userCustomersView;
         this.reservationListViewCustomer = reservationListViewCustomer;
+        this.flightDetailsView = flightDetailsView;
         this.ticketCategoryView = ticketCategoryView;
         this.discountsView = discountsView;
     }
@@ -193,6 +198,7 @@ public class FlightController {
      * Metoda która inicjalizuje obsługę filtrowanie
      */
     private void setPredicates() {
+
         // Generyczna klasa filtrów dla danego modelu
         GenericFilter<Flight> airlineFilter = new GenericFilter<>(flightsTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
@@ -257,7 +263,7 @@ public class FlightController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousAirlineView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
             }
             else{
@@ -282,7 +288,7 @@ public class FlightController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -307,7 +313,7 @@ public class FlightController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(reservationListView.getURL());
             }
             else{
@@ -380,6 +386,39 @@ public class FlightController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleShowFlightDetailsView(ActionEvent event) {
+        var flight = flightsTableView.getSelectionModel().getSelectedItem();
+        if(flight != null) {
+            this.showFlightDetailsView(event, flight.getValue());
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku szczegółów lotu
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showFlightDetailsView(ActionEvent actionEvent, Flight flight) {
+        try {
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            fxmlloader = new FXMLLoader(flightDetailsView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            if(flight != null) {
+                FlightDetailsController controller = fxmlloader.getController();
+                controller.setData(flight);
+            }
+
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
@@ -517,6 +556,11 @@ public class FlightController {
         }
         if(buttonUpdateFlight != null) {
             buttonUpdateFlight.disableProperty().bind(
+                    Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+        if(buttonShowFlightDetails != null) {
+            buttonShowFlightDetails.disableProperty().bind(
                     Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
             );
         }
