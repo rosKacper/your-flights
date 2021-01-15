@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.*;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketCategoryService;
 import pl.edu.agh.ki.lab.to.yourflights.service.TicketDiscountService;
 import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
@@ -75,6 +76,9 @@ public class AddReservationController {
      * Serwis dla ticket discount
      */
     private final TicketDiscountService ticketDiscountService;
+
+
+    private final TicketCategoryService ticketCategoryService;
 
     /**
      * Pola formularza
@@ -153,7 +157,7 @@ public class AddReservationController {
 //        placeOfDeparture.textProperty().setValue(flight.getPlaceOfDeparture());
 //        placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
 
-        ticketCategoryCombo.getItems().setAll(flight.getTicketCategories().stream()
+        ticketCategoryCombo.getItems().setAll(ticketCategoryService.findByFlight(flight).stream()
                 .map(TicketCategory::getCategoryName)
                 .collect(Collectors.toList())
         );
@@ -264,15 +268,17 @@ public class AddReservationController {
      * @param applicationContext kontekst aplikacji Springa
      */
     public AddReservationController(@Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
-                               ApplicationContext applicationContext,
-                               TicketOrderService ticketOrderService,
-                               TicketDiscountService ticketDiscountService,
-                               ReservationService reservationService) {
+                                    ApplicationContext applicationContext,
+                                    TicketOrderService ticketOrderService,
+                                    TicketDiscountService ticketDiscountService,
+                                    ReservationService reservationService,
+                                    TicketCategoryService ticketCategoryService) {
         this.reservationList = reservationList;
         this.applicationContext = applicationContext;
         this.reservationService = reservationService;
         this.ticketOrderService = ticketOrderService;
         this.ticketDiscountService = ticketDiscountService;
+        this.ticketCategoryService = ticketCategoryService;
     }
 
     /**
@@ -316,7 +322,8 @@ public class AddReservationController {
     }
 
     public void handleAddAction() {
-        TicketCategory ticketCategory = flight.getTicketCategories().stream()
+
+        TicketCategory ticketCategory = ticketCategoryService.findByFlight(flight).stream()
                 .filter(ticketCategory1 -> ticketCategory1.getCategoryName().equals(ticketCategoryCombo.getValue()))
                 .findFirst().get();
 

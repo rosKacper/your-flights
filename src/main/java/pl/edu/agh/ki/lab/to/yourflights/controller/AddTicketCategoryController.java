@@ -92,7 +92,7 @@ public class AddTicketCategoryController {
     }
 
     /**
-     * Metoda aktualizująca lot po edycji
+     * Metoda aktualizująca kategorie biletu po edycji
      */
     private void updateModel() {
         ticketCategory.setCategoryName(name.textProperty().getValue());
@@ -116,27 +116,27 @@ public class AddTicketCategoryController {
             return;
         }
 
-
-        //Stworzenie nowego lotu (jeśli to było dodawanie nowej kategorii biletów), lub zaktualizowanie obecnej
+        //Stworzenie nowej kategorii biletu (jeśli to było dodawanie nowej kategorii biletów), lub zaktualizowanie obecnej
         if (ticketCategory == null) {
-
             ticketCategory = new TicketCategory(name.textProperty().getValue(),
                     new BigDecimal(price.textProperty().getValue()),
-                    Integer.parseInt(numberOfSeats.textProperty().getValue()), flight);
-            //Stworzenie kategorii biletu - na razie jest tylko jedna
-            flight.getTicketCategories().add(ticketCategory);
-            flightService.save(flight);
-
+                    Integer.parseInt(numberOfSeats.textProperty().getValue()),
+                    flight);
         } else {
             updateModel();
-            ticketCategoryService.save(ticketCategory);
         }
+
+        ticketCategoryService.save(ticketCategory);
 
         // wyczyszczenie pól formularza
         name.clear();
         numberOfSeats.clear();
         price.clear();
+
         ticketCategory = null;
+        name = null;
+        price = null;
+        numberOfSeats = null;
         //Po dodaniu kategorii biletu zakończonym sukcesem, następuje powrót do widoku listy kategorii biletów
         showTicketCategoryView(actionEvent);
     }
