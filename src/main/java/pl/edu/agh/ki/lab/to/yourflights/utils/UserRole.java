@@ -4,9 +4,9 @@ package pl.edu.agh.ki.lab.to.yourflights.utils;
  * Enumerator definiujący role użytkownika
  */
 public enum UserRole {
-    USER("USER"),
-    AIRLINE("AIRLINE"),
-    ADMIN("ADMIN");
+    USER("[ROLE_USER]"),
+    AIRLINE("[ROLE_AIRLINE]"),
+    ADMIN("[ROLE_ADMIN]");
 
     public final String role;
 

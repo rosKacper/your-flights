@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
 
+import org.springframework.security.core.GrantedAuthority;
 import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
 
 import javax.persistence.Entity;
@@ -18,13 +19,13 @@ public class User {
     private UUID id;
 
 
-    String username;
+    private String username;
 
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
-    UserRole userRole;
+    private UserRole userRole;
 
     public User(){}
 
@@ -59,5 +60,11 @@ public class User {
         this.password = password;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
 
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
 }
