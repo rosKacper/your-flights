@@ -92,4 +92,53 @@
          </HBox>
       </children>
    </VBox>
+   <Text layoutX="803.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Statistics" textAlignment="CENTER" wrappingWidth="320.0">
+      <font>
+         <Font size="48.0" />
+      </font>
+   </Text>
+   <VBox layoutX="652.0" layoutY="148.0" prefHeight="600.0" prefWidth="600.0">
+      <children>
+         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0">
+            <children>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of reservations">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Text>
+            </children>
+         </HBox>
+         <HBox fx:id="numberOfReservations" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0" />
+         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0">
+            <children>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of free seats">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Text>
+            </children>
+         </HBox>
+         <HBox fx:id="numberOfFreeSeats" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0" />
+         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0">
+            <children>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of taken seats">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Text>
+            </children>
+         </HBox>
+         <HBox fx:id="numberOfTakenSeats" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0" />
+         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0">
+            <children>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total income">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Text>
+            </children>
+         </HBox>
+         <HBox fx:id="flightTotalIncome" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0" />
+      </children>
+   </VBox>
 </AnchorPane>
