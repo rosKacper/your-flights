@@ -11,7 +11,7 @@ import java.util.UUID;
  * Na późniejszym etapie będzie służyć do pobierania danych z bazy danych
  */
 @Repository
-public interface AirlineRepository extends JpaRepository<Airline, UUID> {
+public interface AirlineRepository extends JpaRepository<Airline, Long> {
 
     //Znajduje linie lotniczą po nazwie
     Airline findByName(String name);

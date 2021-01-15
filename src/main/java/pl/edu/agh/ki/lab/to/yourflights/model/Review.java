@@ -13,8 +13,8 @@ import java.util.UUID;
 public class Review {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID review_ID;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotNull
     private double rating;

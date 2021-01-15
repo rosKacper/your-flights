@@ -17,8 +17,8 @@ import java.util.UUID;
 public class Customer extends RecursiveTreeObject<Customer> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID customer_ID;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotEmpty
     private String firstName, secondName, country, city, street, postalCode, phoneNumber, emailAddress;

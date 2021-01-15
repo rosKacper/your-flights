@@ -3,6 +3,8 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,8 +20,12 @@ import java.util.UUID;
 public class Airline extends RecursiveTreeObject<Airline> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
+
+    public Long getId() {
+        return id;
+    }
 
     @NotEmpty
     private String name;
