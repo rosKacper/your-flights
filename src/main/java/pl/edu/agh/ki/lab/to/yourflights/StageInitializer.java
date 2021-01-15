@@ -67,7 +67,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
             Stage stage = event.getStage();
 
             //wypełnienie wbudowanej bazy danych przykładowymi danymi startowymi
-            mockDataService.createMockData();
+//            mockDataService.createMockData();
 
             //utworzenie i wyświetlenie sceny
             Scene scene = new Scene(parent);

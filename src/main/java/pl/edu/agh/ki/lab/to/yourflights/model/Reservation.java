@@ -20,8 +20,8 @@ import java.util.UUID;
 public class Reservation extends RecursiveTreeObject<Reservation> {
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotEmpty
     private String reservationDate;

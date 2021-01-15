@@ -12,7 +12,7 @@ import java.util.UUID;
  * Na późniejszym etapie będzie służyć do pobierania danych z bazy danych
  */
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, UUID> {
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
     /**
      * Metoda służąca do znalezienia Klienta po jego username
      * @param username nazwa użytkownika

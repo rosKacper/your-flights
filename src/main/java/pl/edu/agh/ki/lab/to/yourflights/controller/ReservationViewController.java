@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.*;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 public class ReservationViewController {
 
     private final ReservationService reservationService;
+    private final TicketOrderService ticketOrderService;
     private final Resource mainView;
     private final Resource customersView;
     private final Resource airlineView;
@@ -90,7 +92,6 @@ public class ReservationViewController {
     @FXML
     private JFXButton buttonUpdateReservation;
 
-
     /**
      * Metoda która wczytuje dane do tabeli rezerwacji
      */
@@ -107,12 +108,12 @@ public class ReservationViewController {
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
         //Pobranie rezerwacje z serwisu
-        ObservableList<Reservation> reservations = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> reservation.getTicketOrders().size() > 0)
+        ObservableList<Reservation> reservationList = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> reservation.getTicketOrders().size() > 0)
                 .filter(reservation -> reservation.getUserName().equals(name) || role.equals("[ROLE_ADMIN]"))
                 .collect(Collectors.toList()));
 
         //Przekazanie danych do tabeli
-        final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservations, RecursiveTreeObject::getChildren);
+        final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservationList, RecursiveTreeObject::getChildren);
         reservationListTable.setRoot(root);
         reservationListTable.setShowRoot(false);
     }
@@ -145,11 +146,12 @@ public class ReservationViewController {
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
      * @param reservationService serwis do pobierania danych o rezerwacji
+     * @param ticketOrderService serwis do pobierania danych o zamówieniach biletów
      * @param mainView główny widok aplikacji
      * @param AirlineView widok formularza do przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public ReservationViewController(ReservationService reservationService,
+    public ReservationViewController(ReservationService reservationService, TicketOrderService ticketOrderService,
                                      @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                      @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                                      @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,
@@ -161,6 +163,7 @@ public class ReservationViewController {
                                      @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;
+        this.ticketOrderService = ticketOrderService;
         this.mainView = mainView;
         this.airlineView = AirlineView;
         this.applicationContext = applicationContext;
@@ -293,8 +296,10 @@ public class ReservationViewController {
 
     @FXML
     private void handleDeleteAction(ActionEvent event) {
-        var airlines = reservationListTable.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
-        reservationService.deleteAll(FXCollections.observableList(airlines));
+        var reservations = reservationListTable.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
+        reservations.forEach(reservation -> ticketOrderService.deleteAll(FXCollections.observableList(reservation.getTicketOrders())));
+        reservations.forEach(reservation -> reservation.getTicketOrders().removeIf(ticketOrder -> 1==1));
+        reservationService.deleteAll(FXCollections.observableList(reservations));
         this.setModel();
     }
 
