@@ -40,6 +40,7 @@ public class MainViewController {
     private final Resource userAirlineView;
     private final Resource userCustomersView;
     private final Resource anonymousMainView;
+    private final Resource registrationChoiceView;
 
     /**
      * Kontekst aplikacji Springa
@@ -67,7 +68,8 @@ public class MainViewController {
                               @Value("classpath:/view/UserView/UserFlightView.fxml") Resource userFlightView,
                               @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlineView,
                               @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
-                              @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView) {
+                              @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
+                              @Value("classpath:/view/AuthView/RegistrationChoiceView.fxml") Resource registrationChoiceView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -82,6 +84,7 @@ public class MainViewController {
         this.userFlightView = userFlightView;
         this.userCustomersView = userCustomersView;
         this.anonymousMainView = anonymousMainView;
+        this.registrationChoiceView = registrationChoiceView;
     }
 
     /**
@@ -207,7 +210,7 @@ public class MainViewController {
      */
     public void showRegistrationView(ActionEvent actionEvent){
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(registrationView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(registrationChoiceView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
