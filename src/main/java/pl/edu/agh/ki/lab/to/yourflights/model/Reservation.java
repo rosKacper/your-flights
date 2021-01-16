@@ -56,6 +56,10 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
 
     public Reservation() {}
 
+    public Long getId() {
+        return id;
+    }
+
     public String getReservationDate() {
         return reservationDate;
     }

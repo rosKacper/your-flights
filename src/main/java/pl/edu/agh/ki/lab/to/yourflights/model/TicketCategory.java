@@ -62,6 +62,10 @@ public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
 
     //getters and setters
 
+    public Long getId() {
+        return id;
+    }
+
     public String getCategoryName() {
         return categoryName;
     }
