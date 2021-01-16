@@ -25,8 +25,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     private String username;
 
-    @OneToOne( cascade = CascadeType.ALL)
-    @JoinColumn
+    @OneToOne
     private User user;
 
     /**

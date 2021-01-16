@@ -41,6 +41,8 @@ public class RegistrationController {
     private final Resource mainView;
     private final Resource anonymousMainView;
 
+    private Customer customer;
+
     @Autowired
     private AuthenticationManager authManager;
 
@@ -101,11 +103,16 @@ public class RegistrationController {
         }
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
-        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
+//        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
+        User user = new User(username.getText(), emailAddress.getText(), password.getText(), UserRole.USER);
         Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
-        user.setCustomer(customer);
-        //        userPrincipalService.save(user);
+        userPrincipalService.save(user);
+        customer.setUser(user);
         customerService.save(customer);
+
+        //        userPrincipalService.save(user);
+
+
 //        userPrincipalService.findByUsername(username.getText()).setCustomer(customerService.findByUsername(username.getText()));
 
 

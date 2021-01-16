@@ -13,7 +13,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
 
     private String username;
@@ -24,8 +24,7 @@ public class User {
 
     private UserRole userRole;
 
-    @OneToOne
-    private Customer customer;
+//    private Customer customer;
 
     public User(){}
 
@@ -67,12 +66,12 @@ public class User {
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
     }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
+//
+//    public Customer getCustomer() {
+//        return customer;
+//    }
+//
+//    public void setCustomer(Customer customer) {
+//        this.customer = customer;
+//    }
 }
