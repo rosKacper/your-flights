@@ -99,16 +99,16 @@ public class ReservationViewController {
         //Ustawienie kolumn
         reservationDate.setCellValueFactory(data -> data.getValue().getValue().getReservationDateProperty());
         userName.setCellValueFactory(data -> data.getValue().getValue().getUserNameProperty());
-        departure.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getplaceOfDepartureProperty());
-        destination.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getplaceOfDestinationProperty());
-        departureDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getdepartureDateProperty());
-        destinationDate.setCellValueFactory(data -> data.getValue().getValue().getTicketOrders().get(0).getTicketCategory().getFlight().getarrivalDateProperty());
+        departure.setCellValueFactory(data -> ticketOrderService.findByReservation(data.getValue().getValue()).get(0).getTicketCategory().getFlight().getplaceOfDepartureProperty());
+        destination.setCellValueFactory(data -> ticketOrderService.findByReservation(data.getValue().getValue()).get(0).getTicketCategory().getFlight().getplaceOfDestinationProperty());
+        departureDate.setCellValueFactory(data -> ticketOrderService.findByReservation(data.getValue().getValue()).get(0).getTicketCategory().getFlight().getdepartureDateProperty());
+        destinationDate.setCellValueFactory(data -> ticketOrderService.findByReservation(data.getValue().getValue()).get(0).getTicketCategory().getFlight().getarrivalDateProperty());
 
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
         //Pobranie rezerwacje z serwisu
-        ObservableList<Reservation> reservationList = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> reservation.getTicketOrders().size() > 0)
+        ObservableList<Reservation> reservationList = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> ticketOrderService.findByReservation(reservation).size() > 0)
                 .filter(reservation -> reservation.getUserName().equals(name) || role.equals("[ROLE_ADMIN]"))
                 .collect(Collectors.toList()));
 
@@ -128,9 +128,9 @@ public class ReservationViewController {
         //filtrowanie na podstawie nazwy użytkownika
         reservationFilter.addPredicate(testedValue -> testedValue.getUserName().toLowerCase().contains(userNameFilter.getText().toLowerCase()));
         //filtrowanie na podstawie lotniska docelowego
-        reservationFilter.addPredicate(testedValue -> testedValue.getTicketOrders().get(0).getTicketCategory().getFlight().getPlaceOfDeparture().toLowerCase().contains(departureFilter.getText().toLowerCase()));
+        reservationFilter.addPredicate(testedValue -> ticketOrderService.findByReservation(testedValue).get(0).getTicketCategory().getFlight().getPlaceOfDeparture().toLowerCase().contains(departureFilter.getText().toLowerCase()));
         //filtrowanie na podstawie lotniska źródłowego
-        reservationFilter.addPredicate(testedValue -> testedValue.getTicketOrders().get(0).getTicketCategory().getFlight().getPlaceOfDestination().toLowerCase().contains(destinationFilter.getText().toLowerCase()));
+        reservationFilter.addPredicate(testedValue -> ticketOrderService.findByReservation(testedValue).get(0).getTicketCategory().getFlight().getPlaceOfDestination().toLowerCase().contains(destinationFilter.getText().toLowerCase()));
         //filtrowanie na podstawie daty rezerwacji
         reservationFilter.addPredicate(testedValue -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -297,8 +297,7 @@ public class ReservationViewController {
     @FXML
     private void handleDeleteAction(ActionEvent event) {
         var reservations = reservationListTable.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
-        reservations.forEach(reservation -> ticketOrderService.deleteAll(FXCollections.observableList(reservation.getTicketOrders())));
-        reservations.forEach(reservation -> reservation.getTicketOrders().removeIf(ticketOrder -> 1==1));
+        reservations.forEach(reservation -> ticketOrderService.deleteAll(FXCollections.observableList(ticketOrderService.findByReservation(reservation))));
         reservationService.deleteAll(FXCollections.observableList(reservations));
         this.setModel();
     }
@@ -307,7 +306,7 @@ public class ReservationViewController {
     private void handleUpdateAction(ActionEvent event) {
         var reservation = reservationListTable.getSelectionModel().getSelectedItem();
         if(reservation != null) {
-            this.showAddReservation(event, reservation.getValue().getTicketOrders().get(0).getTicketCategory().getFlight(), reservation.getValue());
+            this.showAddReservation(event, ticketOrderService.findByReservation(reservation.getValue()).get(0).getTicketCategory().getFlight(), reservation.getValue());
         }
     }
 

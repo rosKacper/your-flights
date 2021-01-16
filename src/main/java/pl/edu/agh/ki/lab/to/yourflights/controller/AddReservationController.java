@@ -144,7 +144,7 @@ public class AddReservationController {
     public void setData(Flight flight, Reservation reservation) {
         this.flight = flight;
         this.reservation = reservation;
-        ticketOrdersList.addAll(reservation.getTicketOrders());
+        ticketOrdersList.addAll(ticketOrderService.findByReservation(reservation));
         this.updateControls();
     }
 
@@ -169,7 +169,7 @@ public class AddReservationController {
         discountCombo.getItems().setAll(ticketDiscountService.findAll().stream().map(TicketDiscount::getName)
                 .collect(Collectors.toList())
         );
-        discountCombo.getItems().add("Brak");
+        discountCombo.getItems().add("None");
     }
 
     private void setModel() {
@@ -178,12 +178,23 @@ public class AddReservationController {
         category.setCellValueFactory(data -> data.getValue().getValue().getTicketCategory().getNameProperty());
         discount.setCellValueFactory(data -> {
             TicketOrder order = data.getValue().getValue();
-            return order.getTicketDiscount() != null ? order.getTicketDiscount().getNameProperty() : new SimpleStringProperty("Brak");
+            return order.getTicketDiscount() != null ? order.getTicketDiscount().getNameProperty() : new SimpleStringProperty("None");
         });
         totalCost.setCellValueFactory(data -> {
+            TicketOrder ticketOrder = data.getValue().getValue();
             TicketCategory ticketCategory = data.getValue().getValue().getTicketCategory();
-            if(ticketCategory == null) return null;
-            return new SimpleStringProperty(ticketCategory.getCategoryPrice().multiply(new BigDecimal(data.getValue().getValue().getNumberOfSeats())).toString());
+            TicketDiscount ticketDiscount = data.getValue().getValue().getTicketDiscount();
+
+            if(ticketCategory == null){
+                return null;
+            }
+//            if(ticketDiscount == null) {
+//                return new SimpleStringProperty(ticketCategory.getCategoryPrice().multiply(new BigDecimal(data.getValue().getValue().getNumberOfSeats())).toString());
+//            } else {
+//                return new SimpleStringProperty(ticketCategory.getCategoryPrice().multiply(new BigDecimal(data.getValue().getValue().getNumberOfSeats())).toString());
+//            }
+
+            return new SimpleStringProperty(ticketOrderService.getTicketOrderSummaryCost(ticketOrder).toString());
         });
 
 
@@ -202,12 +213,9 @@ public class AddReservationController {
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
-        if(seatsCombo.getValue() < 1 || seatsCombo.getValue() > 50 ){
-            return;
-        }
 
         if(ticketOrdersList.size() == 0) {
-            formTitle.setText("You have a reservation in this time slot already");
+            formTitle.setText("Cannot add empty reservation!");
             formTitle.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
             return;
         }
@@ -219,17 +227,25 @@ public class AddReservationController {
             // sprawdzamy czy nie istnieje już rezerwacja w tym czasie
             List<Reservation> reservationList = reservationService.findByUserName(userName).stream()
                     .filter(reservation1 -> {
-                        Flight flightTmp = reservation1.getTicketOrders().get(0).getTicketCategory().getFlight();
-                        try {
-                            Date dateFromTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getDepartureDate());
-                            Date dateToTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getArrivalDate());
-                            Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getDepartureDate());
-                            Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getArrivalDate());
-                            return !dateFrom.after(dateToTmp) && !dateTo.before(dateFromTmp);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return false;
+                        if(ticketOrderService.findByReservation(reservation1).size() != 0) {
+                            Flight flightTmp = ticketOrderService.findByReservation(reservation1).get(0).getTicketCategory().getFlight();
+                            try {
+                                Date dateFromTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getDepartureDate());
+                                Date dateToTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getArrivalDate());
+                                Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getDepartureDate());
+                                Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getArrivalDate());
+
+                                if(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp)) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return false;
+                            }
                         }
+                        return false;
                     }).collect(Collectors.toList());
 
             if (reservationList.size() != 0) {
@@ -247,15 +263,17 @@ public class AddReservationController {
         List<TicketDiscount> ticketDiscounts = ticketDiscountService.findByName(discountCombo.getValue());
 
         TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
-        ticketOrderService.deleteAll(FXCollections.observableList(reservation.getTicketOrders()));
-        reservation.getTicketOrders().removeIf(ticketOrder -> 1==1);
-        reservation.getTicketOrders().addAll(ticketOrdersList);
+
+        reservationService.save(reservation);
+
         ticketOrdersList.forEach(ticketOrder -> {
             ticketOrder.setReservation(reservation);
             ticketOrder.setTicketDiscount(ticketDiscount);
         });
-        reservationService.save(reservation);
 
+        ticketOrderService.saveAll(ticketOrdersList);
+
+        reservation = null;
         ticketOrdersList = FXCollections.observableArrayList();
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
@@ -330,18 +348,6 @@ public class AddReservationController {
         List<TicketDiscount> ticketDiscounts = ticketDiscountService.findByName(discountCombo.getValue());
         TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
 
-        ticketOrdersList.removeIf(ticketOrder -> {
-            if(ticketOrder.getTicketCategory().getCategoryName().equals(ticketCategory.getCategoryName())) {
-                if(ticketOrder.getTicketDiscount() == null && discountCombo.getValue().equals("Brak")) {
-                    return true;
-                }
-                if(ticketOrder.getTicketDiscount() != null && discountCombo.getValue().equals(ticketOrder.getTicketDiscount().getName())) {
-                    return true;
-                }
-            }
-            return false;
-        });
-
         ticketOrdersList.addAll(new TicketOrder(seatsCombo.getValue(), ticketDiscount, reservation, ticketCategory));
         setModel();
 
@@ -350,6 +356,7 @@ public class AddReservationController {
     public void handleDeleteAction() {
         var ticketOrders = reservationOverviewTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
         ticketOrdersList.removeAll(ticketOrders);
+        ticketOrderService.deleteAll(FXCollections.observableArrayList(ticketOrders));
     }
 
     private void setButtonsDisablePropertyBinding() {

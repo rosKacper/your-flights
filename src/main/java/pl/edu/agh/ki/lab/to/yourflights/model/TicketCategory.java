@@ -40,16 +40,6 @@ public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
     @JoinColumn(name = "flightID")
     private Flight flight;
 
-    /**
-     * Mapowanie relacji do zamówień na bilety dotyczące danej kategorii biletu
-     */
-    @OneToMany(
-            cascade = CascadeType.DETACH,
-            fetch = FetchType.EAGER,
-            mappedBy = "ticketCategory"
-    )
-    private List<TicketOrder> ticketOrders;
-
     public TicketCategory(){}
 
     public TicketCategory(String categoryName, BigDecimal categoryPrice, int totalNumberOfSeats, Flight flight){
@@ -112,13 +102,5 @@ public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
 
     public StringProperty getNumberOfSeatsProperty(){
         return new SimpleStringProperty(Integer.toString(totalNumberOfSeats));
-    }
-
-    public List<TicketOrder> getTicketOrders() {
-        return ticketOrders;
-    }
-
-    public void setTicketOrders(List<TicketOrder> ticketOrders) {
-        this.ticketOrders = ticketOrders;
     }
 }

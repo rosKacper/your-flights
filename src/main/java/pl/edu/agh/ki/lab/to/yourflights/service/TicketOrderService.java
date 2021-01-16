@@ -85,6 +85,13 @@ public class TicketOrderService {
         return false;
     }
 
+    public boolean saveAll(List<TicketOrder> ticketOrders) {
+        if(ticketOrders.size() != 0) {
+            ticketOrderRepository.saveAll(ticketOrders);
+        }
+        return false;
+    }
+
     /**
      * Metoda zwracająca sumaryczny koszt danego zamówienia na bilety
      * @param ticketOrder zamówienie na bilety
@@ -94,11 +101,13 @@ public class TicketOrderService {
         TicketDiscount ticketDiscount = ticketOrder.getTicketDiscount();
         if(ticketDiscount == null) {
             return ticketOrder.getTicketCategory().getCategoryPrice()
-                    .multiply(BigDecimal.valueOf(ticketOrder.getNumberOfSeats())); //totalPrice = categoryPrice * numberOfSeats
+                    .multiply(BigDecimal.valueOf(ticketOrder.getNumberOfSeats()))
+                    .setScale(2); //totalPrice = categoryPrice * numberOfSeats
         } else {
             return ticketOrder.getTicketCategory().getCategoryPrice()
                     .multiply(BigDecimal.valueOf(ticketOrder.getNumberOfSeats())) //price = categoryPrice * numberOfSeats
-                    .multiply(BigDecimal.valueOf(ticketDiscount.getDiscount()).divide(new BigDecimal(100))); //totalPrice = price * discount/100
+                    .multiply(BigDecimal.valueOf(1).subtract(BigDecimal.valueOf(ticketDiscount.getDiscount()).divide(new BigDecimal(100))))//totalPrice = price * ( 1 - discount/100)
+                    .setScale(2);
         }
     }
 }
