@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,14 +33,11 @@ import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -96,12 +92,11 @@ public class AddReservationController {
     public ComboBox<String> discountCombo;
 
     @FXML
-    private JFXButton buttonDeleteTicketOrder, buttonAddTicketOrder, formTitle;
+    private JFXButton buttonDeleteTicketOrder, buttonAddTicketOrder, errorField;
 
     /**
      * Tabela ticket Order
      */
-
     @FXML
     private JFXTreeTableView<TicketOrder> reservationOverviewTableView;
 
@@ -120,6 +115,11 @@ public class AddReservationController {
     private Flight flight;
     private Reservation reservation = null;
     private ObservableList<TicketOrder> ticketOrdersList = FXCollections.observableArrayList();
+
+    @FXML
+    public Label numberOfSeatsValidationLabel;
+    @FXML
+    public Label ticketCategoryValidationLabel;
 
     /**
      * Formatuje date w postaci string do odpowiedniego formatu
@@ -204,6 +204,15 @@ public class AddReservationController {
         reservationOverviewTableView.setShowRoot(false);
     }
 
+    private void showErrorMessage(JFXButton errorField, String errorMessage) {
+        errorField.setText(errorMessage);
+        errorField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+    }
+
+    private void showSuccessMessage(JFXButton errorField, String successMessage) {
+        errorField.setText(successMessage);
+        errorField.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+    }
 
     /**
      * Metoda obsługująca dodawanie rezerwacji po naciśnięciu przycisku "submit" w formularzu
@@ -215,8 +224,7 @@ public class AddReservationController {
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
 
         if(ticketOrdersList.size() == 0) {
-            formTitle.setText("Cannot add empty reservation!");
-            formTitle.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+            showErrorMessage(errorField, "You cannot add empty reservation!");
             return;
         }
 
@@ -250,8 +258,7 @@ public class AddReservationController {
 
             if (reservationList.size() != 0) {
                 // informujemy użytkownika o błędzie
-                formTitle.setText("You have a reservation in this time slot already");
-                formTitle.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+                showErrorMessage(errorField, "You have a reservation in this time slot already!");
                 return;
             }
 //         Tworzymy rezerwację i zamówienie biletów dla niej
@@ -340,6 +347,13 @@ public class AddReservationController {
     }
 
     public void handleAddAction() {
+        boolean numberOfSeatsValidation = Validator.validateNotEmpty(seatsCombo, numberOfSeatsValidationLabel);
+        boolean ticketCategoryValidation = Validator.validateNotEmpty(ticketCategoryCombo, ticketCategoryValidationLabel);
+
+        if(!numberOfSeatsValidation || !ticketCategoryValidation){
+            showErrorMessage(errorField, "You have to fill empty fields!");
+            return;
+        }
 
         TicketCategory ticketCategory = ticketCategoryService.findByFlight(flight).stream()
                 .filter(ticketCategory1 -> ticketCategory1.getCategoryName().equals(ticketCategoryCombo.getValue()))
@@ -349,6 +363,7 @@ public class AddReservationController {
         TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
 
         ticketOrdersList.addAll(new TicketOrder(seatsCombo.getValue(), ticketDiscount, reservation, ticketCategory));
+        showSuccessMessage(errorField, "Ticket order added successfully!");
         setModel();
 
     }
@@ -357,6 +372,7 @@ public class AddReservationController {
         var ticketOrders = reservationOverviewTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
         ticketOrdersList.removeAll(ticketOrders);
         ticketOrderService.deleteAll(FXCollections.observableArrayList(ticketOrders));
+        showSuccessMessage(errorField, "Ticket order deleted successfully!");
     }
 
     private void setButtonsDisablePropertyBinding() {
