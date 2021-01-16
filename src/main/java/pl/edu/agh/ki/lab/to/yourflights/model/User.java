@@ -4,10 +4,7 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import org.springframework.security.core.GrantedAuthority;
 import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -26,6 +23,9 @@ public class User {
     private String password;
 
     private UserRole userRole;
+
+    @OneToOne
+    private Customer customer;
 
     public User(){}
 
@@ -66,5 +66,13 @@ public class User {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

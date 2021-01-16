@@ -7,11 +7,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketDiscount;
 import pl.edu.agh.ki.lab.to.yourflights.model.User;
 import pl.edu.agh.ki.lab.to.yourflights.model.UserPrincipal;
 import pl.edu.agh.ki.lab.to.yourflights.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,7 +31,7 @@ public class UserPrincipalService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username).get(0);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
@@ -40,21 +42,21 @@ public class UserPrincipalService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-//    public List<TicketDiscount> findByName(String name) {
-//        return userRepository.findAllByName(name);
-//    }
+    public User findByUsername(String username){return userRepository.findByUsername(username).get(0);}
 
     public void delete(User user) {
         userRepository.delete(user);
     }
 
-//    /**
-//     * Metoda usuwająca dane zniżki z bazy danych
-//     * @param ticketDiscounts lista zniżek do usunięcia
-//     */
-//    public void deleteAll(ObservableList<TicketDiscount> ticketDiscounts) {
-//        ticketDiscountRepository.deleteAll(ticketDiscounts);
-//    }
+    public void deleteAll(ObservableList<User> users) {
+        userRepository.deleteAll(users);
+    }
+
+    public void deleteWithGivenCustomers(ObservableList<Customer> customers){
+        for(Customer customer : customers){
+            userRepository.delete(userRepository.findByUsername(customer.getUsername()).get(0));
+        }
+    }
 
     /**
      * Metoda zapisująca użytkownika w bazie danych

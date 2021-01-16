@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.User;
@@ -42,6 +43,9 @@ public class RegistrationController {
 
     @Autowired
     private AuthenticationManager authManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     /**
      * Kontekst aplikacji Springowej
      */
@@ -97,8 +101,14 @@ public class RegistrationController {
         }
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
-        customerService.save(new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText()));
-        userPrincipalService.save(new User(username.getText(), emailAddress.getText(), password.getText(), UserRole.USER));
+        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
+        Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
+        user.setCustomer(customer);
+        //        userPrincipalService.save(user);
+        customerService.save(customer);
+//        userPrincipalService.findByUsername(username.getText()).setCustomer(customerService.findByUsername(username.getText()));
+
+
 
         firstName.clear();
         lastName.clear();
