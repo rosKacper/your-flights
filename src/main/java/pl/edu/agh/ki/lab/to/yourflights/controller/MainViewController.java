@@ -118,7 +118,7 @@ public class MainViewController {
     }
 
     private void setFlights() {
-        flights = flightService.findAll().stream().limit(3).collect(Collectors.toList());
+        flights = flightService.getFlightsSortedDescendingBasedOnNumberOfReservations().stream().limit(3).collect(Collectors.toList());
         this.showFlightDetailsView(flights);
     }
 

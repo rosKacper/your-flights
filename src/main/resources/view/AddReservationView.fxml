@@ -25,16 +25,16 @@
         <padding>
          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
       </padding>
-
-              <Label fx:id="seatsLabel" prefHeight="17.0" prefWidth="102.0" text="Number of seats" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-        <Label fx:id="ticketCategoryLabel" text="Ticket Category" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+        <Label fx:id="ticketCategoryLabel" text="Ticket Category" GridPane.columnIndex="1" GridPane.rowIndex="5" />
         <Label fx:id="discountLabel" text="Discount Type (optional)" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-       <Label fx:id="numberOfSeatsValidationLabel" prefHeight="17.0" prefWidth="202.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-       <Label fx:id="ticketCategoryValidationLabel" prefHeight="17.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+       <Label fx:id="numberOfSeatsValidationLabel" prefHeight="17.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
        <Label prefHeight="17.0" prefWidth="163.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
       <JFXComboBox fx:id="discountCombo" prefHeight="26.0" prefWidth="273.0" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-      <JFXComboBox fx:id="seatsCombo" prefHeight="26.0" prefWidth="273.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-      <JFXComboBox fx:id="ticketCategoryCombo" prefHeight="26.0" prefWidth="273.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+      <JFXComboBox fx:id="ticketCategoryCombo" prefHeight="26.0" prefWidth="273.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+   
+              <Label fx:id="seatsLabel" prefHeight="17.0" prefWidth="102.0" text="Number of seats" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+       <Label fx:id="ticketCategoryValidationLabel" prefHeight="17.0" prefWidth="202.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      <JFXComboBox fx:id="seatsCombo" prefHeight="26.0" prefWidth="273.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
 
              <rowConstraints>
           <RowConstraints />

@@ -8,8 +8,8 @@ import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Klasa definiująca serwis ze Spring Data Jpa dla lotów
@@ -141,5 +141,19 @@ public class FlightService {
             }
         }
         return totalIncome;
+    }
+
+    public List<Flight> getFlightsSortedDescendingBasedOnNumberOfReservations() {
+        Map<Flight, Integer> map = new HashMap<>();
+        findAll().stream().forEach(flight -> map.put(flight, getNumberOfReservationsForFlight(flight)));
+        Map<Flight, Integer> result = map.entrySet()
+                .stream()
+                .sorted(Map.Entry.<Flight, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+        return new ArrayList<>(result.keySet());
     }
 }

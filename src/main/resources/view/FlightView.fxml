@@ -126,7 +126,7 @@
                             <Insets left="20.0" />
                         </HBox.margin>
                     </JFXButton>
-               <JFXButton fx:id="buttonAddReservation" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddReservationAction" prefHeight="0.0" prefWidth="200.0" ripplerFill="#c746d0" style="-fx-border-color: #c746d0; -fx-border-width: 2px;" text="Add reservation" textAlignment="CENTER">
+               <JFXButton fx:id="buttonAddReservation" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddReservationAction" prefHeight="0.0" prefWidth="180.0" ripplerFill="#c746d0" style="-fx-border-color: #c746d0; -fx-border-width: 2px;" text="Add reservation" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
@@ -137,7 +137,7 @@
                      <Insets left="20.0" />
                   </HBox.margin>
                </JFXButton>
-                    <JFXButton fx:id="buttonShowFlightDetails" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleShowFlightDetailsView" prefHeight="43.0" prefWidth="200.0" ripplerFill="#006d77" style="-fx-background-color: #006d77;" text="Flight details" textAlignment="CENTER" textFill="WHITE">
+                    <JFXButton fx:id="buttonShowFlightDetails" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleShowFlightDetailsView" prefHeight="43.0" prefWidth="180.0" ripplerFill="#006d77" style="-fx-background-color: #006d77;" text="Flight details" textAlignment="CENTER" textFill="WHITE">
                        <font>
                           <Font size="18.0" />
                        </font>
@@ -145,16 +145,19 @@
                           <Cursor fx:constant="HAND" />
                        </cursor>
                        <HBox.margin>
-                          <Insets left="20.0" />
+                          <Insets left="80.0" />
                        </HBox.margin>
                     </JFXButton>
-                    <JFXButton fx:id="buttonShowTicketCategories" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleShowTicketCategories" prefHeight="0.0" prefWidth="211.0" ripplerFill="#276738" style="-fx-border-color: #276738; -fx-border-width: 2px;" text="TicketCategories" textAlignment="CENTER">
+                    <JFXButton fx:id="buttonShowTicketCategories" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleShowTicketCategories" prefHeight="0.0" prefWidth="180.0" ripplerFill="#276738" style="-fx-border-color: #276738; -fx-border-width: 2px;" text="Ticket categories" textAlignment="CENTER">
                         <font>
                             <Font size="18.0" />
                         </font>
                         <cursor>
                             <Cursor fx:constant="HAND" />
                         </cursor>
+                  <HBox.margin>
+                     <Insets left="20.0" />
+                  </HBox.margin>
                     </JFXButton>
                 </children>
                 <padding>
