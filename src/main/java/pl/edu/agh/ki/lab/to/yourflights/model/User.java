@@ -24,9 +24,6 @@ public class User {
 
     private UserRole userRole;
 
-    @OneToOne
-    private Customer customer;
-
     public User(){}
 
     public User(String username, String email, String password, UserRole userRole) {
@@ -68,11 +65,4 @@ public class User {
         this.userRole = userRole;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 }
