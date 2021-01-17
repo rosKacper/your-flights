@@ -36,9 +36,9 @@ public class MockDataService {
     public void createMockData() {
 //        customerRepository.save(new Customer("Adam", "Malysz", "Poland", "Wisla", "Warszawska", "43-460", "102102102", "lec@adamlec.pl", "user"));
 
-        airlineRepository.save(new Airline("LOT", "Poland", "Polskie Linie Lotnicze LOT S.A. is the flag carrier of Poland. Based in Warsaw and established on 29 December 1928, it is one of the world's oldest airlines in operation."));
-        airlineRepository.save(new Airline("Lufthansa", "Germany", "Lufthansa is the largest German airline which, when combined with its subsidiaries, is the second largest airline in Europe in terms of passengers carried."));
-        airlineRepository.save(new Airline("Ryanair", "Ireland", "Ryanair is an Irish Low-cost airline founded in 1984. It has headquartered in Swords, Dublin, with its primary operational bases at Dublin and London Stansted airports."));
+//        airlineRepository.save(new Airline("LOT", "Poland", "Polskie Linie Lotnicze LOT S.A. is the flag carrier of Poland. Based in Warsaw and established on 29 December 1928, it is one of the world's oldest airlines in operation."));
+//        airlineRepository.save(new Airline("Lufthansa", "Germany", "Lufthansa is the largest German airline which, when combined with its subsidiaries, is the second largest airline in Europe in terms of passengers carried."));
+//        airlineRepository.save(new Airline("Ryanair", "Ireland", "Ryanair is an Irish Low-cost airline founded in 1984. It has headquartered in Swords, Dublin, with its primary operational bases at Dublin and London Stansted airports."));
 
         Flight flight1 = new Flight("Warsaw", "Lisbon", "25/12/2020", "25/12/2020", airlineRepository.findByName("LOT"), "12:30", "15:45");
         TicketCategory ticketCategory1 = new TicketCategory("normal", new BigDecimal(10), 80, flight1);

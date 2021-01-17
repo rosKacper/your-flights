@@ -34,6 +34,10 @@ public class Airline extends RecursiveTreeObject<Airline> {
 
     private String description;
 
+
+    @OneToOne
+    private User user;
+
     /**
      * Mapowanie relacji do lotów danego przewoźnika
      */
@@ -56,10 +60,11 @@ public class Airline extends RecursiveTreeObject<Airline> {
     )
     private List<Review> reviews;
 
-    public Airline(String name, String country, String description) {
+    public Airline(String name, String country, String description, User user) {
         this.name = name;
         this.country = country;
         this.description = description;
+        this.user = user;
     }
 
     public Airline() {
@@ -100,5 +105,14 @@ public class Airline extends RecursiveTreeObject<Airline> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

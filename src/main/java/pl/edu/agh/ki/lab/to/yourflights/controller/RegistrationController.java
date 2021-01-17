@@ -103,14 +103,12 @@ public class RegistrationController {
         }
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
-//        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
         User user = new User(username.getText(), emailAddress.getText(), password.getText(), UserRole.USER);
         Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
         userPrincipalService.save(user);
         customer.setUser(user);
         customerService.save(customer);
 
-        //        userPrincipalService.save(user);
 
 
 //        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);

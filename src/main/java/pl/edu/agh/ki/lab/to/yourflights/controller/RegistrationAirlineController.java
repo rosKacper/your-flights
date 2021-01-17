@@ -95,6 +95,12 @@ public class RegistrationAirlineController {
         }
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
+        User user = new User(username.getText(), emailAddress.getText(), password.getText(), UserRole.USER);
+        Airline airline = new Airline(firstName.getText(),country.getText(),description.getText(), user);
+        userPrincipalService.save(user);
+        airline.setUser(user);
+        airlineService.save(airline);
+
 //        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
 //        Airline airline = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
 //        user.setCustomer(customer);
