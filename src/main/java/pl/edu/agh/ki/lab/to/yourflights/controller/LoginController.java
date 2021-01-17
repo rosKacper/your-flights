@@ -8,8 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +59,8 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
+    @FXML
+    public Label usernameLabel;
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
@@ -94,7 +98,8 @@ public class LoginController {
             showMainView(event);
 
         } catch (AuthenticationException e) {
-            System.out.println("Incorrect username or password.");
+            usernameLabel.setText("Incorrect username or password");
+            usernameLabel.setTextFill(Color.RED);
         }
     }
 
