@@ -19,12 +19,16 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
@@ -32,6 +36,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
@@ -95,6 +100,7 @@ public class AddFlightController {
 
     private FlightService flightService;
     private Flight flight;
+    private UserPrincipalService userPrincipalService;
 
     /**
      * Metoda ustawiająca lot do edycji
@@ -103,6 +109,23 @@ public class AddFlightController {
     public void setData(Flight flight) {
         this.flight = flight;
         updateControls();
+    }
+
+    @FXML
+    public void initialize() {
+        //if airline is logged in, set 'airline' combobox to name of that airline
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        if(role.equals("[AIRLINE]")){
+            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = "";
+            if(userDetails instanceof UserDetails){
+                username = ((UserDetails)userDetails).getUsername();
+            }
+            Airline airline = airlineService.findByUser(userPrincipalService.findByUsername(username));
+            this.comboBox.setItems(FXCollections.observableList(Arrays.asList(airline.getName())));
+            this.comboBox.setValue(airline.getName());
+            this.comboBox.setDisable(true);
+        }
     }
 
     /**
@@ -188,15 +211,17 @@ public class AddFlightController {
      * @param applicationContext kontekst aplikacji Springa
      */
     public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
-                                @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
-                                 ApplicationContext applicationContext,
-                                 FlightService flightService,
-                                 AirlineService airlineService){
+                               @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
+                               ApplicationContext applicationContext,
+                               FlightService flightService,
+                               AirlineService airlineService,
+                               UserPrincipalService userPrincipalService){
         this.flightView = flightView;
         this.ticketCategoryView = ticketCategoryView;
         this.applicationContext = applicationContext;
         this.flightService = flightService;
         this.airlineService = airlineService;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**
