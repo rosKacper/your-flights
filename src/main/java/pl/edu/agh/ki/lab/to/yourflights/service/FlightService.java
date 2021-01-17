@@ -135,6 +135,7 @@ public class FlightService {
         return (int)reservations.stream().distinct().count();
     }
 
+
     /**
      * Metoda obliczająca sumaryczne zarobki przewoźnika za dany lot
      * @param flight lot

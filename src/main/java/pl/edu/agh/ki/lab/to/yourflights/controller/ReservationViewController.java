@@ -22,8 +22,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.*;
+import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
 import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -39,6 +41,9 @@ public class ReservationViewController {
 
     private final ReservationService reservationService;
     private final TicketOrderService ticketOrderService;
+    private final AirlineService airlineService;
+    private final UserPrincipalService userPrincipalService;
+
     private final Resource mainView;
     private final Resource customersView;
     private final Resource airlineView;
@@ -107,11 +112,18 @@ public class ReservationViewController {
 
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList<Reservation> reservationList;
 
         //Pobranie rezerwacje z serwisu
-        ObservableList<Reservation> reservationList = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> ticketOrderService.findByReservation(reservation).size() > 0)
-                .filter(reservation -> reservation.getUserName().equals(name) || role.equals("[ROLE_ADMIN]"))
-                .collect(Collectors.toList()));
+        if(role.equals("[AIRLINE]")){
+            reservationList = FXCollections.observableList(airlineService.getReservationsForAirline(airlineService.findByUser(userPrincipalService.findByUsername(name))));
+        }
+        else{
+             reservationList = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> ticketOrderService.findByReservation(reservation).size() > 0)
+                    .filter(reservation -> reservation.getUserName().equals(name) || role.equals("[ROLE_ADMIN]"))
+                    .collect(Collectors.toList()));
+        }
+
 
         //Przekazanie danych do tabeli
         final TreeItem<Reservation> root = new RecursiveTreeItem<Reservation>(reservationList, RecursiveTreeObject::getChildren);
@@ -148,12 +160,14 @@ public class ReservationViewController {
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
      * @param reservationService serwis do pobierania danych o rezerwacji
      * @param ticketOrderService serwis do pobierania danych o zamówieniach biletów
+     * @param airlineService
+     * @param userPrincipalService
      * @param mainView główny widok aplikacji
      * @param AirlineView widok formularza do przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
     public ReservationViewController(ReservationService reservationService, TicketOrderService ticketOrderService,
-                                     @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+                                     AirlineService airlineService, UserPrincipalService userPrincipalService, @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                      @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                                      @Value("classpath:/view/AirlinesView.fxml") Resource AirlineView,
                                      @Value("classpath:/view/AddReservationView.fxml") Resource addReservationView,
@@ -166,6 +180,8 @@ public class ReservationViewController {
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;
         this.ticketOrderService = ticketOrderService;
+        this.airlineService = airlineService;
+        this.userPrincipalService = userPrincipalService;
         this.mainView = mainView;
         this.airlineView = AirlineView;
         this.applicationContext = applicationContext;
