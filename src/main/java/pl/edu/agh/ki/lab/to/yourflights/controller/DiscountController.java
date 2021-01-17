@@ -98,11 +98,8 @@ public class DiscountController {
         nameColumn.setCellValueFactory(data -> data.getValue().getValue().getNameProperty());
         percentageColumn.setCellValueFactory(data -> data.getValue().getValue().getDiscountProperty());
 
-        System.out.println(ticketDiscountService);
         //Pobranie przewoźników z serwisu
         ObservableList<TicketDiscount> ticketDiscounts = FXCollections.observableList(ticketDiscountService.findAll());
-
-        System.out.println(ticketDiscounts);
 
         //Przekazanie danych do tabeli
         final TreeItem<TicketDiscount> root = new RecursiveTreeItem<>(ticketDiscounts, RecursiveTreeObject::getChildren);
@@ -265,7 +262,7 @@ public class DiscountController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousFlightView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
             }
             else{

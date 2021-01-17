@@ -53,15 +53,15 @@
                     <Cursor fx:constant="HAND" />
                 </cursor>
             </JFXButton>
-            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showReservation" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Reservations" textAlignment="CENTER" textFill="WHITE">
-                <font>
-                    <Font size="18.0" />
-                </font>
+            <JFXButton alignment="CENTER" contentDisplay="RIGHT" onAction="#showDiscountsView" prefHeight="46.0" prefWidth="230.0" ripplerFill="#0582ca" text="Discounts" textFill="#4fdcff">
                 <cursor>
                     <Cursor fx:constant="HAND" />
                 </cursor>
+            <font>
+               <Font size="14.0" />
+            </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showDiscountsView" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Discounts" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showReservation" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Reservations" textAlignment="CENTER" textFill="WHITE">
                 <font>
                     <Font size="18.0" />
                 </font>
