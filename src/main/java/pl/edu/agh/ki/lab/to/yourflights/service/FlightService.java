@@ -2,6 +2,7 @@ package pl.edu.agh.ki.lab.to.yourflights.service;
 
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
@@ -74,6 +75,14 @@ public class FlightService {
         if(flight != null) {
             flightRepository.save(flight);
         }
+    }
+
+    /**
+     * Metoda znajdująca loty podanej linii lotniczej
+     * @param airline linia lotnicza do wyszukania lotu w bazie danych
+     */
+    public List<Flight> findByAirline(Airline airline){
+        return flightRepository.findByAirline(airline);
     }
 
     /**

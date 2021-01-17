@@ -3,6 +3,7 @@ package pl.edu.agh.ki.lab.to.yourflights.service;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
+import pl.edu.agh.ki.lab.to.yourflights.model.User;
 import pl.edu.agh.ki.lab.to.yourflights.repository.AirlineRepository;
 
 import java.util.List;
@@ -42,6 +43,15 @@ public class AirlineService {
      * @return obiekt Airline o podanej nazwie
      */
     public Airline findByName(String value){ return airlineRepository.findByName(value);}
+
+    /**
+     *
+     * @param user użytkownik powiązany z linią lotniczą
+     * @return obiekt Airline o podanym użytkowniku
+     */
+    public Airline findByUser(User user){
+        return airlineRepository.findByUser(user);
+    }
 
     /**
      * Metoda usuwająca danego przewoźnika z bazy danych
