@@ -112,7 +112,7 @@ public class TicketCategoryViewController {
         price.setCellValueFactory(data -> data.getValue().getValue().getPriceProperty());
         numberOfSeats.setCellValueFactory(data -> data.getValue().getValue().getNumberOfSeatsProperty());
 
-        //Pobranie lotów z serwisu
+        //Pobranie kategorii biletów z serwisu
         ObservableList<TicketCategory> ticketCategories = FXCollections.observableList(ticketCategoryService.findByFlight(flight));
 
         //Przekazanie danych do tabeli
@@ -353,9 +353,7 @@ public class TicketCategoryViewController {
     @FXML
     private void handleDeleteAction(ActionEvent event) {
         var ticketCategories = ticketCategoryTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
-        flight.getTicketCategories().removeIf(ticketCategory -> ticketCategories.stream().anyMatch(category -> category.getCategoryName().equals(ticketCategory.getCategoryName())));
         ticketCategoryService.deleteAll(FXCollections.observableList(ticketCategories));
-        flightService.save(flight);
         this.setModel();
     }
 

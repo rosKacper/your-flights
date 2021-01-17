@@ -39,7 +39,9 @@ public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
         auth.inMemoryAuthentication()
                 .withUser("user").password("{noop}user").roles("USER")
                 .and()
-                .withUser("admin").password("{noop}admin").roles("ADMIN");
+                .withUser("admin").password("{noop}admin").roles("ADMIN")
+                .and()
+                .withUser("airline").password("{noop}airline").roles("AIRLINE");
 
     }
 
