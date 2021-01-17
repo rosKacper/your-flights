@@ -23,6 +23,7 @@ import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
@@ -99,6 +100,13 @@ public class RegistrationController {
         if(!firstNameValidation || !lastNameValidation || !countryValidation || !cityValidation || !streetValidation
                 || !postalCodeValidation || !phoneNumberValidation || !emailAddressValidation
                 || !usernameValidation || !passwordValidation) {
+            return;
+        }
+
+        String name = username.getText();
+        if(userPrincipalService.findByUsername(name) != null) {
+            usernameValidationLabel.setText("User with given username already exists");
+            usernameValidationLabel.setTextFill(Color.RED);
             return;
         }
 
