@@ -114,7 +114,6 @@ public class CustomersViewController {
             Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String username = "";
             if(userDetails instanceof UserDetails){
-                System.out.println(((UserDetails)userDetails).getUsername());
                 username = ((UserDetails)userDetails).getUsername();
             }
             customers = FXCollections.observableList(customerService.findByUsername(username));

@@ -14,11 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.User;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
@@ -94,20 +92,12 @@ public class RegistrationAirlineController {
             return;
         }
 
-        //Stworzenie nowego przewoźnika i wyczyszczenie pól formularza
+        //Stworzenie nowego klienta i wyczyszczenie pól formularza
         User user = new User(username.getText(), emailAddress.getText(), password.getText(), UserRole.AIRLINE);
         Airline airline = new Airline(firstName.getText(),country.getText(),description.getText(), user);
         userPrincipalService.save(user);
         airline.setUser(user);
         airlineService.save(airline);
-
-//        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
-//        Airline airline = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
-//        user.setCustomer(customer);
-//        //        userPrincipalService.save(user);
-//        customerService.save(customer);
-//        userPrincipalService.findByUsername(username.getText()).setCustomer(customerService.findByUsername(username.getText()));
-
 
 
         firstName.clear();
@@ -116,17 +106,6 @@ public class RegistrationAirlineController {
         emailAddress.clear();
         username.clear();
         password.clear();
-
-
-
-        //Zarejestrowanie konta - todo
-
-//        UserDetails newUser = User.withUsername(username.toString())
-//                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
-//                .password(password.toString()).roles("USER").build();
-//
-//        InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
-//        userDetailsManager.createUser(newUser);
 
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów

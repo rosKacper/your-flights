@@ -18,13 +18,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
+import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
+import pl.edu.agh.ki.lab.to.yourflights.model.UserPrincipal;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +46,7 @@ public class AirlinesViewController {
      * Serwis linii lotniczych
      */
     private AirlineService airlineService;
+    private UserPrincipalService userPrincipalService;
 
     /**
      * Widoki
@@ -118,7 +124,27 @@ public class AirlinesViewController {
         });
 
         //Pobranie przewoźników z serwisu
-        ObservableList<Airline> airlines = FXCollections.observableList(airlineService.findAll());
+        //Jeśli zalogowanym użytkownikiem jest linia lotnicza, wyświetli tylko dane o sobie
+
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList<Airline> airlines;
+
+        if(role.equals("[AIRLINE]")){
+            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = "";
+            if(userDetails instanceof UserDetails){
+                username = ((UserDetails)userDetails).getUsername();
+            }
+            List<Airline> airlineList = new ArrayList<>();
+            airlineList.add(airlineService.findByUser(userPrincipalService.findByUsername(username)));
+            airlines = FXCollections.observableList(airlineList);
+        }
+        else{
+            airlines = FXCollections.observableList(airlineService.findAll());
+        }
+
+
+
 
         //Przekazanie danych do tabeli
         final TreeItem<Airline> root = new RecursiveTreeItem<>(airlines, RecursiveTreeObject::getChildren);
@@ -133,7 +159,7 @@ public class AirlinesViewController {
      * @param addAirlineView widok formularza do dodawania przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AirlinesViewController(AirlineService airlineService,
+    public AirlinesViewController(AirlineService airlineService, UserPrincipalService userPrincipalService,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                   @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                                   @Value("classpath:/view/AddAirlineView.fxml") Resource addAirlineView,
@@ -159,6 +185,7 @@ public class AirlinesViewController {
         this.userCustomersView = userCustomersView;
         this.userFlightView = userFlightView;
         this.reservationListViewCustomer = reservationListViewCustomer;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**

@@ -8,12 +8,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
-import pl.edu.agh.ki.lab.to.yourflights.model.TicketDiscount;
 import pl.edu.agh.ki.lab.to.yourflights.model.User;
 import pl.edu.agh.ki.lab.to.yourflights.model.UserPrincipal;
 import pl.edu.agh.ki.lab.to.yourflights.repository.UserRepository;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 

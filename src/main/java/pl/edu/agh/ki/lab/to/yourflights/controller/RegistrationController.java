@@ -110,16 +110,6 @@ public class RegistrationController {
         customerService.save(customer);
 
 
-
-//        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
-//        Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
-//        user.setCustomer(customer);
-//        //        userPrincipalService.save(user);
-//        customerService.save(customer);
-//        userPrincipalService.findByUsername(username.getText()).setCustomer(customerService.findByUsername(username.getText()));
-
-
-
         firstName.clear();
         lastName.clear();
         country.clear();
@@ -130,18 +120,6 @@ public class RegistrationController {
         emailAddress.clear();
         username.clear();
         password.clear();
-
-
-
-        //Zarejestrowanie konta - todo
-
-//        UserDetails newUser = User.withUsername(username.toString())
-//                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
-//                .password(password.toString()).roles("USER").build();
-//
-//        InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
-//        userDetailsManager.createUser(newUser);
-
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
         showMainView(actionEvent);

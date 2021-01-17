@@ -27,11 +27,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
+import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 
@@ -60,9 +63,12 @@ public class FlightController {
 
 
     /**
-     * Serwis lotów
+     * Serwisy
      */
     private final FlightService flightService;
+    private final AirlineService airlineService;
+    private final UserPrincipalService userPrincipalService;
+
 
     /**
      * Kontekst aplikacji Springa
@@ -132,7 +138,22 @@ public class FlightController {
         arrivalTime.setCellValueFactory(data-> data.getValue().getValue().getArrivalTimeProperty());
 
         //Pobranie lotów z serwisu
-        ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
+        //Jeśli zalogowanym użytkownikiem jest linia lotnicza, to pobierze tylko loty danej linii
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList<Flight> flights;
+
+        if(role.equals("[AIRLINE]")){
+            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = "";
+            if(userDetails instanceof UserDetails){
+                username = ((UserDetails)userDetails).getUsername();
+            }
+           flights = FXCollections.observableList(flightService.findByAirline(airlineService.findByUser(userPrincipalService.findByUsername(username))));
+        }
+        else{
+            flights = FXCollections.observableList(flightService.findAll());
+        }
+
 
         //Przekazanie danych do tabeli
         final TreeItem<Flight> root = new RecursiveTreeItem<>(flights, RecursiveTreeObject::getChildren);
@@ -159,7 +180,8 @@ public class FlightController {
      * @param userCustomersView
      * @param discountsView
      */
-    public FlightController(FlightService flightService, ApplicationContext applicationContext,
+    public FlightController(FlightService flightService, AirlineService airlineService,
+                            UserPrincipalService userPrincipalService, ApplicationContext applicationContext,
                             @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                             @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                             @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
@@ -180,6 +202,7 @@ public class FlightController {
         this.customersView = customersView;
         this.mainView = mainView;
         this.flightService = flightService;
+        this.airlineService = airlineService;
         this.reservationListView = reservationListView;
         this.addReservationView = addReservationView;
         this.addFlightView = addFlightView;
@@ -192,6 +215,7 @@ public class FlightController {
         this.flightDetailsView = flightDetailsView;
         this.ticketCategoryView = ticketCategoryView;
         this.discountsView = discountsView;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**
