@@ -373,11 +373,6 @@ public class AirlinesViewController {
         }
     }
 
-    @FXML
-    private void handleAddAction(ActionEvent event) {
-        this.showAddAirline(event, null);
-    }
-
     /**
      * Metoda obsługująca wylogowanie użytkownika
      * @param event event emitowany przez przycisk
