@@ -59,6 +59,9 @@ public class DiscountController {
     private final Resource loginView;
     private final Resource customersView;
     private final Resource userCustomersView;
+    private final Resource userAirlinesView;
+    private final Resource airlinesView;
+    private final Resource anonymousAirlineView;
 
     /**
      * Kontekrs aplikacji Springa
@@ -126,6 +129,9 @@ public class DiscountController {
                                   @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                   @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                                   @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
+                                  @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                                  @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
+                                  @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView,
                                   ApplicationContext applicationContext) {
         this.ticketDiscountService = ticketDiscountService;
         this.mainView = mainView;
@@ -140,6 +146,9 @@ public class DiscountController {
         this.userCustomersView = userCustomersView;
         this.userFlightView = userFlightView;
         this.reservationListViewCustomer = reservationListViewCustomer;
+        this.airlinesView = airlinesView;
+        this.anonymousAirlineView = anonymousAirlineView;
+        this.userAirlinesView = userAirlinesView;
     }
 
 
@@ -210,7 +219,7 @@ public class DiscountController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -233,14 +242,7 @@ public class DiscountController {
      */
     public void showReservation(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader;
-            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
-                fxmlloader = new FXMLLoader(reservationListView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
-            }
+            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -330,6 +332,34 @@ public class DiscountController {
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showAirlinesView(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousAirlineView.getURL());
+            }
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
+                fxmlloader = new FXMLLoader(airlinesView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userAirlinesView.getURL());
+            }
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.show();
