@@ -17,8 +17,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.User;
+import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
@@ -33,18 +35,13 @@ import java.io.IOException;
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
-public class RegistrationController {
+public class RegistrationAirlineController {
 
     /**
      * Widoki
      */
     private final Resource mainView;
     private final Resource anonymousMainView;
-
-    private Customer customer;
-
-    @Autowired
-    private AuthenticationManager authManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -57,15 +54,15 @@ public class RegistrationController {
      * Pola formularza
      */
     @FXML
-    public TextField firstName, lastName, country,city, street, postalCode, phoneNumber, emailAddress, username, password;
+    public TextField firstName, country, description, emailAddress, username, password;
 
     /**
      * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
      */
     @FXML
-    public Label firstNameValidationLabel, lastNameValidationLabel,
-            countryValidationLabel, cityValidationLabel, streetValidationLabel,
-            postalCodeValidationLabel, phoneNumberValidationLabel, emailAddressValidationLabel,
+    public Label firstNameValidationLabel,
+            countryValidationLabel, descriptionLabel
+            , emailAddressValidationLabel,
             usernameValidationLabel, passwordValidationLabel;
 
     /**
@@ -75,6 +72,7 @@ public class RegistrationController {
     public Text actiontarget;
 
     private final CustomerService customerService;
+    private final AirlineService airlineService;
     private final UserPrincipalService userPrincipalService;
 
     /**
@@ -87,32 +85,24 @@ public class RegistrationController {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
         boolean firstNameValidation = Validator.validateNotEmpty(firstName, firstNameValidationLabel);
-        boolean lastNameValidation = Validator.validateNotEmpty(lastName, lastNameValidationLabel);
         boolean countryValidation = Validator.validateNotEmpty(country, countryValidationLabel);
-        boolean cityValidation = Validator.validateNotEmpty(city, cityValidationLabel);
-        boolean streetValidation = Validator.validateNotEmpty(street, streetValidationLabel);
-        boolean postalCodeValidation = Validator.validateNotEmpty(postalCode, postalCodeValidationLabel);
-        boolean phoneNumberValidation = Validator.validateNotEmpty(phoneNumber, phoneNumberValidationLabel);
         boolean emailAddressValidation = Validator.validateEmail(emailAddress, emailAddressValidationLabel);
         boolean usernameValidation = Validator.validateNotEmpty(username, usernameValidationLabel);
         boolean passwordValidation = Validator.validateNotEmpty(password, passwordValidationLabel);
-        if(!firstNameValidation || !lastNameValidation || !countryValidation || !cityValidation || !streetValidation
-                || !postalCodeValidation || !phoneNumberValidation || !emailAddressValidation
+        if(!firstNameValidation || !countryValidation || !emailAddressValidation
                 || !usernameValidation || !passwordValidation) {
             return;
         }
 
         //Stworzenie nowego klienta i wyczyszczenie pól formularza
         User user = new User(username.getText(), emailAddress.getText(), password.getText(), UserRole.USER);
-        Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
+        Airline airline = new Airline(firstName.getText(),country.getText(),description.getText(), user);
         userPrincipalService.save(user);
-        customer.setUser(user);
-        customerService.save(customer);
-
-
+        airline.setUser(user);
+        airlineService.save(airline);
 
 //        User user = new User(username.getText(), emailAddress.getText(), passwordEncoder.encode(password.getText()), UserRole.USER);
-//        Customer customer = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
+//        Airline airline = new Customer(firstName.getText(),lastName.getText(),country.getText(),city.getText(),street.getText(),postalCode.getText(),phoneNumber.getText(),emailAddress.getText(),username.getText(), user);
 //        user.setCustomer(customer);
 //        //        userPrincipalService.save(user);
 //        customerService.save(customer);
@@ -121,12 +111,8 @@ public class RegistrationController {
 
 
         firstName.clear();
-        lastName.clear();
         country.clear();
-        city.clear();
-        street.clear();
-        postalCode.clear();
-        phoneNumber.clear();
+        description.clear();
         emailAddress.clear();
         username.clear();
         password.clear();
@@ -153,15 +139,17 @@ public class RegistrationController {
      * @param applicationContext kontekst aplikacji Springa
      * @param userPrincipalService
      */
-    public RegistrationController(@Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
+    public RegistrationAirlineController(@Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                   ApplicationContext applicationContext,
-                                  CustomerService customerService, UserPrincipalService userPrincipalService){
+                                  CustomerService customerService, UserPrincipalService userPrincipalService,
+                                         AirlineService airlineService){
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
         this.applicationContext = applicationContext;
         this.customerService = customerService;
         this.userPrincipalService = userPrincipalService;
+        this.airlineService = airlineService;
     }
 
     /**

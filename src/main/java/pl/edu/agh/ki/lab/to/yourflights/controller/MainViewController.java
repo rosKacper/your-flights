@@ -50,6 +50,7 @@ public class MainViewController {
     private final Resource userAirlineView;
     private final Resource userCustomersView;
     private final Resource anonymousMainView;
+    private final Resource registrationChoiceView;
 
     private FlightService flightService;
 
@@ -89,6 +90,7 @@ public class MainViewController {
                               @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlineView,
                               @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                               @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
+                              @Value("classpath:/view/AuthView/RegistrationChoiceView.fxml") Resource registrationChoiceView,
                               @Value("classpath:/view/MainView/FlightDetailsBrief.fxml") Resource flightDetailsBrief) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
@@ -104,6 +106,7 @@ public class MainViewController {
         this.userFlightView = userFlightView;
         this.userCustomersView = userCustomersView;
         this.anonymousMainView = anonymousMainView;
+        this.registrationChoiceView = registrationChoiceView;
         this.flightDetailsBrief = flightDetailsBrief;
         this.flightService = flightService;
     }
@@ -272,7 +275,7 @@ public class MainViewController {
      */
     public void showRegistrationView(ActionEvent actionEvent){
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(registrationView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(registrationChoiceView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

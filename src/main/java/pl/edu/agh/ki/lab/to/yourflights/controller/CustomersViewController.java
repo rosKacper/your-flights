@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -54,6 +55,11 @@ public class CustomersViewController {
      * Serwis pozwalający na pobieranie i zapisywanie klientów
      */
     private CustomerService customerService;
+
+    /**
+     * Serwis pozwalający na pobieranie i zapisywanie/usuwanie użytkowników
+     */
+    private UserPrincipalService userPrincipalService;
 
     /**
      * Kontekst aplikacji Springa
@@ -97,7 +103,7 @@ public class CustomersViewController {
         cityColumn.setCellValueFactory(data -> data.getValue().getValue().getCityProperty());
 
         //Pobranie klientów z serwisu
-        ObservableList<Customer> customers = FXCollections.observableList(customerService.findAll());
+        ObservableList<Customer> customers;// = FXCollections.observableList(customerService.findAll());
 
         FXMLLoader fxmlloader;
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
@@ -108,6 +114,7 @@ public class CustomersViewController {
             Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String username = "";
             if(userDetails instanceof UserDetails){
+                System.out.println(((UserDetails)userDetails).getUsername());
                 username = ((UserDetails)userDetails).getUsername();
             }
             customers = FXCollections.observableList(customerService.findByUsername(username));
@@ -127,6 +134,7 @@ public class CustomersViewController {
      * @param applicationContext kontekst aplikacji Springa
      */
     public CustomersViewController(CustomerService customerService,
+                                   UserPrincipalService userPrincipalService,
                                    @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                    @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                                    @Value("classpath:/view/AddCustomerView.fxml") Resource addCustomerView,
@@ -148,6 +156,7 @@ public class CustomersViewController {
         this.userAirlinesView = userAirlinesView;
         this.anonymousMainView = anonymousMainView;
         this.reservationListViewCustomer = reservationListViewCustomer;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**
@@ -279,9 +288,11 @@ public class CustomersViewController {
 
     @FXML
     private void handleDeleteAction(ActionEvent event) {
-        var customers = customersTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
-        customerService.deleteAll(FXCollections.observableList(customers));
-        this.setModel();
+//        var customers = customersTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
+//        customerService.deleteAll(FXCollections.observableList(customers));
+////        userPrincipalService.deleteWithGivenCustomers(FXCollections.observableList(customers));
+//
+//        this.setModel();
     }
 
     @FXML
@@ -294,7 +305,7 @@ public class CustomersViewController {
 
     @FXML
     private void handleAddAction(ActionEvent event) {
-        this.showAddCustomer(event, null);
+//        this.showAddCustomer(event, null);
     }
 
     /**

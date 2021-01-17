@@ -95,7 +95,8 @@ public class AddAirlineController {
 
         //Stworzenie nowego przewoźnika (jeśli to było dodawanie nowego przewoźnika), lub zaktualizowanie obecnego lotu
         if(airline == null) {
-            airline = new Airline(name.getText(),country.getText(),description.getText());
+            //do usunięcia jest w ogóle to dodawanie linii lotniczych
+//            airline = new Airline(name.getText(),country.getText(),description.getText());
         } else {
             updateModel();
         }

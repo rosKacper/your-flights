@@ -25,6 +25,9 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     private String username;
 
+    @OneToOne
+    private User user;
+
     /**
      * Mapowanie relacji do rezerwacji danego klienta
      */
@@ -52,7 +55,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     public Customer(String firstName, String secondName, String country,
                     String city, String street, String postalCode,
-                    String phoneNumber, String emailAddress, String username) {
+                    String phoneNumber, String emailAddress, String username, User user) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.country = country;
@@ -62,6 +65,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
         this.username = username;
+        this.user = user;
     }
 
     public Customer(){}
@@ -149,5 +153,13 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
