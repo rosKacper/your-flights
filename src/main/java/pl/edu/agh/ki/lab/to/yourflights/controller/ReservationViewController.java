@@ -47,6 +47,7 @@ public class ReservationViewController {
     private final Resource flightView;
     private final Resource userFlightView;
     private final Resource userCustomersView;
+    private final Resource airlinesView;
     private final Resource userAirlinesView;
     private final Resource anonymousMainView;
 
@@ -161,6 +162,7 @@ public class ReservationViewController {
                                      @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                      @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
                                      @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
+                                     @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                                      ApplicationContext applicationContext) {
         this.reservationService = reservationService;
         this.ticketOrderService = ticketOrderService;
@@ -174,6 +176,7 @@ public class ReservationViewController {
         this.userCustomersView = userCustomersView;
         this.userAirlinesView = userAirlinesView;
         this.anonymousMainView = anonymousMainView;
+        this.airlinesView = airlinesView;
     }
 
     /**
@@ -212,6 +215,13 @@ public class ReservationViewController {
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(airlineView.getURL());
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
+                fxmlloader = new FXMLLoader(airlinesView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userAirlinesView.getURL());
+            }
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -230,7 +240,7 @@ public class ReservationViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -255,7 +265,7 @@ public class ReservationViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
             }
             else{

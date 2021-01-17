@@ -163,7 +163,7 @@ public class MainViewController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousAirlinesView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
             }
             else{
@@ -188,7 +188,7 @@ public class MainViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -234,7 +234,7 @@ public class MainViewController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousFlightView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
             }
             else{
