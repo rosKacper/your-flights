@@ -90,8 +90,7 @@ public class MainViewController {
                               @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlineView,
                               @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                               @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
-                              @Value("classpath:/view/AuthView/RegistrationChoiceView.fxml") Resource registrationChoiceView) {
-                              @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
+                              @Value("classpath:/view/AuthView/RegistrationChoiceView.fxml") Resource registrationChoiceView,
                               @Value("classpath:/view/MainView/FlightDetailsBrief.fxml") Resource flightDetailsBrief) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
