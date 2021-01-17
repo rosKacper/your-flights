@@ -28,11 +28,6 @@ public class Flight extends RecursiveTreeObject<Flight> {
     @GeneratedValue(strategy=GenerationType.AUTO)
     Long id;
 
-//    @Id
-//    @GeneratedValue(generator = "uuid2")
-//    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-//    private UUID id;
-
     @NotEmpty
     private String placeOfDeparture;
     @NotEmpty
@@ -47,24 +42,13 @@ public class Flight extends RecursiveTreeObject<Flight> {
     private String departureTime;
     @NotNull
     private String arrivalTime;
+
     /**
      * Mapowanie relacji do przewoźnika realizującego dany lot
      */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "airlineID")
     private Airline airline;
-
-    /**
-     * Mapowanie relacji do dostępnych kategorii biletów w danym locie
-     */
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER,
-            mappedBy = "flight"
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<TicketCategory> ticketCategories = new LinkedList<>();
 
     public Flight(String placeOfDeparture, String placeOfDestination, String departureDate, String arrivalDate, Airline airline, String departureTime, String arrivalTime) {
         this.placeOfDeparture = placeOfDeparture;
@@ -100,10 +84,6 @@ public class Flight extends RecursiveTreeObject<Flight> {
         this.airline = airline;
     }
 
-    public void setTicketCategories(List<TicketCategory> ticketCategories) {
-        this.ticketCategories = ticketCategories;
-    }
-
     public String getPlaceOfDeparture() {
         return placeOfDeparture;
     }
@@ -122,10 +102,6 @@ public class Flight extends RecursiveTreeObject<Flight> {
 
     public Airline getAirline() {
         return airline;
-    }
-
-    public List<TicketCategory> getTicketCategories() {
-        return ticketCategories;
     }
 
     public String getDepartureTime() { return departureTime; }

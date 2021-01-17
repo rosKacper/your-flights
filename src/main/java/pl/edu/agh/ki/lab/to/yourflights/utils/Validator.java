@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.lab.to.yourflights.utils;
 
 import com.jfoenix.controls.JFXTimePicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -27,7 +28,19 @@ public class Validator {
      */
     public static boolean validateNotEmpty(TextField field, Label label) {
         if(field.getText() == null || field.getText().isEmpty()) {
-            label.setText(field.getId() + " cannot be empty!");
+            label.setText("This field cannot be empty!");
+            label.setTextFill(Color.RED);
+            return false;
+        } else {
+            label.setText("Correct!");
+            label.setTextFill(Color.GREEN);
+        }
+        return true;
+    }
+
+    public static boolean validateNotEmpty(ComboBox comboBox, Label label) {
+        if(comboBox.getValue() == null) {
+            label.setText("This field cannot be empty!");
             label.setTextFill(Color.RED);
             return false;
         } else {
@@ -40,7 +53,7 @@ public class Validator {
     public static boolean validateMoneyFormat(TextField field, Label label) {
         String value = field.textProperty().getValue();
         if (!Pattern.matches("[0-9]*\\.?[0-9]?[0-9]?", value)) {
-            label.setText("Wrong format!");
+            label.setText("Wrong email format!");
             label.setTextFill(Color.RED);
             return false;
         } else {

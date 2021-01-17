@@ -3,13 +3,12 @@ package pl.edu.agh.ki.lab.to.yourflights.service;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
-import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
+import pl.edu.agh.ki.lab.to.yourflights.model.*;
 import pl.edu.agh.ki.lab.to.yourflights.repository.FlightRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.TicketOrderRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -51,6 +50,15 @@ public class TicketOrderService {
     }
 
     /**
+     * Metoda zwracająca zamówienia biletów należące do danej kategorii biletów danego lotu
+     * @param ticketCategory kategoria biletu
+     * @return lista zamówień
+     */
+    public List<TicketOrder> findByTicketCategory(TicketCategory ticketCategory) {
+        return ticketOrderRepository.findByTicketCategory(ticketCategory);
+    }
+
+    /**
      * Metoda usuwająca daną rezerwację z bazy danych
      * @param ticketOrder zamówienie biletów do usunięcia
      */
@@ -75,5 +83,31 @@ public class TicketOrderService {
             ticketOrderRepository.save(ticketOrder);
         }
         return false;
+    }
+
+    public boolean saveAll(List<TicketOrder> ticketOrders) {
+        if(ticketOrders.size() != 0) {
+            ticketOrderRepository.saveAll(ticketOrders);
+        }
+        return false;
+    }
+
+    /**
+     * Metoda zwracająca sumaryczny koszt danego zamówienia na bilety
+     * @param ticketOrder zamówienie na bilety
+     * @return
+     */
+    public BigDecimal getTicketOrderSummaryCost(TicketOrder ticketOrder) {
+        TicketDiscount ticketDiscount = ticketOrder.getTicketDiscount();
+        if(ticketDiscount == null) {
+            return ticketOrder.getTicketCategory().getCategoryPrice()
+                    .multiply(BigDecimal.valueOf(ticketOrder.getNumberOfSeats()))
+                    .setScale(2); //totalPrice = categoryPrice * numberOfSeats
+        } else {
+            return ticketOrder.getTicketCategory().getCategoryPrice()
+                    .multiply(BigDecimal.valueOf(ticketOrder.getNumberOfSeats())) //price = categoryPrice * numberOfSeats
+                    .multiply(BigDecimal.valueOf(1).subtract(BigDecimal.valueOf(ticketDiscount.getDiscount()).divide(new BigDecimal(100))))//totalPrice = price * ( 1 - discount/100)
+                    .setScale(2);
+        }
     }
 }

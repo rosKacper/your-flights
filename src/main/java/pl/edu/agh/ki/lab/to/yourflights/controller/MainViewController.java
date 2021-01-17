@@ -7,6 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -14,8 +19,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
+import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
+import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Kontroler głównego widoku aplikacji
@@ -42,6 +52,16 @@ public class MainViewController {
     private final Resource anonymousMainView;
     private final Resource registrationChoiceView;
 
+    private FlightService flightService;
+
+    @FXML
+    private VBox flightsList;
+
+    @FXML
+    private Resource flightDetailsBrief;
+
+    private List<Flight> flights;
+
     /**
      * Kontekst aplikacji Springa
      */
@@ -56,6 +76,7 @@ public class MainViewController {
      * @param loginView widok ekranu logowania
      */
     public MainViewController(ApplicationContext applicationContext,
+                              FlightService flightService,
                               @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                               @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                               @Value("classpath:/view/CustomersView.fxml") Resource mainView,
@@ -69,7 +90,8 @@ public class MainViewController {
                               @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlineView,
                               @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                               @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
-                              @Value("classpath:/view/AuthView/RegistrationChoiceView.fxml") Resource registrationChoiceView) {
+                              @Value("classpath:/view/AuthView/RegistrationChoiceView.fxml") Resource registrationChoiceView,
+                              @Value("classpath:/view/MainView/FlightDetailsBrief.fxml") Resource flightDetailsBrief) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -85,6 +107,49 @@ public class MainViewController {
         this.userCustomersView = userCustomersView;
         this.anonymousMainView = anonymousMainView;
         this.registrationChoiceView = registrationChoiceView;
+        this.flightDetailsBrief = flightDetailsBrief;
+        this.flightService = flightService;
+    }
+
+    /**
+     * Metoda wywoływana po inicjalizacji widoku
+     */
+    @FXML
+    public void initialize() {
+        this.setFlights();
+        this.setFlightsList();
+    }
+
+    private void setFlights() {
+        flights = flightService.getFlightsSortedDescendingBasedOnNumberOfReservations().stream().limit(3).collect(Collectors.toList());
+        this.showFlightDetailsView(flights);
+    }
+
+    private void setFlightsList() {
+
+    }
+
+
+    /**
+     *
+     */
+    public void showFlightDetailsView(List<Flight> flights) {
+        try {
+            for(Flight flight : flights) {
+                FXMLLoader fxmlloader;
+                fxmlloader = new FXMLLoader(flightDetailsBrief.getURL());
+                fxmlloader.setControllerFactory(applicationContext::getBean);
+                Parent parent = fxmlloader.load();
+                if(flight != null) {
+                    FlightDetailsController controller = fxmlloader.getController();
+                    controller.setData(flight);
+                }
+                this.flightsList.getChildren().add(parent);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -98,7 +163,7 @@ public class MainViewController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousAirlinesView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
             }
             else{
@@ -123,7 +188,7 @@ public class MainViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -169,7 +234,7 @@ public class MainViewController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousFlightView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[ROLE_AIRLINE]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
             }
             else{
