@@ -148,7 +148,7 @@ public class FlightController {
             if(userDetails instanceof UserDetails){
                 username = ((UserDetails)userDetails).getUsername();
             }
-           flights = FXCollections.observableList(flightService.findByAirline(airlineService.findByUser(userPrincipalService.findByUsername(username))));
+           flights = FXCollections.observableList(flightService.findByAirline(airlineService.findByUser(userPrincipalService.findByUsername(username).get(0))));
         }
         else{
             flights = FXCollections.observableList(flightService.findAll());

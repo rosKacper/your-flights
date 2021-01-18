@@ -25,7 +25,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
 
     private String username;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private User user;
 
     /**

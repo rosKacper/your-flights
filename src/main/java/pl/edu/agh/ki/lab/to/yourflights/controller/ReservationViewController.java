@@ -116,7 +116,7 @@ public class ReservationViewController {
 
         //Pobranie rezerwacje z serwisu
         if(role.equals("[AIRLINE]")){
-            reservationList = FXCollections.observableList(airlineService.getReservationsForAirline(airlineService.findByUser(userPrincipalService.findByUsername(name))));
+            reservationList = FXCollections.observableList(airlineService.getReservationsForAirline(airlineService.findByUser(userPrincipalService.findByUsername(name).get(0))));
         }
         else{
              reservationList = FXCollections.observableList(reservationService.findAll().stream().filter(reservation -> ticketOrderService.findByReservation(reservation).size() > 0)

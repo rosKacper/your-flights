@@ -121,7 +121,7 @@ public class AddFlightController {
             if(userDetails instanceof UserDetails){
                 username = ((UserDetails)userDetails).getUsername();
             }
-            Airline airline = airlineService.findByUser(userPrincipalService.findByUsername(username));
+            Airline airline = airlineService.findByUser(userPrincipalService.findByUsername(username).get(0));
             this.comboBox.setItems(FXCollections.observableList(Arrays.asList(airline.getName())));
             this.comboBox.setValue(airline.getName());
             this.comboBox.setDisable(true);

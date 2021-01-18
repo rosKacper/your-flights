@@ -280,11 +280,9 @@ public class CustomersViewController {
 
     @FXML
     private void handleDeleteAction(ActionEvent event) {
-//        var customers = customersTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
-//        customerService.deleteAll(FXCollections.observableList(customers));
-////        userPrincipalService.deleteWithGivenCustomers(FXCollections.observableList(customers));
-//
-//        this.setModel();
+        var customers = customersTableView.getSelectionModel().getSelectedItems().stream().map(item -> item.getValue()).collect(Collectors.toList());
+        customerService.deleteAll(FXCollections.observableList(customers));
+        this.setModel();
     }
 
     @FXML

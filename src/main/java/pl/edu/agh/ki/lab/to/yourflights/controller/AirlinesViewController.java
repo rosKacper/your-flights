@@ -136,7 +136,7 @@ public class AirlinesViewController {
                 username = ((UserDetails)userDetails).getUsername();
             }
             List<Airline> airlineList = new ArrayList<>();
-            airlineList.add(airlineService.findByUser(userPrincipalService.findByUsername(username)));
+            airlineList.add(airlineService.findByUser(userPrincipalService.findByUsername(username).get(0)));
             airlines = FXCollections.observableList(airlineList);
         }
         else{

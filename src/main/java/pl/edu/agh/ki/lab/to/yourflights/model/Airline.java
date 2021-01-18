@@ -35,7 +35,7 @@ public class Airline extends RecursiveTreeObject<Airline> {
     private String description;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private User user;
 
     /**
