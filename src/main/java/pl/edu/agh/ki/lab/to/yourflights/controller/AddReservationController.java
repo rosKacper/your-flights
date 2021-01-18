@@ -343,6 +343,7 @@ public class AddReservationController {
 
         ticketOrdersList.addAll(new TicketOrder(seatsCombo.getValue(), ticketDiscount, reservation, ticketCategory));
         showSuccessMessage(errorField, "Ticket order added successfully!");
+        ticketOrderService.saveAll(ticketOrdersList);
         setModel();
         this.updateControls();
     }
@@ -363,6 +364,7 @@ public class AddReservationController {
     private int getNumberOfSeatsTakenByTicketOrders(TicketCategory ticketCategory) {
         return ticketOrdersList.stream()
                 .filter(ticketOrder -> ticketOrder.getTicketCategory().getCategoryName().equals(ticketCategory.getCategoryName()))
+                .filter(ticketOrder -> ticketOrderService.findAll().contains(ticketOrder))
                 .map(ticketOrder -> ticketOrder.getNumberOfSeats())
                 .collect(Collectors.summingInt(Integer::intValue));
     }
