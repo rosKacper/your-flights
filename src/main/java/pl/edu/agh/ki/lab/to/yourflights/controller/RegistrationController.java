@@ -104,7 +104,7 @@ public class RegistrationController {
         }
 
         String name = username.getText();
-        if(userPrincipalService.findByUsername(name) != null) {
+        if(!userPrincipalService.findByUsername(name).isEmpty()) {
             usernameValidationLabel.setText("User with given username already exists");
             usernameValidationLabel.setTextFill(Color.RED);
             return;

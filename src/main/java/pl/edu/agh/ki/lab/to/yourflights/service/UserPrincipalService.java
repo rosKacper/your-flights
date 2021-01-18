@@ -41,7 +41,7 @@ public class UserPrincipalService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public User findByUsername(String username){return userRepository.findByUsername(username).get(0);}
+    public List<User> findByUsername(String username){return userRepository.findByUsername(username);}
 
     public void delete(User user) {
         userRepository.delete(user);
