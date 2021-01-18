@@ -73,7 +73,7 @@ public class EmailHandler {
                 message.setFrom(from);
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                 message.setSubject("Reservation");
-                message.setText("You have created reservation for flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving " + flight.getDepartureDate() + " at " + flight.getDepartureTime());
+                message.setText("You have created reservation for flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving " + flight.getDepartureDate() + " at " + flight.getDepartureTime() + ".");
                 reservation.setStatus("Created - informed");
                 reservationService.save(reservation);
                 Transport.send(message);
@@ -103,8 +103,8 @@ public class EmailHandler {
                     message.setFrom(from);
                     message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                     message.setSubject("Approaching flight!");
-                    message.setText("You flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving " + flight.getDepartureDate() + " at " + flight.getDepartureTime()
-                            + " is approaching! Please arrive at the airport at least 2h before departure to check in your luggage. \n Enjoy your flight! " );
+                    message.setText("Your flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving " + flight.getDepartureDate() + " at " + flight.getDepartureTime()
+                            + " is approaching! Please arrive at the airport at least 2h before departure to check in your luggage. \nEnjoy your flight! " );
                     reservation.setStatus("Created - informed");
                     reservationService.save(reservation);
                     Transport.send(message);
@@ -167,8 +167,8 @@ public class EmailHandler {
                             message.setFrom(from);
                             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                             message.setSubject("Approaching flight!");
-                            message.setText("You flight from " + flightTmp.getPlaceOfDeparture() + " to " + flightTmp.getPlaceOfDestination() + " leaving " + flightTmp.getDepartureDate() + " at " + flightTmp.getDepartureTime()
-                                    + " is approaching! Please arrive at the airport at least 2h before departure to check in your luggage. \n Enjoy your flight! " );
+                            message.setText("Your flight from " + flightTmp.getPlaceOfDeparture() + " to " + flightTmp.getPlaceOfDestination() + " leaving " + flightTmp.getDepartureDate() + " at " + flightTmp.getDepartureTime()
+                                    + " is approaching! Please arrive at the airport at least 2h before departure to check in your luggage. \nEnjoy your flight! " );
                             reservation.setStatus("Created - informed");
                             reservationService.save(reservation);
                             Transport.send(message);
