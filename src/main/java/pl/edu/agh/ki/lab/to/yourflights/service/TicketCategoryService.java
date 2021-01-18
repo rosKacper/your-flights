@@ -29,12 +29,16 @@ public class TicketCategoryService {
      */
     private final TicketCategoryRepository ticketCategoryRepository;
 
+    TicketOrderService ticketOrderService;
+
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie repozytorium
      * @param ticketCategoryRepository repozytorium typu biletów
      */
-    public TicketCategoryService(TicketCategoryRepository ticketCategoryRepository) {
+    public TicketCategoryService(TicketCategoryRepository ticketCategoryRepository,
+                                 TicketOrderService ticketOrderService) {
         this.ticketCategoryRepository = ticketCategoryRepository;
+        this.ticketOrderService = ticketOrderService;
     }
 
     /**
@@ -76,6 +80,17 @@ public class TicketCategoryService {
             ticketCategoryRepository.save(ticketCategory);
         }
         return false;
+    }
+
+    public int getNumberOfFreeSeats(TicketCategory ticketCategory) {
+        int numberOfTakenSeats = 0;
+        List<TicketOrder> ticketOrders = ticketOrderService.findByTicketCategory(ticketCategory);
+        for(TicketOrder ticketOrder : ticketOrders) {
+            if(ticketOrder.getTicketCategory().getId() == ticketCategory.getId()){
+                numberOfTakenSeats += ticketOrder.getNumberOfSeats();
+            }
+        }
+        return ticketCategory.getTotalNumberOfSeats() - numberOfTakenSeats;
     }
 
 }
