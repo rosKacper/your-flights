@@ -40,6 +40,7 @@ public class RegistrationAirlineController {
      */
     private final Resource mainView;
     private final Resource anonymousMainView;
+    private final Resource loginView;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -109,7 +110,7 @@ public class RegistrationAirlineController {
 
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
-        showMainView(actionEvent);
+        showLoginView(actionEvent);
     }
 
     /**
@@ -120,6 +121,7 @@ public class RegistrationAirlineController {
      */
     public RegistrationAirlineController(@Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+                                         @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                                   ApplicationContext applicationContext,
                                   CustomerService customerService, UserPrincipalService userPrincipalService,
                                          AirlineService airlineService){
@@ -129,6 +131,7 @@ public class RegistrationAirlineController {
         this.customerService = customerService;
         this.userPrincipalService = userPrincipalService;
         this.airlineService = airlineService;
+        this.loginView = loginView;
     }
 
     /**
@@ -139,6 +142,24 @@ public class RegistrationAirlineController {
         try {
             FXMLLoader fxmlloader;
             fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku logowania
+     * @param actionEvent
+     */
+    public void showLoginView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

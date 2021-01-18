@@ -26,6 +26,7 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
+import java.sql.CallableStatement;
 
 
 /**
@@ -41,6 +42,7 @@ public class RegistrationController {
      */
     private final Resource mainView;
     private final Resource anonymousMainView;
+    private Resource loginView;
 
     private Customer customer;
 
@@ -77,6 +79,7 @@ public class RegistrationController {
 
     private final CustomerService customerService;
     private final UserPrincipalService userPrincipalService;
+
 
     /**
      * Metoda obsługująca dodawanie użytkownika po naciśnięciu przycisku "submit" w formularzu
@@ -130,7 +133,8 @@ public class RegistrationController {
         password.clear();
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
-        showMainView(actionEvent);
+//        showMainView(actionEvent);
+        showLoginView(actionEvent);
     }
 
     /**
@@ -141,6 +145,7 @@ public class RegistrationController {
      */
     public RegistrationController(@Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
+                                  @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                                   ApplicationContext applicationContext,
                                   CustomerService customerService, UserPrincipalService userPrincipalService){
         this.mainView = mainView;
@@ -148,6 +153,7 @@ public class RegistrationController {
         this.applicationContext = applicationContext;
         this.customerService = customerService;
         this.userPrincipalService = userPrincipalService;
+        this.loginView = loginView;
     }
 
     /**
@@ -158,6 +164,24 @@ public class RegistrationController {
         try {
             FXMLLoader fxmlloader;
             fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku logowania
+     * @param actionEvent
+     */
+    public void showLoginView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
