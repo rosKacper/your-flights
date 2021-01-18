@@ -145,7 +145,7 @@ public class EmailHandler {
         });
         List<Reservation> reservations=reservationService.findAll();
         for (Reservation reservation : reservations) {
-            if (reservation.getStatus().equals("Created - informed")) {
+            if (reservation.getStatus() != null && reservation.getStatus().equals("Created - informed")) {
 
                 //Flight flightTmp = reservation.getTicketOrders().get(0).getTicketCategory().getFlight();
                 Flight flightTmp = ticketOrderService.findByReservation(reservation).get(0).getTicketCategory().getFlight();

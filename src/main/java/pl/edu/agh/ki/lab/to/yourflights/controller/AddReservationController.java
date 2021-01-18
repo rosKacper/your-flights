@@ -1,14 +1,23 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
@@ -19,13 +28,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
-import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
-import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
-import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
-import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
+import pl.edu.agh.ki.lab.to.yourflights.model.*;
+import pl.edu.agh.ki.lab.to.yourflights.service.*;
 import pl.edu.agh.ki.lab.to.yourflights.utils.EmailHandler;
+import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -54,37 +60,55 @@ public class AddReservationController {
     private final ApplicationContext applicationContext;
 
     /**
-     * Serwis rezerwacji
+     * Serwisy
      */
     private final ReservationService reservationService;
-
-    /**
-     * Serwis dla ticket order
-     */
     private final TicketOrderService ticketOrderService;
+    private final TicketDiscountService ticketDiscountService;
+    private final TicketCategoryService ticketCategoryService;
+    private final CustomerService customerService;
 
     /**
      * Pola formularza
      */
     @FXML
-    public TextField placeOfDestination, placeOfDeparture, departureTime;
-
+    public ComboBox<Integer> seatsCombo;
     @FXML
-    public ComboBox<Integer> seats;
-
+    public ComboBox<String> ticketCategoryCombo;
     @FXML
-    private JFXButton formTitle;
-
-
-    private Flight flight;
-
-    private Reservation reservation = null;
+    public ComboBox<String> discountCombo;
+    @FXML
+    private JFXButton buttonDeleteTicketOrder, buttonAddTicketOrder, errorField;
 
     /**
-     * Formatuje date w postaci string do odpowiedniego formatu
+     * Tabela zamówień na bilety
      */
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private CustomerService customerService;
+    @FXML
+    private JFXTreeTableView<TicketOrder> reservationOverviewTableView;
+
+    /**
+     * Kolumny tabeli
+     */
+    @FXML
+    private TreeTableColumn<TicketOrder, String> category;
+    @FXML
+    private TreeTableColumn<TicketOrder, String> seats;
+    @FXML
+    private TreeTableColumn<TicketOrder, String> discount;
+    @FXML
+    private TreeTableColumn<TicketOrder, String> totalCost;
+
+    private Flight flight;
+    private Reservation reservation = null;
+    private ObservableList<TicketOrder> ticketOrdersList = FXCollections.observableArrayList();
+
+    /**
+     * Pola do walidacji
+     */
+    @FXML
+    public Label numberOfSeatsValidationLabel;
+    @FXML
+    public Label ticketCategoryValidationLabel;
 
     /**
      * Metoda ustawiająca lot dla którego zostanie utworzona rezerwacja
@@ -104,6 +128,7 @@ public class AddReservationController {
     public void setData(Flight flight, Reservation reservation) {
         this.flight = flight;
         this.reservation = reservation;
+        ticketOrdersList.addAll(ticketOrderService.findByReservation(reservation));
         this.updateControls();
     }
 
@@ -111,19 +136,57 @@ public class AddReservationController {
      * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanej rezerwacji do edycji
      */
     private void updateControls() {
-
-        departureTime.textProperty().setValue(String.valueOf(LocalDate.parse( flight.getDepartureDate(),formatter)));
-        placeOfDeparture.textProperty().setValue(flight.getPlaceOfDeparture());
-        placeOfDestination.textProperty().setValue(flight.getPlaceOfDestination());
-
-        if(reservation != null) {
-            seats.setValue(reservation.getTicketOrders().get(0).getNumberOfSeats());
-        }
-        seats.getItems().setAll(
-                IntStream.rangeClosed(1, 50).boxed().collect(Collectors.toList())
+        ticketCategoryCombo.getItems().setAll(ticketCategoryService.findByFlight(flight).stream()
+                .filter(ticketCategory -> (ticketCategoryService.getNumberOfFreeSeats(ticketCategory) - getNumberOfSeatsTakenByTicketOrders(ticketCategory)) > 0)
+                .map(TicketCategory::getCategoryName)
+                .collect(Collectors.toList())
         );
+
+        discountCombo.getItems().setAll(ticketDiscountService.findAll().stream().map(TicketDiscount::getName)
+                .collect(Collectors.toList())
+        );
+
+        this.ticketCategoryCombo.valueProperty().setValue(null);
+        this.seatsCombo.valueProperty().setValue(null);
+
+        discountCombo.getItems().add("None");
     }
 
+    private void setModel() {
+        //Ustawienie kolumn
+        seats.setCellValueFactory(data -> data.getValue().getValue().getNumberOfSeatsProperty());
+        category.setCellValueFactory(data -> data.getValue().getValue().getTicketCategory().getNameProperty());
+        discount.setCellValueFactory(data -> {
+            TicketOrder order = data.getValue().getValue();
+            return order.getTicketDiscount() != null ? order.getTicketDiscount().getNameProperty() : new SimpleStringProperty("None");
+        });
+        totalCost.setCellValueFactory(data -> {
+            TicketOrder ticketOrder = data.getValue().getValue();
+            TicketCategory ticketCategory = data.getValue().getValue().getTicketCategory();
+            TicketDiscount ticketDiscount = data.getValue().getValue().getTicketDiscount();
+
+            if(ticketCategory == null){
+                return null;
+            }
+
+            return new SimpleStringProperty(ticketOrderService.getTicketOrderSummaryCost(ticketOrder).toString());
+        });
+
+        //Przekazanie danych do tabeli
+        final TreeItem<TicketOrder> root = new RecursiveTreeItem<>(ticketOrdersList, RecursiveTreeObject::getChildren);
+        reservationOverviewTableView.setRoot(root);
+        reservationOverviewTableView.setShowRoot(false);
+    }
+
+    private void showErrorMessage(JFXButton errorField, String errorMessage) {
+        errorField.setText(errorMessage);
+        errorField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+    }
+
+    private void showSuccessMessage(JFXButton errorField, String successMessage) {
+        errorField.setText(successMessage);
+        errorField.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+    }
 
     /**
      * Metoda obsługująca dodawanie rezerwacji po naciśnięciu przycisku "submit" w formularzu
@@ -133,7 +196,9 @@ public class AddReservationController {
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
-        if(seats.getValue() < 1 || seats.getValue() > 50 ){
+
+        if(ticketOrdersList.size() == 0) {
+            showErrorMessage(errorField, "You cannot add empty reservation!");
             return;
         }
 
@@ -142,49 +207,58 @@ public class AddReservationController {
         //Stworzenie nowej rezerwacji i wyczyszczenie pól formularza
         if(reservation == null) {
             // sprawdzamy czy nie istnieje już rezerwacja w tym czasie
-            List<Reservation> reservationList = reservationService.findAll().stream()
-                    .filter(reservation1 -> reservation1.getUserName().equals(userName))
+            List<Reservation> reservationList = reservationService.findByUserName(userName).stream()
                     .filter(reservation1 -> {
-                        Flight flightTmp = reservation1.getTicketOrders().get(0).getTicketCategory().getFlight();
-                        try {
-                            Date dateFromTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getDepartureDate());
-                            Date dateToTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getArrivalDate());
-                            Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getDepartureDate());
-                            Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getArrivalDate());
-                            System.out.println(dateFromTmp.toString() + "  " +  dateToTmp.toString());
-                            System.out.println(dateFrom.toString() + "  " +  dateTo.toString());
-//                            return !(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp));
-                            if(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp)) {
+                        if(ticketOrderService.findByReservation(reservation1).size() != 0) {
+                            Flight flightTmp = ticketOrderService.findByReservation(reservation1).get(0).getTicketCategory().getFlight();
+                            try {
+                                Date dateFromTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getDepartureDate());
+                                Date dateToTmp = new SimpleDateFormat("dd/MM/yyyy").parse(flightTmp.getArrivalDate());
+                                Date dateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getDepartureDate());
+                                Date dateTo = new SimpleDateFormat("dd/MM/yyyy").parse(flight.getArrivalDate());
+
+                                if(dateFrom.after(dateToTmp) || dateTo.before(dateFromTmp)) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                                 return false;
                             }
-                            return true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return false;
                         }
+                        return false;
                     }).collect(Collectors.toList());
 
             if (reservationList.size() != 0) {
                 // informujemy użytkownika o błędzie
-                formTitle.setText("You have a reservation in this time slot already");
-                formTitle.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+                showErrorMessage(errorField, "You have a reservation in this time slot already!");
                 return;
             }
-            // Tworzymy rezerwację i zamówienie biletów dla niej
-            Reservation reservation = new Reservation(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), null, userName, "Created");
-            TicketOrder ticketOrder = new TicketOrder(seats.getValue(), null, reservation, flight.getTicketCategories().get(0));
-            reservation.getTicketOrders().add(ticketOrder);
-
+//         Tworzymy rezerwację i zamówienie biletów dla niej
+            reservation =
+                    new Reservation(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                            null, userName, "Created");
             // Zapisujemy w bazie odpowiednie relacje
-            reservationService.save(reservation);
+        }
+        List<TicketDiscount> ticketDiscounts = ticketDiscountService.findByName(discountCombo.getValue());
 
-            EmailHandler emailHandler=new EmailHandler(reservationService, ticketOrderService);
-            emailHandler.sendEmail(this.customerService,this.flight, reservation);
-            //reservation.setStatus("Created - informed");
-        }
-        else {
-            reservation.getTicketOrders().get(0).setNumberOfSeats(seats.getValue());
-        }
+        TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
+
+        reservationService.save(reservation);
+
+        ticketOrdersList.forEach(ticketOrder -> {
+            ticketOrder.setReservation(reservation);
+            ticketOrder.setTicketDiscount(ticketDiscount);
+        });
+
+        ticketOrderService.saveAll(ticketOrdersList);
+
+        EmailHandler emailHandler=new EmailHandler(reservationService, ticketOrderService);
+        emailHandler.sendEmail(this.customerService, this.flight, reservation);
+
+        reservation = null;
+        ticketOrdersList = FXCollections.observableArrayList();
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
         showReservationList(actionEvent);
@@ -192,18 +266,33 @@ public class AddReservationController {
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param reservationService serwis rezerwacji
      * @param applicationContext kontekst aplikacji Springa
+     * @param reservationService serwis rezerwacji
+     * @param ticketDiscountService
+     * @param ticketCategoryService
      */
     public AddReservationController(@Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
-                               ApplicationContext applicationContext,
-                               TicketOrderService ticketOrderService,
-                               ReservationService reservationService, CustomerService customerService) {
+                                    ApplicationContext applicationContext,
+                                    TicketOrderService ticketOrderService,
+                                    ReservationService reservationService,
+                                    TicketDiscountService ticketDiscountService, TicketCategoryService ticketCategoryService, CustomerService customerService) {
         this.reservationList = reservationList;
         this.applicationContext = applicationContext;
         this.reservationService = reservationService;
         this.ticketOrderService = ticketOrderService;
-        this.customerService=customerService;
+        this.ticketDiscountService = ticketDiscountService;
+        this.ticketCategoryService = ticketCategoryService;
+        this.customerService = customerService;
+    }
+
+    /**
+     * Metoda wywoływana po inicjalizacji widoku
+     */
+    @FXML
+    public void initialize() {
+        this.setModel();
+        reservationOverviewTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        setDisablePropertyBinding();
     }
 
     /**
@@ -227,9 +316,86 @@ public class AddReservationController {
             //utworzenie i wyświetlenie sceny
             Scene scene = new Scene(parent);
             stage.setScene(scene);
+
+            ticketOrdersList = FXCollections.observableArrayList();
+
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handleAddAction() {
+        boolean numberOfSeatsValidation = Validator.validateNotEmpty(seatsCombo, numberOfSeatsValidationLabel);
+        boolean ticketCategoryValidation = Validator.validateNotEmpty(ticketCategoryCombo, ticketCategoryValidationLabel);
+
+        if(!numberOfSeatsValidation || !ticketCategoryValidation){
+            showErrorMessage(errorField, "You have to fill empty fields!");
+            return;
+        }
+
+        TicketCategory ticketCategory = ticketCategoryService.findByFlight(flight).stream()
+                .filter(ticketCategory1 -> ticketCategory1.getCategoryName().equals(ticketCategoryCombo.getValue()))
+                .findFirst().get();
+
+        List<TicketDiscount> ticketDiscounts = ticketDiscountService.findByName(discountCombo.getValue());
+        TicketDiscount ticketDiscount = ticketDiscounts.size() > 0 ? ticketDiscounts.get(0) : null;
+
+        ticketOrdersList.addAll(new TicketOrder(seatsCombo.getValue(), ticketDiscount, reservation, ticketCategory));
+        showSuccessMessage(errorField, "Ticket order added successfully!");
+        setModel();
+        this.updateControls();
+    }
+
+    public void handleDeleteAction() {
+        var ticketOrders = reservationOverviewTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
+        ticketOrdersList.removeAll(ticketOrders);
+        ticketOrderService.deleteAll(FXCollections.observableArrayList(ticketOrders));
+        showSuccessMessage(errorField, "Ticket order deleted successfully!");
+        this.updateControls();
+    }
+
+    /**
+     * Metoda obliczająca ile miejsc jest zajete przez obecnie dodane zamowienia na bilety dla danej kategorii
+     * @param ticketCategory kategoria biletów
+     * @return
+     */
+    private int getNumberOfSeatsTakenByTicketOrders(TicketCategory ticketCategory) {
+        return ticketOrdersList.stream()
+                .filter(ticketOrder -> ticketOrder.getTicketCategory().getCategoryName().equals(ticketCategory.getCategoryName()))
+                .map(ticketOrder -> ticketOrder.getNumberOfSeats())
+                .collect(Collectors.summingInt(Integer::intValue));
+    }
+
+    /**
+     * Metoda ustawiająca liczbę miejsc do wyboru w zaleznosci od wybranej kategorii i tego ile wolnych miejsc na nia zostalo
+     * @param actionEvent event
+     */
+    public void setSeatsComboBox(MouseEvent actionEvent) {
+        TicketCategory ticketCategory = ticketCategoryService.findByFlight(flight).stream()
+                .filter(category -> category.getCategoryName().equals(ticketCategoryCombo.getValue()))
+                .collect(Collectors.toList())
+                .get(0);
+
+        int numberOfSeatsTakenByTicketOrders = getNumberOfSeatsTakenByTicketOrders(ticketCategory);
+
+        int numberOfFreeSeats = ticketCategoryService.getNumberOfFreeSeats(ticketCategory) - numberOfSeatsTakenByTicketOrders;
+
+        seatsCombo.getItems().setAll(
+                IntStream.rangeClosed(1, numberOfFreeSeats).boxed().collect(Collectors.toList())
+        );
+    }
+
+    private void setDisablePropertyBinding() {
+        if(buttonDeleteTicketOrder != null) {
+            buttonDeleteTicketOrder.disableProperty().bind(
+                    Bindings.isEmpty(reservationOverviewTableView.getSelectionModel().getSelectedItems())
+            );
+        }
+
+        seatsCombo.disableProperty().bind(
+                Bindings
+                        .isNull(ticketCategoryCombo.valueProperty())
+        );
     }
 }
