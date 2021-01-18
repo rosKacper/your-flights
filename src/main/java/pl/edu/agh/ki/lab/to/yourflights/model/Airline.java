@@ -3,6 +3,8 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,8 +20,12 @@ import java.util.UUID;
 public class Airline extends RecursiveTreeObject<Airline> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
+
+    public Long getId() {
+        return id;
+    }
 
     @NotEmpty
     private String name;
@@ -27,6 +33,10 @@ public class Airline extends RecursiveTreeObject<Airline> {
     private String country;
 
     private String description;
+
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    private User user;
 
     /**
      * Mapowanie relacji do lotów danego przewoźnika
@@ -50,10 +60,11 @@ public class Airline extends RecursiveTreeObject<Airline> {
     )
     private List<Review> reviews;
 
-    public Airline(String name, String country, String description) {
+    public Airline(String name, String country, String description, User user) {
         this.name = name;
         this.country = country;
         this.description = description;
+        this.user = user;
     }
 
     public Airline() {
@@ -94,5 +105,14 @@ public class Airline extends RecursiveTreeObject<Airline> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

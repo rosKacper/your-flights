@@ -27,11 +27,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
+import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 
@@ -54,11 +57,18 @@ public class FlightController {
     private final Resource loginView;
     private final Resource userAirlinesView;
     private final Resource userCustomersView;
+    private final Resource flightDetailsView;
+    private final Resource ticketCategoryView;
+    private final Resource discountsView;
+
 
     /**
-     * Serwis lotów
+     * Serwisy
      */
-    private FlightService flightService;
+    private final FlightService flightService;
+    private final AirlineService airlineService;
+    private final UserPrincipalService userPrincipalService;
+
 
     /**
      * Kontekst aplikacji Springa
@@ -109,6 +119,10 @@ public class FlightController {
     private JFXButton buttonDeleteFlight;
     @FXML
     private JFXButton buttonUpdateFlight;
+    @FXML
+    private JFXButton buttonShowFlightDetails;
+    @FXML
+    private JFXButton buttonShowTicketCategories;
 
     /**
      * Metoda która wczytuje dane do tabeli lotów
@@ -124,7 +138,22 @@ public class FlightController {
         arrivalTime.setCellValueFactory(data-> data.getValue().getValue().getArrivalTimeProperty());
 
         //Pobranie lotów z serwisu
-        ObservableList<Flight> flights = FXCollections.observableList(flightService.findAll());
+        //Jeśli zalogowanym użytkownikiem jest linia lotnicza, to pobierze tylko loty danej linii
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList<Flight> flights;
+
+        if(role.equals("[AIRLINE]")){
+            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = "";
+            if(userDetails instanceof UserDetails){
+                username = ((UserDetails)userDetails).getUsername();
+            }
+           flights = FXCollections.observableList(flightService.findByAirline(airlineService.findByUser(userPrincipalService.findByUsername(username).get(0))));
+        }
+        else{
+            flights = FXCollections.observableList(flightService.findAll());
+        }
+
 
         //Przekazanie danych do tabeli
         final TreeItem<Flight> root = new RecursiveTreeItem<>(flights, RecursiveTreeObject::getChildren);
@@ -143,30 +172,37 @@ public class FlightController {
      * @param addReservationView
      * @param addFlightView
      * @param loginView
+     * @param ticketCategoryView
      * @param anonymousMainView
      * @param anonymousAirlineView
      * @param userAirlinesView
      * @param reservationListViewCustomer
      * @param userCustomersView
+     * @param discountsView
      */
-    public FlightController(FlightService flightService, ApplicationContext applicationContext,
+    public FlightController(FlightService flightService, AirlineService airlineService,
+                            UserPrincipalService userPrincipalService, ApplicationContext applicationContext,
                             @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                             @Value("classpath:/view/CustomersView.fxml") Resource customersView,
                             @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
                             @Value("classpath:/view/AddReservationView.fxml") Resource addReservationView,
+                            @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
                             @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView,
                             @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
+                            @Value("classpath:/view/DiscountsView.fxml") Resource discountsView,
                             @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                             @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView,
                             @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
                             @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
-                            @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView) {
+                            @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
+                            @Value("classpath:/view/AdminView/FlightDetailsView.fxml") Resource flightDetailsView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
         this.mainView = mainView;
         this.flightService = flightService;
+        this.airlineService = airlineService;
         this.reservationListView = reservationListView;
         this.addReservationView = addReservationView;
         this.addFlightView = addFlightView;
@@ -176,12 +212,17 @@ public class FlightController {
         this.userAirlinesView = userAirlinesView;
         this.userCustomersView = userCustomersView;
         this.reservationListViewCustomer = reservationListViewCustomer;
+        this.flightDetailsView = flightDetailsView;
+        this.ticketCategoryView = ticketCategoryView;
+        this.discountsView = discountsView;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**
      * Metoda która inicjalizuje obsługę filtrowanie
      */
     private void setPredicates() {
+
         // Generyczna klasa filtrów dla danego modelu
         GenericFilter<Flight> airlineFilter = new GenericFilter<>(flightsTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
@@ -246,7 +287,7 @@ public class FlightController {
             if(role.equals("[ROLE_ANONYMOUS]")){
                 fxmlloader = new FXMLLoader(anonymousAirlineView.getURL());
             }
-            else if(role.equals("[ROLE_ADMIN]")){
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
             }
             else{
@@ -271,7 +312,7 @@ public class FlightController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(customersView.getURL());
             }
             else{
@@ -294,15 +335,7 @@ public class FlightController {
      */
     public void showReservation(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader;
-            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
-                fxmlloader = new FXMLLoader(reservationListView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
-            }
-//            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -377,6 +410,86 @@ public class FlightController {
         }
     }
 
+    public void handleShowFlightDetailsView(ActionEvent event) {
+        var flight = flightsTableView.getSelectionModel().getSelectedItem();
+        if(flight != null) {
+            this.showFlightDetailsView(event, flight.getValue());
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku szczegółów lotu
+     * @param actionEvent event emitowany przez przycisk
+     */
+    public void showFlightDetailsView(ActionEvent actionEvent, Flight flight) {
+        try {
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            fxmlloader = new FXMLLoader(flightDetailsView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            if(flight != null) {
+                FlightDetailsController controller = fxmlloader.getController();
+                controller.setData(flight);
+            }
+
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku kategorii biletów dla danego lotu
+     * @param actionEvent event emitowany przez przycisk
+     * @param flight obiekt lotu
+     */
+    public void showTicketCategory(ActionEvent actionEvent, Flight flight) {
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(ticketCategoryView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            TicketCategoryViewController controller = fxmlloader.getController();
+            controller.setData(flight);
+
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showDiscountsView(ActionEvent actionEvent) {
+        try {
+            //ładujemy widok z pliku .fxml
+            FXMLLoader fxmlloader = new FXMLLoader(discountsView.getURL());
+
+            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+
+            //wczytanie sceny
+            Parent parent = fxmlloader.load();
+
+            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            //utworzenie i wyświetlenie sceny
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void handleDeleteAction(ActionEvent event) {
         var flights = flightsTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
@@ -389,6 +502,14 @@ public class FlightController {
         var flight = flightsTableView.getSelectionModel().getSelectedItem();
         if(flight != null) {
             this.showAddFlight(event, flight.getValue());
+        }
+    }
+
+    @FXML
+    private void handleShowTicketCategories(ActionEvent event) {
+        var flight = flightsTableView.getSelectionModel().getSelectedItem();
+        if(flight != null) {
+            this.showTicketCategory(event, flight.getValue());
         }
     }
 
@@ -451,6 +572,16 @@ public class FlightController {
         }
         if(buttonUpdateFlight != null) {
             buttonUpdateFlight.disableProperty().bind(
+                    Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+        if(buttonShowFlightDetails != null) {
+            buttonShowFlightDetails.disableProperty().bind(
+                    Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+            );
+        }
+        if(buttonShowTicketCategories != null) {
+            buttonShowTicketCategories.disableProperty().bind(
                     Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
             );
         }

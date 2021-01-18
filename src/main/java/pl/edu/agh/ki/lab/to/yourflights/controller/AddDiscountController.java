@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketDiscount;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketDiscountService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
@@ -24,12 +24,12 @@ import java.io.IOException;
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
-public class AddAirlineController {
+public class AddDiscountController {
 
     /**
      * Widok przewoźników
      */
-    private final Resource airlinesView;
+    private final Resource discountsView;
 
     /**
      * Kontekst aplikacji Springowej
@@ -40,46 +40,44 @@ public class AddAirlineController {
      * Pola formularza
      */
     @FXML
-    public TextField name, country, description;
+    public TextField name, discount;
 
     /**
      * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
      */
     @FXML
-    public Label nameValidationLabel,  countryValidationLabel;
+    public Label nameValidationLabel,  discountValidationLabel;
 
-    private AirlineService airlineService;
-    private Airline airline;
+    private TicketDiscountService discountService;
+    private TicketDiscount currDiscount;
 
     /**
-     * Metoda ustawiająca przewoźnika do edycji
-     * @param airline przewoźnik do edycji, może być nullem
+     * Metoda ustawiająca zniżkę do edycji
+     * @param discount zniżke, może być nullem
      */
-    public void setData(Airline airline) {
-        this.airline = airline;
+    public void setData(TicketDiscount discount) {
+        this.currDiscount = discount;
         updateControls();
     }
 
     /**
-     * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanego przewoźnika do edycji
+     * Metoda aktualizująca wartości pól tekstowych, w zależności od otrzymanej zniżki do edycji
      */
     private void updateControls() {
-        name.textProperty().setValue(airline.getName());
-        country.textProperty().setValue(airline.getCountry());
-        description.textProperty().setValue(airline.getDescription());
+        name.textProperty().setValue(currDiscount.getName());
+        discount.textProperty().setValue(Double.toString(currDiscount.getDiscount()));
     }
 
     /**
-     * Metoda aktualizująca przewoźnika po edycji
+     * Metoda aktualizująca zniżkę
      */
     private void updateModel() {
-        airline.setName(name.textProperty().getValue());
-        airline.setCountry(country.textProperty().getValue());
-        airline.setDescription(description.textProperty().getValue());
+        currDiscount.setName(name.textProperty().getValue());
+        currDiscount.setDiscount(Double.parseDouble(discount.textProperty().getValue()));
     }
 
     /**
-     * Metoda obsługująca dodawanie przewoźnika po naciśnięciu przycisku "submit" w formularzu
+     * Metoda obsługująca dodawanie zniżkę po naciśnięciu przycisku "submit" w formularzu
      * Zaimplementowana została podstawowa obsługa sprawdzania poprawności wpisanych wartości
      * @param actionEvent event emitowany przez przycisk
      */
@@ -87,52 +85,50 @@ public class AddAirlineController {
 
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
-        boolean countryValidation = Validator.validateNotEmpty(country, countryValidationLabel);
         boolean nameValidation = Validator.validateNotEmpty(name, nameValidationLabel);
-        if(!countryValidation || !nameValidation) {
+        boolean discountValidation = Validator.validatePositiveNumber(discount, discountValidationLabel);
+        if(!nameValidation || !discountValidation) {
             return;
         }
 
         //Stworzenie nowego przewoźnika (jeśli to było dodawanie nowego przewoźnika), lub zaktualizowanie obecnego lotu
-        if(airline == null) {
-            //do usunięcia jest w ogóle to dodawanie linii lotniczych
-//            airline = new Airline(name.getText(),country.getText(),description.getText());
+        if(currDiscount == null) {
+            currDiscount = new TicketDiscount(Double.parseDouble(discount.textProperty().getValue()), name.getText());
         } else {
             updateModel();
         }
-        airlineService.save(airline);
+        discountService.save(currDiscount);
 
         //wyczyszczenie pól formularza
-        country.clear();
-        description.clear();
         name.clear();
-        airline=null;
+        discount.clear();
+        discount = null;
 
         //Po dodaniu/edycji przewoźnika zakończonym sukcesem, następuje powrót do widoku listy przewoźników
-        showAirlinesView(actionEvent);
+        showDiscountsView(actionEvent);
     }
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param airlinesView widok przewoźników
+     * @param discountsView widok zniżek
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+    public AddDiscountController(@Value("classpath:/view/DiscountsView.fxml") Resource discountsView,
                                 ApplicationContext applicationContext,
-                                AirlineService airlineService){
-        this.airlinesView = airlinesView;
+                                TicketDiscountService ticketDiscountService){
+        this.discountsView = discountsView;
         this.applicationContext = applicationContext;
-        this.airlineService = airlineService;
+        this.discountService = ticketDiscountService;
     }
 
     /**
-     * Metoda służąca do przejścia do widoku listy przewoźników
+     * Metoda służąca do przejścia do widoku listy zniżek
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showAirlinesView(ActionEvent actionEvent) {
+    public void showDiscountsView(ActionEvent actionEvent) {
         try {
             //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(discountsView.getURL());
 
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);

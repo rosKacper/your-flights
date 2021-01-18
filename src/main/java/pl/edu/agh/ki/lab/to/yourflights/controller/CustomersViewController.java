@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -54,6 +55,11 @@ public class CustomersViewController {
      * Serwis pozwalający na pobieranie i zapisywanie klientów
      */
     private CustomerService customerService;
+
+    /**
+     * Serwis pozwalający na pobieranie i zapisywanie/usuwanie użytkowników
+     */
+    private UserPrincipalService userPrincipalService;
 
     /**
      * Kontekst aplikacji Springa
@@ -97,7 +103,7 @@ public class CustomersViewController {
         cityColumn.setCellValueFactory(data -> data.getValue().getValue().getCityProperty());
 
         //Pobranie klientów z serwisu
-        ObservableList<Customer> customers = FXCollections.observableList(customerService.findAll());
+        ObservableList<Customer> customers;// = FXCollections.observableList(customerService.findAll());
 
         FXMLLoader fxmlloader;
         String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
@@ -127,6 +133,7 @@ public class CustomersViewController {
      * @param applicationContext kontekst aplikacji Springa
      */
     public CustomersViewController(CustomerService customerService,
+                                   UserPrincipalService userPrincipalService,
                                    @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                    @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                                    @Value("classpath:/view/AddCustomerView.fxml") Resource addCustomerView,
@@ -148,6 +155,7 @@ public class CustomersViewController {
         this.userAirlinesView = userAirlinesView;
         this.anonymousMainView = anonymousMainView;
         this.reservationListViewCustomer = reservationListViewCustomer;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**
@@ -186,7 +194,7 @@ public class CustomersViewController {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(airlinesView.getURL());
             }
             else{
@@ -204,14 +212,14 @@ public class CustomersViewController {
     }
 
     /**
-     * Metoda służąca do przejścia do widoku przewoźników
+     * Metoda służąca do przejścia do widoku lotów
      * @param actionEvent event emitowany przez przycisk
      */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
             String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
+            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
                 fxmlloader = new FXMLLoader(flightView.getURL());
             }
             else{
@@ -258,14 +266,7 @@ public class CustomersViewController {
      */
     public void showReservation(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlloader;
-            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]")){
-                fxmlloader = new FXMLLoader(reservationListView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(reservationListViewCustomer.getURL());
-            }
+            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -294,7 +295,7 @@ public class CustomersViewController {
 
     @FXML
     private void handleAddAction(ActionEvent event) {
-        this.showAddCustomer(event, null);
+//        this.showAddCustomer(event, null);
     }
 
     /**

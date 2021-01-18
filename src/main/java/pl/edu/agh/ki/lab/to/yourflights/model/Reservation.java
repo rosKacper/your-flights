@@ -20,8 +20,8 @@ import java.util.UUID;
 public class Reservation extends RecursiveTreeObject<Reservation> {
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotEmpty
     private String reservationDate;
@@ -33,18 +33,6 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
 
     @NotEmpty
     private String status;
-
-    /**
-     * Mapowanie relacji do zamówień na bilety przypisanych do danej rezerwacji
-     */
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER,
-            mappedBy = "reservation"
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<TicketOrder> ticketOrders = new LinkedList<>();
 
     /**
      * Mapowanie relacji do klienta który składa daną rezerwację
@@ -61,6 +49,10 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
     }
 
     public Reservation() {}
+
+    public Long getId() {
+        return id;
+    }
 
     public String getReservationDate() {
         return reservationDate;
@@ -88,14 +80,6 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public List<TicketOrder> getTicketOrders() {
-        return ticketOrders;
-    }
-
-    public void setTicketOrders(List<TicketOrder> ticketOrders) {
-        this.ticketOrders = ticketOrders;
     }
 
     public StringProperty getUserNameProperty() {

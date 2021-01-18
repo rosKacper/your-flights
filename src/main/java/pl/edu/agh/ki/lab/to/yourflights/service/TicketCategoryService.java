@@ -12,7 +12,9 @@ import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.TicketCategoryRepository;
 import pl.edu.agh.ki.lab.to.yourflights.repository.TicketOrderRepository;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Klasa definiująca serwis ze Spring Data Jpa dla lotów
@@ -23,45 +25,46 @@ import java.util.List;
 public class TicketCategoryService {
 
     /**
-     * Repozytorium zamówień biletów
+     * Repozytorium kategorii biletów
      */
     private final TicketCategoryRepository ticketCategoryRepository;
+
+    TicketOrderService ticketOrderService;
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie repozytorium
      * @param ticketCategoryRepository repozytorium typu biletów
      */
-    public TicketCategoryService(TicketCategoryRepository ticketCategoryRepository) {
+    public TicketCategoryService(TicketCategoryRepository ticketCategoryRepository,
+                                 TicketOrderService ticketOrderService) {
         this.ticketCategoryRepository = ticketCategoryRepository;
+        this.ticketOrderService = ticketOrderService;
     }
 
     /**
-     * Metoda zwracająca wszystkie zamówienie biletów z bazy danych
-     * @return lista wszystkich przewoźników
+     * Metoda zwracająca wszystkie kategorie biletów z bazy danych
+     * @return lista wszystkich kategorii biletów
      */
     public List<TicketCategory> findAll() {
         return ticketCategoryRepository.findAll();
     }
 
-    /**
-     * Metoda zwracająca zamówienia biletów należące do jednej rezerwacji
-     * @param id kategoria biletów
-     * @return lista kategorii biletów
-     */
-    public List<TicketCategory> findById(Long id) {
-        return ticketCategoryRepository.findById(id);
+    public List<TicketCategory> findByFlight(Flight flight) {
+        if(flight == null) return new LinkedList<>();
+        return ticketCategoryRepository.findAllByFlight(flight);
     }
 
+
     /**
-     * Metoda usuwająca daną rezerwację z bazy danych
-     * @param ticketCategory typ biletów do usunięcia
+     * Metoda usuwająca daną kategorię z bazy danych
+     * @param ticketCategory kategoria do usunięcia
      */
     public void delete(TicketCategory ticketCategory) {
         ticketCategoryRepository.delete(ticketCategory);
     }
 
     /**
-     * Metoda usuwająca danych przewoźników z bazy danych
+     * Metoda usuwająca dane kategorie z bazy danych
      * @param ticketCategories lista typów biletów do usunięcia
      */
     public void deleteAll(ObservableList<TicketCategory> ticketCategories) {
@@ -77,6 +80,17 @@ public class TicketCategoryService {
             ticketCategoryRepository.save(ticketCategory);
         }
         return false;
+    }
+
+    public int getNumberOfFreeSeats(TicketCategory ticketCategory) {
+        int numberOfTakenSeats = 0;
+        List<TicketOrder> ticketOrders = ticketOrderService.findByTicketCategory(ticketCategory);
+        for(TicketOrder ticketOrder : ticketOrders) {
+            if(ticketOrder.getTicketCategory().getId() == ticketCategory.getId()){
+                numberOfTakenSeats += ticketOrder.getNumberOfSeats();
+            }
+        }
+        return ticketCategory.getTotalNumberOfSeats() - numberOfTakenSeats;
     }
 
 }

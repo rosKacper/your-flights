@@ -1,11 +1,13 @@
 package pl.edu.agh.ki.lab.to.yourflights.utils;
 
 import com.jfoenix.controls.JFXTimePicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -26,13 +28,66 @@ public class Validator {
      */
     public static boolean validateNotEmpty(TextField field, Label label) {
         if(field.getText() == null || field.getText().isEmpty()) {
-            label.setText(field.getId() + " cannot be empty!");
+            label.setText("This field cannot be empty!");
             label.setTextFill(Color.RED);
             return false;
         } else {
             label.setText("Correct!");
             label.setTextFill(Color.GREEN);
         }
+        return true;
+    }
+
+    public static boolean validateNotEmpty(ComboBox comboBox, Label label) {
+        if(comboBox.getValue() == null) {
+            label.setText("This field cannot be empty!");
+            label.setTextFill(Color.RED);
+            return false;
+        } else {
+            label.setText("Correct!");
+            label.setTextFill(Color.GREEN);
+        }
+        return true;
+    }
+
+    public static boolean validateMoneyFormat(TextField field, Label label) {
+        String value = field.textProperty().getValue();
+        if (!Pattern.matches("[0-9]*\\.?[0-9]?[0-9]?", value)) {
+            label.setText("Wrong email format!");
+            label.setTextFill(Color.RED);
+            return false;
+        } else {
+            try {
+                BigDecimal decimal = new BigDecimal(value);
+            }
+            catch (Exception e) {
+                label.setText("Error while parsing money!");
+                label.setTextFill(Color.RED);
+                return false;
+            }
+            label.setText("Correct!");
+            label.setTextFill(Color.GREEN);
+        }
+        return true;
+    }
+
+    public static boolean validatePositiveNumber(TextField field, Label label) {
+        String value = field.textProperty().getValue();
+        try {
+            double aDouble = Double.parseDouble(value);
+            if( aDouble <= 0 || aDouble >= 500) {
+                label.setText("Wrong number range!");
+                label.setTextFill(Color.RED);
+                return false;
+            }
+        }
+        catch (Exception e) {
+            label.setText("Wrong number format!");
+            label.setTextFill(Color.RED);
+            return false;
+        }
+        label.setText("Correct!");
+        label.setTextFill(Color.GREEN);
         return true;
     }
 

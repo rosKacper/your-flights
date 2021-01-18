@@ -8,10 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class LoginController {
+public class RegistrationChoiceController {
 
 
     /**
@@ -43,24 +41,8 @@ public class LoginController {
      */
     private final Resource mainView;
     private final Resource anonymousMainView;
-
-    /**
-     * Pola potrzebne do autentykacji użytkownika
-     */
-    @Autowired
-    private AuthenticationManager authManager;
-    private ObservableList<String> userRoles = FXCollections.observableArrayList();
-
-    /**
-     * Pola tekstowe do formularza logowania
-     */
-    @FXML
-    private TextField usernameField;
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    public Label usernameLabel;
+    private final Resource registrationView;
+    private final Resource registrationAirlineView;
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
@@ -68,50 +50,18 @@ public class LoginController {
      * @param mainView
      * @param anonymousMainView
      */
-    public LoginController(ApplicationContext applicationContext,
+    public RegistrationChoiceController(ApplicationContext applicationContext,
                            @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                           @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView) {
+                           @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
+                                        @Value("classpath:/view/AuthView/RegistrationView.fxml") Resource registrationView,
+                                        @Value("classpath:/view/AuthView/AirlineRegistrationView.fxml") Resource registrationAirlineView) {
         this.applicationContext = applicationContext;
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
+        this.registrationView = registrationView;
+        this.registrationAirlineView = registrationAirlineView;
     }
 
-    /**
-     * Metoda obsługująca logowanie
-     * @param event
-     */
-    @FXML
-    void handleLogin(ActionEvent event) {
-
-        final String userName = usernameField.getText().trim();
-        final String userPassword = passwordField.getText().trim();
-
-        try {
-            Authentication request = new UsernamePasswordAuthenticationToken(userName, userPassword);
-            Authentication result = authManager.authenticate(request);
-            SecurityContextHolder.getContext().setAuthentication(result);
-
-            updateUserInfo();
-
-            usernameField.clear();
-            passwordField.clear();
-            showMainView(event);
-
-        } catch (AuthenticationException e) {
-            usernameLabel.setText("Incorrect username or password");
-            usernameLabel.setTextFill(Color.RED);
-        }
-    }
-
-    /**
-     * Metoda do aktualizacji informacji o użytkowniku
-     */
-    private void updateUserInfo(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        List<String> grantedAuthorities = auth.getAuthorities().stream().map(Object::toString).collect(Collectors.toList());
-        userRoles.clear();
-        userRoles.addAll(grantedAuthorities);
-    }
 
     /**
      * Metoda służąca do przejścia do głównego widoku
@@ -126,6 +76,38 @@ public class LoginController {
             else{
                 fxmlloader = new FXMLLoader(mainView.getURL());
             }
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda służąca do przejścia do widoku rejestracji
+     * @param actionEvent
+     */
+    public void showRegistrationView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(registrationView.getURL());
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showRegistrationAirlineView(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlloader = new FXMLLoader(registrationAirlineView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

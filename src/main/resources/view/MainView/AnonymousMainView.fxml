@@ -21,6 +21,17 @@
                 <Font size="19.0" />
             </font>
         </JFXButton>
+      <Text layoutX="66.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recommended flights" wrappingWidth="567.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <VBox fx:id="flightsList" layoutX="50.0" layoutY="211.0" prefHeight="300.0" prefWidth="960.0" />
+        <JFXButton layoutX="926.0" layoutY="91.0" onAction="#showRegistrationView" prefHeight="43.0" prefWidth="111.0" style="-fx-background-color: #1d3557;" text="Register" textFill="WHITE">
+            <font>
+                <Font size="19.0" />
+            </font>
+        </JFXButton>
     </AnchorPane>
     <VBox prefHeight="300.0" prefWidth="220.0" style="-fx-background-color: #1d3557;" />
     <VBox alignment="TOP_CENTER" layoutY="300.0" prefHeight="500.0" prefWidth="220.0" style="-fx-background-color: #1d3557;">

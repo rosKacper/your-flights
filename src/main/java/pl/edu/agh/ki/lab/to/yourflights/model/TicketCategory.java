@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.hibernate.annotations.Cascade;
@@ -19,11 +20,11 @@ import java.util.UUID;
  * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
  */
 @Entity
-public class TicketCategory {
+public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id;
 
     @NotEmpty
     private String categoryName;
@@ -39,17 +40,6 @@ public class TicketCategory {
     @JoinColumn(name = "flightID")
     private Flight flight;
 
-    /**
-     * Mapowanie relacji do zamówień na bilety dotyczące danej kategorii biletu
-     */
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
-            mappedBy = "ticketCategory"
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<TicketOrder> ticketOrders;
-
     public TicketCategory(){}
 
     public TicketCategory(String categoryName, BigDecimal categoryPrice, int totalNumberOfSeats, Flight flight){
@@ -61,6 +51,10 @@ public class TicketCategory {
 
 
     //getters and setters
+
+    public Long getId() {
+        return id;
+    }
 
     public String getCategoryName() {
         return categoryName;
@@ -95,14 +89,18 @@ public class TicketCategory {
     }
 
     public StringProperty getFlightIDProperty(){
-        return new SimpleStringProperty(flight.getId().toString());
+        return new SimpleStringProperty(Long.toString(flight.getId()));
     }
 
-    public List<TicketOrder> getTicketOrders() {
-        return ticketOrders;
+    public StringProperty getNameProperty(){
+        return new SimpleStringProperty(categoryName);
     }
 
-    public void setTicketOrders(List<TicketOrder> ticketOrders) {
-        this.ticketOrders = ticketOrders;
+    public StringProperty getPriceProperty(){
+        return new SimpleStringProperty(categoryPrice.toString());
+    }
+
+    public StringProperty getNumberOfSeatsProperty(){
+        return new SimpleStringProperty(Integer.toString(totalNumberOfSeats));
     }
 }

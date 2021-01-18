@@ -18,18 +18,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
-import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.model.UserPrincipal;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketDiscount;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
-import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketDiscountService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,19 +38,18 @@ import java.util.stream.Collectors;
  * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
-public class AirlinesViewController {
+public class DiscountController {
 
     /**
      * Serwis linii lotniczych
      */
-    private AirlineService airlineService;
-    private UserPrincipalService userPrincipalService;
+    private TicketDiscountService ticketDiscountService;
 
     /**
      * Widoki
      */
     private final Resource mainView;
-    private final Resource addAirlineView;
+    private final Resource addDiscountView;
     private final Resource reservationListView;
     private final Resource reservationListViewCustomer;
     private final Resource anonymousMainView;
@@ -62,47 +59,36 @@ public class AirlinesViewController {
     private final Resource loginView;
     private final Resource customersView;
     private final Resource userCustomersView;
-
+    private final Resource userAirlinesView;
+    private final Resource airlinesView;
+    private final Resource anonymousAirlineView;
 
     /**
      * Kontekrs aplikacji Springa
      */
     private final ApplicationContext applicationContext;
-    GenericFilter<Airline> airlineFilter;
 
     /**
      * Tabela przewoźników
      */
     @FXML
-    private JFXTreeTableView<Airline> airlinesTableView;
+    private JFXTreeTableView<TicketDiscount> discountsTableView;
 
     /**
      * Kolumny tabeli
      */
     @FXML
-    private TreeTableColumn<Airline, String> nameColumn;
+    private TreeTableColumn<TicketDiscount, String> nameColumn;
     @FXML
-    private TreeTableColumn<Airline, String> countryColumn;
-    @FXML
-    private TreeTableColumn<Airline, String> descriptionColumn;
-
-    /**
-     * Pola służące do filtrowania linii lotniczych
-     * nameInput - nazwa linii lotniczwej
-     * countryPicker - combobox zawierający kraje
-     */
-    @FXML
-    private JFXTextField nameInput;
-    @FXML
-    private ComboBox<String> countryPicker;
+    private TreeTableColumn<TicketDiscount, String> percentageColumn;
 
     /**
      * Przyciski
      */
     @FXML
-    private JFXButton buttonDeleteAirline;
+    private JFXButton buttonDeleteDiscount;
     @FXML
-    private JFXButton buttonUpdateAirline;
+    private JFXButton buttonUpdateDiscount;
 
     /**
      * Metoda która wczytuje dane do tabeli przwoźników
@@ -110,59 +96,28 @@ public class AirlinesViewController {
     public void setModel() {
         //Ustawienie kolumn
         nameColumn.setCellValueFactory(data -> data.getValue().getValue().getNameProperty());
-        countryColumn.setCellValueFactory(data -> data.getValue().getValue().getCountryProperty());
-        descriptionColumn.setCellValueFactory(data -> data.getValue().getValue().getDescriptionProperty());
-
-        //Ustawienie zawijania tekstu w kolumnie 'description'
-        descriptionColumn.setCellFactory(data -> {
-            TreeTableCell<Airline, String> cell = new TreeTableCell<>();
-            Text text = new Text();
-            cell.setGraphic(text);
-            text.wrappingWidthProperty().setValue(descriptionColumn.widthProperty().getValue() - 10);
-            text.textProperty().bind(cell.itemProperty());
-            return cell;
-        });
+        percentageColumn.setCellValueFactory(data -> data.getValue().getValue().getDiscountProperty());
 
         //Pobranie przewoźników z serwisu
-        //Jeśli zalogowanym użytkownikiem jest linia lotnicza, wyświetli tylko dane o sobie
-
-        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-        ObservableList<Airline> airlines;
-
-        if(role.equals("[AIRLINE]")){
-            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String username = "";
-            if(userDetails instanceof UserDetails){
-                username = ((UserDetails)userDetails).getUsername();
-            }
-            List<Airline> airlineList = new ArrayList<>();
-            airlineList.add(airlineService.findByUser(userPrincipalService.findByUsername(username).get(0)));
-            airlines = FXCollections.observableList(airlineList);
-        }
-        else{
-            airlines = FXCollections.observableList(airlineService.findAll());
-        }
-
-
-
+        ObservableList<TicketDiscount> ticketDiscounts = FXCollections.observableList(ticketDiscountService.findAll());
 
         //Przekazanie danych do tabeli
-        final TreeItem<Airline> root = new RecursiveTreeItem<>(airlines, RecursiveTreeObject::getChildren);
-        airlinesTableView.setRoot(root);
-        airlinesTableView.setShowRoot(false);
+        final TreeItem<TicketDiscount> root = new RecursiveTreeItem<>(ticketDiscounts, RecursiveTreeObject::getChildren);
+        discountsTableView.setRoot(root);
+        discountsTableView.setShowRoot(false);
     }
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności
-     * @param airlineService serwis do pobierania danych o przewoźnikach
+     * @param ticketDiscountService serwis do pobierania danych o przewoźnikach
      * @param mainView główny widok aplikacji
-     * @param addAirlineView widok formularza do dodawania przewoźników
+     * @param addDiscountView widok formularza do dodawania przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
-    public AirlinesViewController(AirlineService airlineService, UserPrincipalService userPrincipalService,
+    public DiscountController(TicketDiscountService ticketDiscountService,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                   @Value("classpath:/view/CustomersView.fxml") Resource customersView,
-                                  @Value("classpath:/view/AddAirlineView.fxml") Resource addAirlineView,
+                                  @Value("classpath:/view/AdminView/AddDiscountView.fxml") Resource addDiscountView,
                                   @Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                   @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                                   @Value("classpath:/view/FlightView.fxml") Resource flightView,
@@ -171,10 +126,13 @@ public class AirlinesViewController {
                                   @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                                   @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
                                   @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
+                                  @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+                                  @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
+                                  @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView,
                                   ApplicationContext applicationContext) {
-        this.airlineService = airlineService;
+        this.ticketDiscountService = ticketDiscountService;
         this.mainView = mainView;
-        this.addAirlineView = addAirlineView;
+        this.addDiscountView = addDiscountView;
         this.applicationContext = applicationContext;
         this.customersView = customersView;
         this.anonymousMainView = anonymousMainView;
@@ -185,28 +143,12 @@ public class AirlinesViewController {
         this.userCustomersView = userCustomersView;
         this.userFlightView = userFlightView;
         this.reservationListViewCustomer = reservationListViewCustomer;
-        this.userPrincipalService = userPrincipalService;
+        this.airlinesView = airlinesView;
+        this.anonymousAirlineView = anonymousAirlineView;
+        this.userAirlinesView = userAirlinesView;
     }
 
-    /**
-     * Metoda która inicjalizuje obsługę filtrowania
-     */
-    private void setPredicates() {
-        // Generyczna klasa filtrów dla danego modelu
-        airlineFilter = new GenericFilter<>(airlinesTableView);
-        // Dodanie do listy predykatów testujących zawartość filtrów
-        //filtrowanie na podstawie nazwy
-        airlineFilter.addPredicate( testedValue -> testedValue.getName().toLowerCase().contains(nameInput.getText().toLowerCase()));
-        //filtrowanie na podstawie kraju
-        airlineFilter.addPredicate( testedValue ->
-                countryPicker.getValue() == null ||
-                countryPicker.getValue().length() == 0 ||
-                testedValue.getCountry().toLowerCase().equals(countryPicker.getValue().toLowerCase())
-        );
-        // dodanie do filtrów obserwatorów zmiany wartości (sprawdzanie predykatów po zmianie wartości filtra)
-        airlineFilter.setListener(nameInput.textProperty());
-        airlineFilter.setListener(countryPicker.valueProperty());
-    }
+
 
     /**
      * Metoda wywoływana po inicjalizacji widoku
@@ -214,9 +156,7 @@ public class AirlinesViewController {
     @FXML
     public void initialize() {
         this.setModel();
-        this.setCountryPickerItems();
-        setPredicates();
-        airlinesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        discountsTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.setButtonsDisablePropertyBinding();
     }
 
@@ -248,16 +188,16 @@ public class AirlinesViewController {
      * Metoda służąca do przejścia do widoku formularza dodawania/edycji przewoźników
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showAddAirline(ActionEvent actionEvent, Airline airline) {
+    public void showAddDiscount(ActionEvent actionEvent, TicketDiscount discount) {
         try {
-            FXMLLoader fxmlloader = new FXMLLoader(addAirlineView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(addDiscountView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
-            if(airline != null) {
-                AddAirlineController controller = fxmlloader.getController();
-                controller.setData(airline);
+            if(discount != null) {
+                AddDiscountController controller = fxmlloader.getController();
+                controller.setData(discount);
             }
 
             Scene scene = new Scene(parent);
@@ -359,18 +299,22 @@ public class AirlinesViewController {
 
     @FXML
     private void handleDeleteAction(ActionEvent event) {
-        var airlines = airlinesTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
-        airlineService.deleteAll(FXCollections.observableList(airlines));
+        var discounts = discountsTableView.getSelectionModel().getSelectedItems().stream().map(TreeItem::getValue).collect(Collectors.toList());
+        ticketDiscountService.deleteAll(FXCollections.observableList(discounts));
         this.setModel();
-        this.setCountryPickerItems();
     }
 
     @FXML
     private void handleUpdateAction(ActionEvent event) {
-        var airline = airlinesTableView.getSelectionModel().getSelectedItem();
-        if(airline != null) {
-            this.showAddAirline(event, airline.getValue());
+        var discount = discountsTableView.getSelectionModel().getSelectedItem();
+        if(discount != null) {
+            this.showAddDiscount(event, discount.getValue());
         }
+    }
+
+    @FXML
+    private void handleAddAction(ActionEvent event) {
+        this.showAddDiscount(event, null);
     }
 
     /**
@@ -394,33 +338,47 @@ public class AirlinesViewController {
     }
 
     /**
-     * Metoda ustawiająca listę krajów w liście rozwijanej służącej do filtrowania linii lotniczych po kraju
+     * Metoda służąca do przejścia do widoku przewoźników
+     * @param actionEvent event emitowany przez przycisk
      */
-    private void setCountryPickerItems() {
-        countryPicker.getItems().setAll(airlineService.getCountries());
+    public void showAirlinesView(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlloader;
+            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+            if(role.equals("[ROLE_ANONYMOUS]")){
+                fxmlloader = new FXMLLoader(anonymousAirlineView.getURL());
+            }
+            else if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
+                fxmlloader = new FXMLLoader(airlinesView.getURL());
+            }
+            else{
+                fxmlloader = new FXMLLoader(userAirlinesView.getURL());
+            }
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+            Parent parent = fxmlloader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Metoda służąca do zresetowania filtrów
-     */
-    public void resetFilters() {
-        nameInput.clear();
-        countryPicker.setValue("");
-    }
 
     /**
      * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
      * Po to aby przyciski Delete i Update były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
      */
     private void setButtonsDisablePropertyBinding() {
-        if(buttonDeleteAirline != null) {
-            buttonDeleteAirline.disableProperty().bind(
-                    Bindings.isEmpty(airlinesTableView.getSelectionModel().getSelectedItems())
+        if(buttonDeleteDiscount != null) {
+            buttonDeleteDiscount.disableProperty().bind(
+                    Bindings.isEmpty(discountsTableView.getSelectionModel().getSelectedItems())
             );
         }
-        if(buttonUpdateAirline != null) {
-            buttonUpdateAirline.disableProperty().bind(
-                    Bindings.size(airlinesTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
+        if(buttonUpdateDiscount != null) {
+            buttonUpdateDiscount.disableProperty().bind(
+                    Bindings.size(discountsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
             );
         }
     }

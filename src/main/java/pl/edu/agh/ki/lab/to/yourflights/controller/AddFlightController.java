@@ -19,13 +19,16 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
+import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
-import pl.edu.agh.ki.lab.to.yourflights.service.TicketCategoryService;
+import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
@@ -33,6 +36,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
@@ -46,8 +50,8 @@ public class AddFlightController {
      * Widok lotów
      */
     private final Resource flightView;
+    private final Resource ticketCategoryView;
     private final AirlineService airlineService;
-    private final TicketCategoryService ticketCategoryService;
 
     /**
      * Kontekst aplikacji Springowej
@@ -96,6 +100,7 @@ public class AddFlightController {
 
     private FlightService flightService;
     private Flight flight;
+    private UserPrincipalService userPrincipalService;
 
     /**
      * Metoda ustawiająca lot do edycji
@@ -104,6 +109,23 @@ public class AddFlightController {
     public void setData(Flight flight) {
         this.flight = flight;
         updateControls();
+    }
+
+    @FXML
+    public void initialize() {
+        //if airline is logged in, set 'airline' combobox to name of that airline
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        if(role.equals("[AIRLINE]")){
+            Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = "";
+            if(userDetails instanceof UserDetails){
+                username = ((UserDetails)userDetails).getUsername();
+            }
+            Airline airline = airlineService.findByUser(userPrincipalService.findByUsername(username).get(0));
+            this.comboBox.setItems(FXCollections.observableList(Arrays.asList(airline.getName())));
+            this.comboBox.setValue(airline.getName());
+            this.comboBox.setDisable(true);
+        }
     }
 
     /**
@@ -158,15 +180,10 @@ public class AddFlightController {
             return;
         }
 
-        TicketCategory ticketCategory = null;
-
         //Stworzenie nowego lotu (jeśli to było dodawanie nowego lotu), lub zaktualizowanie obecnego lotu
         if (flight == null) {
-            flight = new Flight(placeOfDeparture.getText(),placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), airlineService.findByName(comboBox.getValue())
-            ,departureTime.getValue().toString(),arrivalTime.getValue().toString());
-            //Stworzenie kategorii biletu - na razie jest tylko jedna
-            ticketCategory = new TicketCategory("normal", new BigDecimal(10), 80, flight);
-            flight.getTicketCategories().add(ticketCategory);
+            flight = new Flight(placeOfDeparture.getText(), placeOfDestination.getText(), departureDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), arrivalDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    airlineService.findByName(comboBox.getValue()), departureTime.getValue().toString(), arrivalTime.getValue().toString());
         } else {
             updateModel();
         }
@@ -178,30 +195,33 @@ public class AddFlightController {
         placeOfDestination.clear();
         departureDate = null;
         arrivalDate = null;
-        flight = null;
         departureTime = null;
         arrivalTime = null;
+        Flight tempFlight = flight;
+        flight = null;
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
-        showFlightView(actionEvent);
+        showTicketCategoryView(actionEvent, tempFlight);
     }
 
     /**
      * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param ticketCategoryService serwis kategorii lotu
+     * @param ticketCategoryView widok kategorii biletów
      * @param flightService serwis przewoźników
      * @param applicationContext kontekst aplikacji Springa
      */
     public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
-                                 ApplicationContext applicationContext,
-                                 FlightService flightService,
-                                 TicketCategoryService ticketCategoryService,
-                                 AirlineService airlineService){
+                               @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
+                               ApplicationContext applicationContext,
+                               FlightService flightService,
+                               AirlineService airlineService,
+                               UserPrincipalService userPrincipalService){
         this.flightView = flightView;
+        this.ticketCategoryView = ticketCategoryView;
         this.applicationContext = applicationContext;
         this.flightService = flightService;
         this.airlineService = airlineService;
-        this.ticketCategoryService = ticketCategoryService;
+        this.userPrincipalService = userPrincipalService;
     }
 
     /**
@@ -218,6 +238,32 @@ public class AddFlightController {
 
             //wczytanie sceny
             Parent parent = fxmlloader.load();
+
+            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            //utworzenie i wyświetlenie sceny
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showTicketCategoryView(ActionEvent actionEvent, Flight flight) {
+        try {
+            //ładujemy widok z pliku .fxml
+            FXMLLoader fxmlloader = new FXMLLoader(ticketCategoryView.getURL());
+
+            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
+            fxmlloader.setControllerFactory(applicationContext::getBean);
+
+            //wczytanie sceny
+            Parent parent = fxmlloader.load();
+
+            TicketCategoryViewController controller = fxmlloader.getController();
+            controller.setData(flight);
 
             //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

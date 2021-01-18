@@ -98,7 +98,6 @@ public class AddCustomerController {
         customer.setPostalCode(postalCode.textProperty().getValue());
         customer.setPhoneNumber(phoneNumber.textProperty().getValue());
         customer.setEmailAddress(emailAddress.textProperty().getValue());
-        customer.setUsername(null);
     }
 
     /**
