@@ -3,14 +3,11 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Klasa definiuje model przewoźnika
@@ -48,17 +45,6 @@ public class Airline extends RecursiveTreeObject<Airline> {
             mappedBy = "airline"
     )
     private List<Flight> flights;
-
-    /**
-     * Mapowanie relacji do ocen danego przewoźnika
-     */
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = false,
-            fetch = FetchType.LAZY,
-            mappedBy = "airline"
-    )
-    private List<Review> reviews;
 
     public Airline(String name, String country, String description, User user) {
         this.name = name;

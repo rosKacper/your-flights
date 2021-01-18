@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'pl.edu.agh.ki.lab.to'
-version = '2.0.0-m2'
+version = '3.0.0-m3'
 sourceCompatibility = '11'
 
 repositories {
