@@ -13,6 +13,7 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.MockDataService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.EmailHandler;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     private final MockDataService mockDataService;
     private final ReservationService reservationService;
     private final CustomerService customerService;
+    private final TicketOrderService ticketOrderService;
 
     /**
      * Kontekst aplikacji Springa
@@ -48,7 +50,8 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
                             ApplicationContext applicationContext,
                             MockDataService mockDataService,
                             ReservationService reservationService,
-                            CustomerService customerService) {
+                            CustomerService customerService,
+                            TicketOrderService ticketOrderService) {
         this.applicationTitle = applicationTitle;
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
@@ -56,6 +59,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
         this.mockDataService = mockDataService;
         this.reservationService=reservationService;
         this.customerService=customerService;
+        this.ticketOrderService=ticketOrderService;
     }
 
     /**
@@ -85,8 +89,8 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
             stage.setTitle(applicationTitle);
             stage.show();
 
-            EmailHandler emailHandler=new EmailHandler(reservationService);
-            emailHandler.upcomingEmail(customerService);
+            EmailHandler emailHandler=new EmailHandler(reservationService,ticketOrderService);
+            emailHandler.upcomingEmail(customerService,ticketOrderService);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,9 +4,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.Reservation;
+import pl.edu.agh.ki.lab.to.yourflights.model.TicketOrder;
 import pl.edu.agh.ki.lab.to.yourflights.repository.ReservationRepository;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
+import pl.edu.agh.ki.lab.to.yourflights.service.TicketOrderService;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -24,8 +26,10 @@ import java.util.concurrent.Executors;
 public class EmailHandler {
 
     private final ReservationService reservationService;
-    public EmailHandler(ReservationService reservationService){
+    private final TicketOrderService ticketOrderService;
+    public EmailHandler(ReservationService reservationService, TicketOrderService ticketOrderService){
         this.reservationService=reservationService;
+        this.ticketOrderService=ticketOrderService;
 
     }
 
@@ -117,7 +121,7 @@ public class EmailHandler {
 
     }
 
-    public void upcomingEmail(CustomerService customerService){
+    public void upcomingEmail(CustomerService customerService, TicketOrderService ticketOrderService){
 
         String from = "trywialne.pomijamy@gmail.com";
         String password = "admin1615";
@@ -142,7 +146,9 @@ public class EmailHandler {
         List<Reservation> reservations=reservationService.findAll();
         for (Reservation reservation : reservations) {
             if (reservation.getStatus().equals("Created - informed")) {
-                Flight flightTmp = reservation.getTicketOrders().get(0).getTicketCategory().getFlight();
+
+                //Flight flightTmp = reservation.getTicketOrders().get(0).getTicketCategory().getFlight();
+                Flight flightTmp = ticketOrderService.findByReservation(reservation).get(0).getTicketCategory().getFlight();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
                 LocalDate departureDate = LocalDate.parse(flightTmp.getDepartureDate(), formatter);
                 LocalDate localDate = LocalDate.now();

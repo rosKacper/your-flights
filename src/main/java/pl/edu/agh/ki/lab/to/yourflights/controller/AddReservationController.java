@@ -178,7 +178,7 @@ public class AddReservationController {
             // Zapisujemy w bazie odpowiednie relacje
             reservationService.save(reservation);
 
-            EmailHandler emailHandler=new EmailHandler(reservationService);
+            EmailHandler emailHandler=new EmailHandler(reservationService, ticketOrderService);
             emailHandler.sendEmail(this.customerService,this.flight, reservation);
             //reservation.setStatus("Created - informed");
         }
