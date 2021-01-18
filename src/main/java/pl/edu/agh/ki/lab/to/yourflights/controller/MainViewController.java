@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -51,6 +52,7 @@ public class MainViewController {
     private final Resource userCustomersView;
     private final Resource anonymousMainView;
     private final Resource registrationChoiceView;
+    private final Resource destinationView;
 
     private FlightService flightService;
 
@@ -58,9 +60,13 @@ public class MainViewController {
     private VBox flightsList;
 
     @FXML
+    private HBox destinationsList;
+
+    @FXML
     private Resource flightDetailsBrief;
 
     private List<Flight> flights;
+    private List<String> destinations;
 
     /**
      * Kontekst aplikacji Springa
@@ -91,7 +97,8 @@ public class MainViewController {
                               @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                               @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
                               @Value("classpath:/view/AuthView/RegistrationChoiceView.fxml") Resource registrationChoiceView,
-                              @Value("classpath:/view/MainView/FlightDetailsBrief.fxml") Resource flightDetailsBrief) {
+                              @Value("classpath:/view/MainView/FlightDetailsBrief.fxml") Resource flightDetailsBrief,
+                              @Value("classpath:/view/MainView/Destination.fxml") Resource destinationView) {
         this.applicationContext = applicationContext;
         this.airlinesView = airlinesView;
         this.customersView = customersView;
@@ -109,6 +116,7 @@ public class MainViewController {
         this.registrationChoiceView = registrationChoiceView;
         this.flightDetailsBrief = flightDetailsBrief;
         this.flightService = flightService;
+        this.destinationView = destinationView;
     }
 
     /**
@@ -118,17 +126,40 @@ public class MainViewController {
     public void initialize() {
         this.setFlights();
         this.setFlightsList();
+        this.setDestinations();
     }
 
     private void setFlights() {
         flights = flightService.getFlightsSortedDescendingBasedOnNumberOfReservations().stream().limit(3).collect(Collectors.toList());
         this.showFlightDetailsView(flights);
     }
+    private void setDestinations() {
+        destinations = flightService.getFlightDestinationsSortedDescendingBasedOnNumberOfReservations().stream().limit(5).collect(Collectors.toList());
+        this.showMostPopularDestinations(destinations);
+    }
 
     private void setFlightsList() {
 
     }
 
+    public void showMostPopularDestinations(List<String> destinations) {
+        try {
+            for(String destination : destinations) {
+                FXMLLoader fxmlloader;
+                fxmlloader = new FXMLLoader(destinationView.getURL());
+                fxmlloader.setControllerFactory(applicationContext::getBean);
+                Parent parent = fxmlloader.load();
+                if(destination != null) {
+                    DestinationController controller = fxmlloader.getController();
+                    controller.setData(destination);
+                }
+                this.destinationsList.getChildren().add(parent);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      *

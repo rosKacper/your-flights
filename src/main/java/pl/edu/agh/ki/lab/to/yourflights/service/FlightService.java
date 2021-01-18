@@ -166,4 +166,9 @@ public class FlightService {
 
         return new ArrayList<>(result.keySet());
     }
+
+    public List<String> getFlightDestinationsSortedDescendingBasedOnNumberOfReservations() {
+        List<Flight> flights = getFlightsSortedDescendingBasedOnNumberOfReservations();
+        return flights.stream().map(flight -> flight.getPlaceOfDestination()).distinct().collect(Collectors.toList());
+    }
 }
