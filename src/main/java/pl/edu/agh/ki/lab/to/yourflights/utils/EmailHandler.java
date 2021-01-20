@@ -105,7 +105,7 @@ public class EmailHandler {
                     message.setSubject("Approaching flight!");
                     message.setText("Your flight from " + flight.getPlaceOfDeparture() + " to " + flight.getPlaceOfDestination() + " leaving " + flight.getDepartureDate() + " at " + flight.getDepartureTime()
                             + " is approaching! Please arrive at the airport at least 2h before departure to check in your luggage. \nEnjoy your flight! " );
-                    reservation.setStatus("Created - informed");
+                    reservation.setStatus("Created - approaching");
                     reservationService.save(reservation);
                     Transport.send(message);
 
@@ -156,20 +156,20 @@ public class EmailHandler {
                 LocalTime departureTime = LocalTime.parse(flightTmp.getDepartureTime());
                 if(departureDate.getYear()==localDate.getYear() && departureDate.getMonth()==localDate.getMonth()
                 && (departureDate.getDayOfMonth()==localDate.getDayOfMonth() ||
-                        (departureDate.getDayOfMonth()==localDate.getDayOfMonth()+1 && departureTime.getHour()<localTime.getHour())))
+                        (departureDate.getDayOfMonth()==localDate.getDayOfMonth()+1 && (departureTime.getHour()<localTime.getHour() ||
+                                (departureTime.getHour()==localTime.getHour() && departureTime.getMinute()<localTime.getMinute())))))
                 {
                     Runnable task1 = () -> {
                         try {
                             MimeMessage message = new MimeMessage(session);
-                            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-                            List<Customer> customerList = customerService.findByUsername(username);
+                            List<Customer> customerList = customerService.findByUsername(reservation.getUserName());
                             String to = customerList.get(0).getEmailAddress();
                             message.setFrom(from);
                             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                             message.setSubject("Approaching flight!");
                             message.setText("Your flight from " + flightTmp.getPlaceOfDeparture() + " to " + flightTmp.getPlaceOfDestination() + " leaving " + flightTmp.getDepartureDate() + " at " + flightTmp.getDepartureTime()
                                     + " is approaching! Please arrive at the airport at least 2h before departure to check in your luggage. \nEnjoy your flight! " );
-                            reservation.setStatus("Created - informed");
+                            reservation.setStatus("Created - approaching!");
                             reservationService.save(reservation);
                             Transport.send(message);
 
