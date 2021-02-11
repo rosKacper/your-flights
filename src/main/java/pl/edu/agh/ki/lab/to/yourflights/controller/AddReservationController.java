@@ -44,33 +44,21 @@ import java.util.stream.IntStream;
 
 /**
  * Kontroler obsługujący formularz do dodawania rezerwacji
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class AddReservationController {
 
-    /**
-     * Widok rezerwacji
-     */
+
     private final Resource reservationList;
 
-    /**
-     * Kontekst aplikacji Springowej
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Serwisy
-     */
     private final ReservationService reservationService;
     private final TicketOrderService ticketOrderService;
     private final TicketDiscountService ticketDiscountService;
     private final TicketCategoryService ticketCategoryService;
     private final CustomerService customerService;
 
-    /**
-     * Pola formularza
-     */
     @FXML
     public ComboBox<Integer> seatsCombo;
     @FXML
@@ -80,15 +68,10 @@ public class AddReservationController {
     @FXML
     private JFXButton buttonDeleteTicketOrder, buttonAddTicketOrder, errorField;
 
-    /**
-     * Tabela zamówień na bilety
-     */
     @FXML
     private JFXTreeTableView<TicketOrder> reservationOverviewTableView;
 
-    /**
-     * Kolumny tabeli
-     */
+
     @FXML
     private TreeTableColumn<TicketOrder, String> category;
     @FXML
@@ -102,9 +85,7 @@ public class AddReservationController {
     private Reservation reservation = null;
     private ObservableList<TicketOrder> ticketOrdersList = FXCollections.observableArrayList();
 
-    /**
-     * Pola do walidacji
-     */
+
     @FXML
     public Label numberOfSeatsValidationLabel;
     @FXML
@@ -188,11 +169,7 @@ public class AddReservationController {
         errorField.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
     }
 
-    /**
-     * Metoda obsługująca dodawanie rezerwacji po naciśnięciu przycisku "submit" w formularzu
-     * Zaimplementowana została obsługa sprawdzania poprawności wpisanych wartości
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
@@ -264,13 +241,7 @@ public class AddReservationController {
         showReservationList(actionEvent);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param applicationContext kontekst aplikacji Springa
-     * @param reservationService serwis rezerwacji
-     * @param ticketDiscountService
-     * @param ticketCategoryService
-     */
+
     public AddReservationController(@Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
                                     ApplicationContext applicationContext,
                                     TicketOrderService ticketOrderService,
@@ -285,9 +256,7 @@ public class AddReservationController {
         this.customerService = customerService;
     }
 
-    /**
-     * Metoda wywoływana po inicjalizacji widoku
-     */
+
     @FXML
     public void initialize() {
         this.setModel();

@@ -20,31 +20,18 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 import java.io.IOException;
 
 /**
- * Kontroler obsługujący formularz do dodawania klientów
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
+ * Controller that
  */
 @Component
 public class AddAirlineController {
 
-    /**
-     * Widok przewoźników
-     */
     private final Resource airlinesView;
 
-    /**
-     * Kontekst aplikacji Springowej
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Pola formularza
-     */
     @FXML
     public TextField name, country, description;
 
-    /**
-     * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
-     */
     @FXML
     public Label nameValidationLabel,  countryValidationLabel;
 
@@ -112,11 +99,7 @@ public class AddAirlineController {
         showAirlinesView(actionEvent);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param airlinesView widok przewoźników
-     * @param applicationContext kontekst aplikacji Springa
-     */
+
     public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
                                 ApplicationContext applicationContext,
                                 AirlineService airlineService){

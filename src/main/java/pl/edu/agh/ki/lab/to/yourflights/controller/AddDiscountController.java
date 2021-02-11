@@ -21,30 +21,17 @@ import java.io.IOException;
 
 /**
  * Kontroler obsługujący formularz do dodawania klientów
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class AddDiscountController {
 
-    /**
-     * Widok przewoźników
-     */
     private final Resource discountsView;
 
-    /**
-     * Kontekst aplikacji Springowej
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Pola formularza
-     */
     @FXML
     public TextField name, discount;
 
-    /**
-     * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
-     */
     @FXML
     public Label nameValidationLabel,  discountValidationLabel;
 
@@ -76,11 +63,7 @@ public class AddDiscountController {
         currDiscount.setDiscount(Double.parseDouble(discount.textProperty().getValue()));
     }
 
-    /**
-     * Metoda obsługująca dodawanie zniżkę po naciśnięciu przycisku "submit" w formularzu
-     * Zaimplementowana została podstawowa obsługa sprawdzania poprawności wpisanych wartości
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
 
         //Obsługa poprawności danych w formularzu
@@ -108,11 +91,6 @@ public class AddDiscountController {
         showDiscountsView(actionEvent);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param discountsView widok zniżek
-     * @param applicationContext kontekst aplikacji Springa
-     */
     public AddDiscountController(@Value("classpath:/view/DiscountsView.fxml") Resource discountsView,
                                 ApplicationContext applicationContext,
                                 TicketDiscountService ticketDiscountService){
@@ -121,10 +99,6 @@ public class AddDiscountController {
         this.discountService = ticketDiscountService;
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku listy zniżek
-     * @param actionEvent event emitowany przez przycisk
-     */
     public void showDiscountsView(ActionEvent actionEvent) {
         try {
             //ładujemy widok z pliku .fxml

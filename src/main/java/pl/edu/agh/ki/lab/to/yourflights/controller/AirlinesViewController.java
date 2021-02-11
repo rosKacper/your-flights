@@ -37,20 +37,13 @@ import java.util.stream.Collectors;
 
 /**
  * Kontroler widoku tabeli przewoźników
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class AirlinesViewController {
 
-    /**
-     * Serwis linii lotniczych
-     */
     private AirlineService airlineService;
     private UserPrincipalService userPrincipalService;
 
-    /**
-     * Widoki
-     */
     private final Resource mainView;
     private final Resource addAirlineView;
     private final Resource reservationListView;
@@ -63,22 +56,12 @@ public class AirlinesViewController {
     private final Resource customersView;
     private final Resource userCustomersView;
 
-
-    /**
-     * Kontekrs aplikacji Springa
-     */
     private final ApplicationContext applicationContext;
     GenericFilter<Airline> airlineFilter;
 
-    /**
-     * Tabela przewoźników
-     */
     @FXML
     private JFXTreeTableView<Airline> airlinesTableView;
 
-    /**
-     * Kolumny tabeli
-     */
     @FXML
     private TreeTableColumn<Airline, String> nameColumn;
     @FXML
@@ -86,27 +69,17 @@ public class AirlinesViewController {
     @FXML
     private TreeTableColumn<Airline, String> descriptionColumn;
 
-    /**
-     * Pola służące do filtrowania linii lotniczych
-     * nameInput - nazwa linii lotniczwej
-     * countryPicker - combobox zawierający kraje
-     */
     @FXML
     private JFXTextField nameInput;
     @FXML
     private ComboBox<String> countryPicker;
 
-    /**
-     * Przyciski
-     */
     @FXML
     private JFXButton buttonDeleteAirline;
     @FXML
     private JFXButton buttonUpdateAirline;
 
-    /**
-     * Metoda która wczytuje dane do tabeli przwoźników
-     */
+
     public void setModel() {
         //Ustawienie kolumn
         nameColumn.setCellValueFactory(data -> data.getValue().getValue().getNameProperty());
@@ -143,22 +116,13 @@ public class AirlinesViewController {
             airlines = FXCollections.observableList(airlineService.findAll());
         }
 
-
-
-
         //Przekazanie danych do tabeli
         final TreeItem<Airline> root = new RecursiveTreeItem<>(airlines, RecursiveTreeObject::getChildren);
         airlinesTableView.setRoot(root);
         airlinesTableView.setShowRoot(false);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności
-     * @param airlineService serwis do pobierania danych o przewoźnikach
-     * @param mainView główny widok aplikacji
-     * @param addAirlineView widok formularza do dodawania przewoźników
-     * @param applicationContext kontekst aplikacji Springa
-     */
+
     public AirlinesViewController(AirlineService airlineService, UserPrincipalService userPrincipalService,
                                   @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                                   @Value("classpath:/view/CustomersView.fxml") Resource customersView,
@@ -188,9 +152,7 @@ public class AirlinesViewController {
         this.userPrincipalService = userPrincipalService;
     }
 
-    /**
-     * Metoda która inicjalizuje obsługę filtrowania
-     */
+
     private void setPredicates() {
         // Generyczna klasa filtrów dla danego modelu
         airlineFilter = new GenericFilter<>(airlinesTableView);
@@ -208,9 +170,6 @@ public class AirlinesViewController {
         airlineFilter.setListener(countryPicker.valueProperty());
     }
 
-    /**
-     * Metoda wywoływana po inicjalizacji widoku
-     */
     @FXML
     public void initialize() {
         this.setModel();
@@ -220,10 +179,6 @@ public class AirlinesViewController {
         this.setButtonsDisablePropertyBinding();
     }
 
-    /**
-     * Metoda służąca do przejścia do głównego widoku
-     * @param actionEvent event emitowany przez przycisk
-     */
     public void showMainView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -244,10 +199,6 @@ public class AirlinesViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku formularza dodawania/edycji przewoźników
-     * @param actionEvent event emitowany przez przycisk
-     */
     public void showAddAirline(ActionEvent actionEvent, Airline airline) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(addAirlineView.getURL());
@@ -268,10 +219,6 @@ public class AirlinesViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku tabeli klientów
-     * @param actionEvent event emitowany przez przycisk
-     */
     public void showCustomersView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -293,10 +240,6 @@ public class AirlinesViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku tabeli rezerwacji
-     * @param actionEvent event emitowany przez przycisk
-     */
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
@@ -311,10 +254,6 @@ public class AirlinesViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku przewoźników
-     * @param actionEvent event emitowany przez przycisk
-     */
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -339,10 +278,6 @@ public class AirlinesViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku logowania
-     * @param actionEvent event emitowany przez przycisk
-     */
     public void showLoginView(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
@@ -373,10 +308,6 @@ public class AirlinesViewController {
         }
     }
 
-    /**
-     * Metoda obsługująca wylogowanie użytkownika
-     * @param event event emitowany przez przycisk
-     */
     @FXML
     void handleLogout(ActionEvent event) {
         JavafxApplication.logout();
@@ -408,10 +339,7 @@ public class AirlinesViewController {
         countryPicker.setValue("");
     }
 
-    /**
-     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
-     * Po to aby przyciski Delete i Update były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
-     */
+
     private void setButtonsDisablePropertyBinding() {
         if(buttonDeleteAirline != null) {
             buttonDeleteAirline.disableProperty().bind(

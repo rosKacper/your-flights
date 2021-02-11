@@ -33,14 +33,10 @@ import java.util.stream.Collectors;
 
 /**
  * Kontroler widoku tabeli klientów
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class CustomersViewController {
 
-    /**
-     * Widoki
-     */
     private final Resource mainView;
     private final Resource airlinesView;
     private final Resource addCustomerView;
@@ -51,30 +47,15 @@ public class CustomersViewController {
     private final Resource userAirlinesView;
     private final Resource anonymousMainView;
 
-    /**
-     * Serwis pozwalający na pobieranie i zapisywanie klientów
-     */
     private CustomerService customerService;
 
-    /**
-     * Serwis pozwalający na pobieranie i zapisywanie/usuwanie użytkowników
-     */
     private UserPrincipalService userPrincipalService;
 
-    /**
-     * Kontekst aplikacji Springa
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Tabela klientów
-     */
     @FXML
     private JFXTreeTableView<Customer> customersTableView;
 
-    /**
-     * Kolumny tabeli
-     */
     @FXML
     private TreeTableColumn<Customer, String> firstNameColumn;
     @FXML
@@ -84,17 +65,13 @@ public class CustomersViewController {
     @FXML
     private TreeTableColumn<Customer, String> cityColumn;
 
-    /**
-     * Przyciski
-     */
     @FXML
     private JFXButton buttonDeleteCustomer;
     @FXML
     private JFXButton buttonUpdateCustomer;
 
-    /**
-     * Metoda która wczytuje dane do tabeli przwoźników
-     */
+
+
     public void setModel() {
         //Ustawienie kolumn
         firstNameColumn.setCellValueFactory(data -> data.getValue().getValue().getFirstNameProperty());
@@ -125,13 +102,7 @@ public class CustomersViewController {
         customersTableView.setShowRoot(false);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności
-     * @param customerService serwis pozwalający na pobieranie danych o klientach
-     * @param mainView główny widok aplikacji
-     * @param addCustomerView widok formularza do dodawania klientów
-     * @param applicationContext kontekst aplikacji Springa
-     */
+
     public CustomersViewController(CustomerService customerService,
                                    UserPrincipalService userPrincipalService,
                                    @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
@@ -158,9 +129,7 @@ public class CustomersViewController {
         this.userPrincipalService = userPrincipalService;
     }
 
-    /**
-     * Metoda wywoływana po inicjalizacji widoku
-     */
+
     @FXML
     public void initialize() {
         this.setModel();
@@ -168,10 +137,7 @@ public class CustomersViewController {
         this.setButtonsDisablePropertyBinding();
     }
 
-    /**
-     * Metoda służąca do przejścia do głównego widoku
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void showMainView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(mainView.getURL());
@@ -186,10 +152,7 @@ public class CustomersViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku tabeli przewoźników
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void showAirlinesView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -211,10 +174,7 @@ public class CustomersViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku lotów
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void showFlightView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
@@ -236,10 +196,7 @@ public class CustomersViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku formularza do dodawania/edycji klientów
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void showAddCustomer(ActionEvent actionEvent, Customer customer) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(addCustomerView.getURL());
@@ -260,10 +217,7 @@ public class CustomersViewController {
         }
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku rezerwacji
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void showReservation(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
@@ -298,10 +252,7 @@ public class CustomersViewController {
 //        this.showAddCustomer(event, null);
     }
 
-    /**
-     * Metoda zapewniająca możliwość wylogowania użytkownika
-     * @param event event emitowany przez przycisk
-     */
+
     @FXML
     void handleLogout(ActionEvent event) {
         JavafxApplication.logout();
@@ -318,10 +269,7 @@ public class CustomersViewController {
         }
     }
 
-    /**
-     * Metoda ustawiająca powiązanie atrybutu 'disabled' przycisków z zaznaczeniem w tabeli
-     * Po to aby przyciski Delete i Update były nieaktywne w sytuacji gdy nic nie jest zaznaczone w tabeli
-     */
+
     private void setButtonsDisablePropertyBinding() {
         if(buttonDeleteCustomer != null) {
             buttonDeleteCustomer.disableProperty().bind(
