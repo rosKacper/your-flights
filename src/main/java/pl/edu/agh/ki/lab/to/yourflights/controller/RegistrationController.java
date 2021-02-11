@@ -2,18 +2,10 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -25,36 +17,17 @@ import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 import javafx.scene.paint.Color;
 
-import java.io.IOException;
-import java.sql.CallableStatement;
-
-
-/**
- * Kontroler obsługujący formularz do rejestracji
- * Nie jest to na razie wykorzystywane
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
- */
 @Component
 public class RegistrationController {
 
-    /**
-     * Widoki
-     */
-    private final Resource mainView;
-    private final Resource anonymousMainView;
-    private Resource loginView;
+    private final NavigationController navigationController;
 
-    private Customer customer;
 
     @Autowired
     private AuthenticationManager authManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    /**
-     * Kontekst aplikacji Springowej
-     */
-    private final ApplicationContext applicationContext;
 
     /**
      * Pola formularza
@@ -120,7 +93,6 @@ public class RegistrationController {
         customer.setUser(user);
         customerService.save(customer);
 
-
         firstName.clear();
         lastName.clear();
         country.clear();
@@ -133,46 +105,22 @@ public class RegistrationController {
         password.clear();
 
         //Po dodaniu klienta zakończonym sukcesem, następuje powrót do widoku listy klientów
-//        showMainView(actionEvent);
         showLoginView(actionEvent);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param mainView widok główny
-     * @param applicationContext kontekst aplikacji Springa
-     * @param userPrincipalService
-     */
-    public RegistrationController(@Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
-                                  @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                                  @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
-                                  ApplicationContext applicationContext,
+    public RegistrationController(NavigationController navigationController,
                                   CustomerService customerService, UserPrincipalService userPrincipalService){
-        this.mainView = mainView;
-        this.anonymousMainView = anonymousMainView;
-        this.applicationContext = applicationContext;
+        this.navigationController = navigationController;
         this.customerService = customerService;
         this.userPrincipalService = userPrincipalService;
-        this.loginView = loginView;
     }
 
     /**
      * Metoda służąca do przejścia do głównego widoku
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showMainView(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlloader;
-            fxmlloader = new FXMLLoader(anonymousMainView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showNavigationView(ActionEvent actionEvent) {
+        navigationController.showNavigationView(actionEvent);
     }
 
     /**
@@ -180,16 +128,6 @@ public class RegistrationController {
      * @param actionEvent
      */
     public void showLoginView(ActionEvent actionEvent){
-        try {
-            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showLoginView(actionEvent);
     }
 }

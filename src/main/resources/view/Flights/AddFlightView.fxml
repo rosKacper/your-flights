@@ -133,7 +133,7 @@
     <AnchorPane layoutX="484.0" layoutY="586.0" prefHeight="60.0" prefWidth="680.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0">
         <children>
 
-            <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#showFlightView" prefHeight="60.0" prefWidth="200.0" ripplerFill="#95353a" style="-fx-border-color: #D0454C; -fx-border-width: 2px;" text="Cancel" textAlignment="CENTER" AnchorPane.leftAnchor="120.0">
+            <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#showFlightsView" prefHeight="60.0" prefWidth="200.0" ripplerFill="#95353a" style="-fx-border-color: #D0454C; -fx-border-width: 2px;" text="Cancel" textAlignment="CENTER" AnchorPane.leftAnchor="120.0">
                 <font>
                     <Font size="18.0" />
                 </font>

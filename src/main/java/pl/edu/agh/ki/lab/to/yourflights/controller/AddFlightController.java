@@ -5,17 +5,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -28,8 +23,6 @@ import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -43,11 +36,13 @@ import java.util.stream.Collectors;
 public class AddFlightController {
 
 
-    private final Resource flightView;
+    private final Resource flightsView;
     private final Resource ticketCategoryView;
     private final AirlineService airlineService;
 
     private final ApplicationContext applicationContext;
+
+    private final NavigationController navigationController;
 
     @FXML
     public TextField placeOfDestination,placeOfDeparture;
@@ -189,20 +184,22 @@ public class AddFlightController {
         flight = null;
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
-        showTicketCategoryView(actionEvent, tempFlight);
+        showTicketCategoriesView(actionEvent, tempFlight);
     }
 
-    public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
-                               @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
+    public AddFlightController(@Value("classpath:/view/ToDelete/FlightView.fxml") Resource flightsView,
+                               @Value("classpath:/view/ToDelete/TicketCategoryView.fxml") Resource ticketCategoryView,
                                ApplicationContext applicationContext,
                                FlightService flightService,
                                AirlineService airlineService,
+                               NavigationController navigationController,
                                UserPrincipalService userPrincipalService){
-        this.flightView = flightView;
+        this.flightsView = flightsView;
         this.ticketCategoryView = ticketCategoryView;
         this.applicationContext = applicationContext;
         this.flightService = flightService;
         this.airlineService = airlineService;
+        this.navigationController = navigationController;
         this.userPrincipalService = userPrincipalService;
     }
 
@@ -210,53 +207,12 @@ public class AddFlightController {
      * Metoda służąca do przejścia do widoku listy lotów
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showFlightView(ActionEvent actionEvent) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(flightView.getURL());
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showFlightsView(ActionEvent actionEvent) {
+        navigationController.showFlightsView(actionEvent);
     }
 
-    public void showTicketCategoryView(ActionEvent actionEvent, Flight flight) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(ticketCategoryView.getURL());
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            TicketCategoryViewController controller = fxmlloader.getController();
-            controller.setData(flight);
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showTicketCategoriesView(ActionEvent actionEvent, Flight flight) {
+        navigationController.showTicketCategoriesView(actionEvent, flight);
     }
 
     /**

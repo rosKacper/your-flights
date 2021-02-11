@@ -2,41 +2,27 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
-import java.io.IOException;
-
-/**
- * Controller that
- */
 @Component
 public class AddAirlineController {
 
-    private final Resource airlinesView;
-
     private final ApplicationContext applicationContext;
+    private final NavigationController navigationController;
+    private AirlineService airlineService;
+    private Airline airline;
 
     @FXML
     public TextField name, country, description;
 
     @FXML
     public Label nameValidationLabel,  countryValidationLabel;
-
-    private AirlineService airlineService;
-    private Airline airline;
 
     /**
      * Metoda ustawiająca przewoźnika do edycji
@@ -100,10 +86,10 @@ public class AddAirlineController {
     }
 
 
-    public AddAirlineController(@Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
+    public AddAirlineController(NavigationController navigationController,
                                 ApplicationContext applicationContext,
                                 AirlineService airlineService){
-        this.airlinesView = airlinesView;
+        this.navigationController = navigationController;
         this.applicationContext = applicationContext;
         this.airlineService = airlineService;
     }
@@ -113,25 +99,6 @@ public class AddAirlineController {
      * @param actionEvent event emitowany przez przycisk
      */
     public void showAirlinesView(ActionEvent actionEvent) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(airlinesView.getURL());
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showAirlinesView(actionEvent);
     }
 }

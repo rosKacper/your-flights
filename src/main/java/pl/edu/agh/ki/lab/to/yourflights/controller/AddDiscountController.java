@@ -2,13 +2,8 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -16,8 +11,6 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketDiscount;
 import pl.edu.agh.ki.lab.to.yourflights.service.TicketDiscountService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
-
-import java.io.IOException;
 
 /**
  * Kontroler obsługujący formularz do dodawania klientów
@@ -28,6 +21,8 @@ public class AddDiscountController {
     private final Resource discountsView;
 
     private final ApplicationContext applicationContext;
+
+    private final NavigationController navigationController;
 
     @FXML
     public TextField name, discount;
@@ -91,34 +86,17 @@ public class AddDiscountController {
         showDiscountsView(actionEvent);
     }
 
-    public AddDiscountController(@Value("classpath:/view/DiscountsView.fxml") Resource discountsView,
+    public AddDiscountController(@Value("classpath:/view/ToDelete/DiscountsView.fxml") Resource discountsView,
+                                NavigationController navigationController,
                                 ApplicationContext applicationContext,
                                 TicketDiscountService ticketDiscountService){
+        this.navigationController = navigationController;
         this.discountsView = discountsView;
         this.applicationContext = applicationContext;
         this.discountService = ticketDiscountService;
     }
 
     public void showDiscountsView(ActionEvent actionEvent) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(discountsView.getURL());
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showDiscountsView(actionEvent);
     }
 }

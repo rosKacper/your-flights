@@ -16,7 +16,7 @@
       <Label fx:id="usernameLabel" layoutX="536.0" layoutY="212.0" prefHeight="18.0" prefWidth="208.0" textAlignment="CENTER" textFill="#d0454c">
             
       </Label>
-      <JFXButton layoutX="537.0" layoutY="436.0" onAction="#showMainView" prefHeight="42.0" prefWidth="154.0" style="-fx-background-color: #95353a;" text="Cancel" textFill="WHITE" />
+      <JFXButton layoutX="537.0" layoutY="436.0" onAction="#showNavigationView" prefHeight="42.0" prefWidth="154.0" style="-fx-background-color: #95353a;" text="Cancel" textFill="WHITE" />
       <Text layoutX="505.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log in" textAlignment="CENTER" wrappingWidth="218.40001220703152">
          <font>
             <Font size="41.0" />

@@ -2,34 +2,17 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
-import pl.edu.agh.ki.lab.to.yourflights.service.ReservationService;
-
-import java.io.IOException;
-import java.math.BigDecimal;
 
 @Component
 public class FlightDetailsController {
 
-    private final Resource flightsView;
-    private final ApplicationContext applicationContext;
-
     private Flight flight;
-
-    private final ReservationService reservationService;
-
     private final FlightService flightService;
+    private final NavigationController navigationController;
 
     @FXML
     private Text placeOfDeparture;
@@ -41,7 +24,6 @@ public class FlightDetailsController {
     private Text departureTime;
     @FXML
     private Text arrivalTime;
-
 
     @FXML
     private Text numberOfReservations;
@@ -56,13 +38,9 @@ public class FlightDetailsController {
 
 
 
-    public FlightDetailsController(ApplicationContext applicationContext,
-                                   @Value("classpath:/view/FlightView.fxml") Resource flightsView,
-                                   ReservationService reservationService,
+    public FlightDetailsController(NavigationController navigationController,
                                    FlightService flightService) {
-        this.applicationContext = applicationContext;
-        this.flightsView = flightsView;
-        this.reservationService = reservationService;
+        this.navigationController = navigationController;
         this.flightService = flightService;
     }
 
@@ -111,17 +89,6 @@ public class FlightDetailsController {
      * @param actionEvent event emitowany przez przycisk
      */
     public void showFlightsView(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlloader;
-            fxmlloader = new FXMLLoader(flightsView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showFlightsView(actionEvent);
     }
 }

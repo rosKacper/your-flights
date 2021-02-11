@@ -10,10 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ComboBox;
@@ -21,10 +17,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -32,8 +25,6 @@ import pl.edu.agh.ki.lab.to.yourflights.model.*;
 import pl.edu.agh.ki.lab.to.yourflights.service.*;
 import pl.edu.agh.ki.lab.to.yourflights.utils.EmailHandler;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -48,9 +39,7 @@ import java.util.stream.IntStream;
 @Component
 public class AddReservationController {
 
-
-    private final Resource reservationList;
-
+    private final NavigationController navigationController;
     private final ApplicationContext applicationContext;
 
     private final ReservationService reservationService;
@@ -58,6 +47,10 @@ public class AddReservationController {
     private final TicketDiscountService ticketDiscountService;
     private final TicketCategoryService ticketCategoryService;
     private final CustomerService customerService;
+
+    private Flight flight;
+    private Reservation reservation = null;
+    private ObservableList<TicketOrder> ticketOrdersList = FXCollections.observableArrayList();
 
     @FXML
     public ComboBox<Integer> seatsCombo;
@@ -71,7 +64,6 @@ public class AddReservationController {
     @FXML
     private JFXTreeTableView<TicketOrder> reservationOverviewTableView;
 
-
     @FXML
     private TreeTableColumn<TicketOrder, String> category;
     @FXML
@@ -80,11 +72,6 @@ public class AddReservationController {
     private TreeTableColumn<TicketOrder, String> discount;
     @FXML
     private TreeTableColumn<TicketOrder, String> totalCost;
-
-    private Flight flight;
-    private Reservation reservation = null;
-    private ObservableList<TicketOrder> ticketOrdersList = FXCollections.observableArrayList();
-
 
     @FXML
     public Label numberOfSeatsValidationLabel;
@@ -169,7 +156,6 @@ public class AddReservationController {
         errorField.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
     }
 
-
     public void handleSubmitButtonAction(ActionEvent actionEvent) {
         //Obsługa poprawności danych w formularzu
         //Wykorzystuje klasę Validator, w której zaimplementowane są metody do sprawdzania poprawności danych
@@ -238,17 +224,21 @@ public class AddReservationController {
         ticketOrdersList = FXCollections.observableArrayList();
 
         //Po dodaniu lotu zakończonym sukcesem, następuje powrót do widoku listy lotów
-        showReservationList(actionEvent);
+        showReservationsView(actionEvent);
     }
 
 
-    public AddReservationController(@Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
-                                    ApplicationContext applicationContext,
+    public AddReservationController(ApplicationContext applicationContext,
+//                                    @Value("classpath:/view/ReservationListView.fxml") Resource reservationList,
+                                    NavigationController navigationController,
                                     TicketOrderService ticketOrderService,
                                     ReservationService reservationService,
-                                    TicketDiscountService ticketDiscountService, TicketCategoryService ticketCategoryService, CustomerService customerService) {
-        this.reservationList = reservationList;
+                                    TicketDiscountService ticketDiscountService,
+                                    TicketCategoryService ticketCategoryService,
+                                    CustomerService customerService) {
+//        this.reservationList = reservationList;
         this.applicationContext = applicationContext;
+        this.navigationController = navigationController;
         this.reservationService = reservationService;
         this.ticketOrderService = ticketOrderService;
         this.ticketDiscountService = ticketDiscountService;
@@ -268,30 +258,8 @@ public class AddReservationController {
      * Metoda służąca do przejścia do widoku listy rezerwacji
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showReservationList(ActionEvent actionEvent) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(reservationList.getURL());
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-
-            ticketOrdersList = FXCollections.observableArrayList();
-
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showReservationsView(ActionEvent actionEvent) {
+        navigationController.showReservationsView(actionEvent);
     }
 
     public void handleAddAction() {

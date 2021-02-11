@@ -1,14 +1,11 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
-import java.io.IOException;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.binding.Bindings;
@@ -16,74 +13,31 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pl.edu.agh.ki.lab.to.yourflights.JavafxApplication;
+import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
-
-@RestController
-@RequestMapping("/api/v1")
+@Component
 public class FlightController {
 
-    /**
-     * Widoki
-     */
-    private final Resource mainView;
-    private final Resource customersView;
-    private final Resource airlinesView;
-    private final Resource reservationListView;
-    private final Resource reservationListViewCustomer;
-    private final Resource addFlightView;
-    private final Resource addReservationView;
-    private final Resource anonymousMainView;
-    private final Resource anonymousAirlineView;
-    private final Resource loginView;
-    private final Resource userAirlinesView;
-    private final Resource userCustomersView;
-    private final Resource flightDetailsView;
-    private final Resource ticketCategoryView;
-    private final Resource discountsView;
-
-
-    /**
-     * Serwisy
-     */
+    private final NavigationController navigationController;
     private final FlightService flightService;
     private final AirlineService airlineService;
     private final UserPrincipalService userPrincipalService;
-
-
-    /**
-     * Kontekst aplikacji Springa
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Widok lotów
-     */
+
     @FXML
     private JFXTreeTableView<Flight> flightsTableView;
 
-    /**
-     * Kolumny tabeli
-     */
     @FXML
     private TreeTableColumn<Flight, String> departure;
     @FXML
@@ -110,9 +64,6 @@ public class FlightController {
     //Lista zawierająca predykaty służące do filtrowania danych
     private final List<Predicate<Flight>> predicates = new LinkedList<>();
 
-    /**
-     * Przyciski
-     */
     @FXML
     private JFXButton buttonAddReservation;
     @FXML
@@ -154,67 +105,19 @@ public class FlightController {
             flights = FXCollections.observableList(flightService.findAll());
         }
 
-
         //Przekazanie danych do tabeli
         final TreeItem<Flight> root = new RecursiveTreeItem<>(flights, RecursiveTreeObject::getChildren);
         flightsTableView.setRoot(root);
         flightsTableView.setShowRoot(false);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiedznie zależności
-     * @param flightService
-     * @param applicationContext
-     * @param airlinesView
-     * @param customersView
-     * @param mainView
-     * @param reservationListView
-     * @param addReservationView
-     * @param addFlightView
-     * @param loginView
-     * @param ticketCategoryView
-     * @param anonymousMainView
-     * @param anonymousAirlineView
-     * @param userAirlinesView
-     * @param reservationListViewCustomer
-     * @param userCustomersView
-     * @param discountsView
-     */
     public FlightController(FlightService flightService, AirlineService airlineService,
                             UserPrincipalService userPrincipalService, ApplicationContext applicationContext,
-                            @Value("classpath:/view/AirlinesView.fxml") Resource airlinesView,
-                            @Value("classpath:/view/CustomersView.fxml") Resource customersView,
-                            @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                            @Value("classpath:/view/ReservationListView.fxml") Resource reservationListView,
-                            @Value("classpath:/view/AddReservationView.fxml") Resource addReservationView,
-                            @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
-                            @Value("classpath:/view/AddFlightView.fxml") Resource addFlightView,
-                            @Value("classpath:/view/AuthView/LoginView.fxml") Resource loginView,
-                            @Value("classpath:/view/DiscountsView.fxml") Resource discountsView,
-                            @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
-                            @Value("classpath:/view/AnonymousView/AnonymousAirlinesView.fxml") Resource anonymousAirlineView,
-                            @Value("classpath:/view/UserView/UserAirlinesView.fxml") Resource userAirlinesView,
-                            @Value("classpath:/view/ReservationListViewCustomer.fxml") Resource reservationListViewCustomer,
-                            @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomersView,
-                            @Value("classpath:/view/AdminView/FlightDetailsView.fxml") Resource flightDetailsView) {
+                            NavigationController navigationController) {
         this.applicationContext = applicationContext;
-        this.airlinesView = airlinesView;
-        this.customersView = customersView;
-        this.mainView = mainView;
+        this.navigationController = navigationController;
         this.flightService = flightService;
         this.airlineService = airlineService;
-        this.reservationListView = reservationListView;
-        this.addReservationView = addReservationView;
-        this.addFlightView = addFlightView;
-        this.loginView = loginView;
-        this.anonymousMainView = anonymousMainView;
-        this.anonymousAirlineView = anonymousAirlineView;
-        this.userAirlinesView = userAirlinesView;
-        this.userCustomersView = userCustomersView;
-        this.reservationListViewCustomer = reservationListViewCustomer;
-        this.flightDetailsView = flightDetailsView;
-        this.ticketCategoryView = ticketCategoryView;
-        this.discountsView = discountsView;
         this.userPrincipalService = userPrincipalService;
     }
 
@@ -222,7 +125,6 @@ public class FlightController {
      * Metoda która inicjalizuje obsługę filtrowanie
      */
     private void setPredicates() {
-
         // Generyczna klasa filtrów dla danego modelu
         GenericFilter<Flight> airlineFilter = new GenericFilter<>(flightsTableView);
         // Dodanie do listy predykatów testujących zawartość filtrów
@@ -253,98 +155,11 @@ public class FlightController {
     }
 
     /**
-     * Metoda służąca do przejścia do widoku głównego
-     * @param actionEvent event emitowany przez przycisk
-     */
-    public void showMainView(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlloader;
-            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
-                fxmlloader = new FXMLLoader(anonymousMainView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(mainView.getURL());
-            }
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Metoda służąca do przejścia do widoku przewoźników
-     * @param actionEvent event emitowany przez przycisk
-     */
-    public void showAirlinesView(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlloader;
-            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ANONYMOUS]")){
-                fxmlloader = new FXMLLoader(anonymousAirlineView.getURL());
-            }
-            else if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
-                fxmlloader = new FXMLLoader(airlinesView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(userAirlinesView.getURL());
-            }
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Metoda służąca do przejścia do widoku tabeli klientów
-     * @param actionEvent event emitowany przez przycisk
-     */
-    public void showCustomersView(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlloader;
-            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            if(role.equals("[ROLE_ADMIN]") || role.equals("[AIRLINE]")){
-                fxmlloader = new FXMLLoader(customersView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(userCustomersView.getURL());
-            }
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Metoda służąca do przejścia do widoku tabeli rezerwacji
      * @param actionEvent event emitowany przez przycisk
      */
-    public void showReservation(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlloader = new FXMLLoader(reservationListView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showReservationsView(ActionEvent actionEvent) {
+        navigationController.showReservationsView(actionEvent);
     }
 
     /**
@@ -352,19 +167,7 @@ public class FlightController {
      * @param actionEvent event emitowany przez przycisk
      */
     public void showAddReservation(ActionEvent actionEvent, Flight flight) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(addReservationView.getURL());
-            fxmlLoader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlLoader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            AddReservationController controller = fxmlLoader.getController();
-            controller.setData(flight);
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showAddReservation(actionEvent, flight, null);
     }
 
     /**
@@ -372,42 +175,7 @@ public class FlightController {
      * @param actionEvent event emitowany przez przycisk
      */
     public void showAddFlight(ActionEvent actionEvent, Flight flight) {
-        try {
-            FXMLLoader fxmlloader = new FXMLLoader(addFlightView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            if(flight != null) {
-                AddFlightController controller = fxmlloader.getController();
-                controller.setData(flight);
-            }
-
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Metoda służąca do przejścia do widoku logowania
-     * @param actionEvent event emitowany przez przycisk
-     */
-    public void showLoginView(ActionEvent actionEvent){
-        try {
-            FXMLLoader fxmlloader = new FXMLLoader(loginView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showAddFlight(actionEvent, flight);
     }
 
     public void handleShowFlightDetailsView(ActionEvent event) {
@@ -422,25 +190,7 @@ public class FlightController {
      * @param actionEvent event emitowany przez przycisk
      */
     public void showFlightDetailsView(ActionEvent actionEvent, Flight flight) {
-        try {
-            FXMLLoader fxmlloader;
-            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-            fxmlloader = new FXMLLoader(flightDetailsView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            if(flight != null) {
-                FlightDetailsController controller = fxmlloader.getController();
-                controller.setData(flight);
-            }
-
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showFlightDetailsView(actionEvent, flight);
     }
 
     /**
@@ -448,46 +198,8 @@ public class FlightController {
      * @param actionEvent event emitowany przez przycisk
      * @param flight obiekt lotu
      */
-    public void showTicketCategory(ActionEvent actionEvent, Flight flight) {
-        try {
-            FXMLLoader fxmlloader = new FXMLLoader(ticketCategoryView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            TicketCategoryViewController controller = fxmlloader.getController();
-            controller.setData(flight);
-
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void showDiscountsView(ActionEvent actionEvent) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(discountsView.getURL());
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showTicketCategoriesView(ActionEvent actionEvent, Flight flight) {
+        navigationController.showTicketCategoriesView(actionEvent, flight);
     }
 
     @FXML
@@ -509,7 +221,7 @@ public class FlightController {
     private void handleShowTicketCategories(ActionEvent event) {
         var flight = flightsTableView.getSelectionModel().getSelectedItem();
         if(flight != null) {
-            this.showTicketCategory(event, flight.getValue());
+            this.showTicketCategoriesView(event, flight.getValue());
         }
     }
 
@@ -524,25 +236,6 @@ public class FlightController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.getName().equals("anonymous") && flight != null) {
             this.showAddReservation(event, flight.getValue());
-        }
-    }
-    /**
-     * Metoda zapewniająca możliwość wylogowania użytkownika
-     * @param event event emitowany przez przycisk
-     */
-    @FXML
-    void handleLogout(ActionEvent event) {
-        JavafxApplication.logout();
-        try {
-            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-            Parent parent = fxmlloader.load();
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

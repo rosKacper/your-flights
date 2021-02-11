@@ -1,26 +1,14 @@
 package pl.edu.agh.ki.lab.to.yourflights.controller;
 
-import com.jfoenix.controls.JFXTimePicker;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
@@ -28,12 +16,7 @@ import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.service.TicketCategoryService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 
 /**
  * Kontroler obsługujący formularz do dodawania lotów
@@ -44,6 +27,8 @@ public class AddTicketCategoryController {
     private final Resource ticketCategoryView;
 
     private final ApplicationContext applicationContext;
+
+    private final NavigationController navigationController;
 
     @FXML
     public TextField name,price, numberOfSeats;
@@ -126,48 +111,24 @@ public class AddTicketCategoryController {
         price = null;
         numberOfSeats = null;
         //Po dodaniu kategorii biletu zakończonym sukcesem, następuje powrót do widoku listy kategorii biletów
-        showTicketCategoryView(actionEvent);
+        showTicketCategoriesView(actionEvent);
     }
 
-    public AddTicketCategoryController(@Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
+    public AddTicketCategoryController(@Value("classpath:/view/ToDelete/TicketCategoryView.fxml") Resource ticketCategoryView,
                                ApplicationContext applicationContext,
                                FlightService flightService,
+                               NavigationController navigationController,
                                TicketCategoryService ticketCategoryService,
                                AirlineService airlineService){
         this.ticketCategoryView = ticketCategoryView;
+        this.navigationController = navigationController;
         this.applicationContext = applicationContext;
         this.flightService = flightService;
         this.ticketCategoryService = ticketCategoryService;
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku listy lotów
-     * @param actionEvent event emitowany przez przycisk
-     */
-    public void showTicketCategoryView(ActionEvent actionEvent) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(ticketCategoryView.getURL());
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            TicketCategoryViewController controller = fxmlloader.getController();
-            controller.setData(flight);
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showTicketCategoriesView(ActionEvent actionEvent) {
+        navigationController.showTicketCategoriesView(actionEvent, flight);
     }
 
 }

@@ -37,7 +37,23 @@
 <!--                    <Cursor fx:constant="HAND" />-->
 <!--                </cursor>-->
 <!--            </JFXButton>-->
+<!--            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showCustomersView" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Customers" textAlignment="CENTER" textFill="WHITE">-->
+<!--                <font>-->
+<!--                    <Font size="18.0" />-->
+<!--                </font>-->
+<!--                <cursor>-->
+<!--                    <Cursor fx:constant="HAND" />-->
+<!--                </cursor>-->
+<!--            </JFXButton>-->
 <!--            <JFXButton alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Flights" textAlignment="CENTER" textFill="WHITE">-->
+<!--                <font>-->
+<!--                    <Font size="18.0" />-->
+<!--                </font>-->
+<!--                <cursor>-->
+<!--                    <Cursor fx:constant="HAND" />-->
+<!--                </cursor>-->
+<!--            </JFXButton>-->
+<!--            <JFXButton alignment="CENTER" contentDisplay="CENTER" onAction="#showReservation" prefHeight="60.0" prefWidth="300.0" ripplerFill="#0582ca" text="Reservations" textAlignment="CENTER" textFill="WHITE">-->
 <!--                <font>-->
 <!--                    <Font size="18.0" />-->
 <!--                </font>-->
@@ -48,12 +64,12 @@
 <!--        </children>-->
 <!--    </VBox>-->
 <!--    <AnchorPane layoutX="220.0" prefHeight="800.0" prefWidth="1060.0">-->
-<!--        <JFXButton layoutX="926.0" layoutY="34.0" onAction="#showLoginView" prefHeight="43.0" prefWidth="111.0" style="-fx-background-color: #1d3557;" text="Log In" textFill="WHITE">-->
-<!--            <font>-->
-<!--                <Font size="19.0" />-->
-<!--            </font>-->
-<!--        </JFXButton>-->
 <!--        <children>-->
+<!--            <JFXButton layoutX="923.0" layoutY="34.0" onAction="#handleLogout" prefHeight="43.0" prefWidth="111.0" style="-fx-background-color: #1d3557;" text="Log Out" textFill="WHITE">-->
+<!--                <font>-->
+<!--                    <Font size="19.0" />-->
+<!--                </font>-->
+<!--            </JFXButton>-->
 <!--            <JFXTreeTableView fx:id="flightsTableView" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">-->
 <!--                <columns>-->
 <!--                    <TreeTableColumn fx:id="departure" prefWidth="142.0" text="Departure" />-->
@@ -70,6 +86,24 @@
 <!--                    <Font size="48.0" />-->
 <!--                </font>-->
 <!--            </Text>-->
+<!--            <HBox alignment="CENTER_LEFT" layoutY="700.0" prefHeight="80.0" prefWidth="980.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="720.0">-->
+<!--                <children>-->
+<!--                    <JFXButton fx:id="buttonAddReservation" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleAddReservationAction" prefHeight="0.0" prefWidth="211.0" ripplerFill="#c746d0" style="-fx-border-color: #c746d0; -fx-border-width: 2px;" text="Add reservation" textAlignment="CENTER">-->
+<!--                        <font>-->
+<!--                            <Font size="18.0" />-->
+<!--                        </font>-->
+<!--                        <cursor>-->
+<!--                            <Cursor fx:constant="HAND" />-->
+<!--                        </cursor>-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets />-->
+<!--                        </HBox.margin>-->
+<!--                    </JFXButton>-->
+<!--                </children>-->
+<!--                <padding>-->
+<!--                    <Insets bottom="10.0" top="10.0" />-->
+<!--                </padding>-->
+<!--            </HBox>-->
 <!--            <TilePane hgap="40.0" layoutX="30.0" layoutY="105.0" prefHeight="50.0" prefWidth="1005.0">-->
 <!--                <children>-->
 <!--                    <VBox spacing="5.0">-->
@@ -100,12 +134,12 @@
 <!--                    </VBox>-->
 <!--                    <VBox spacing="5.0">-->
 <!--                        <children>-->
-<!--                            <Label text="Departure date:">-->
+<!--                            <Label text="Departure time:">-->
 <!--                                <font>-->
 <!--                                    <Font size="14.0" />-->
 <!--                                </font>-->
 <!--                            </Label>-->
-<!--                            <JFXDatePicker fx:id="datePicker" defaultColor="#1d3557"/>-->
+<!--                            <JFXDatePicker fx:id="datePicker" defaultColor="#1d3557" />-->
 <!--                        </children>-->
 <!--                    </VBox>-->
 <!--                    <JFXButton fx:id="filtersResetButton" alignment="CENTER" onAction="#resetFilters" prefHeight="38.0" prefWidth="122.0" style="-fx-background-color: #9a031e;" text="Reset filters" textFill="WHITE" TilePane.alignment="BOTTOM_CENTER">-->

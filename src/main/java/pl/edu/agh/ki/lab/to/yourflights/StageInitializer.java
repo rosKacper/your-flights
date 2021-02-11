@@ -25,8 +25,6 @@ import java.io.IOException;
 @Component
 public class StageInitializer implements ApplicationListener<JavafxApplication.StageReadyEvent> {
 
-    private final Resource mainView;
-    private final Resource anonymousMainView;
     private final String applicationTitle;
     private final MockDataService mockDataService;
     private final ReservationService reservationService;
@@ -43,13 +41,10 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     /**
      * Konstruktor, zależności są automatycznie wstrzykiwane przez Springa
      * @param applicationTitle tytuł aplikacji
-     * @param mainView główny widok aplikacji
      * @param applicationContext kontekst aplikacji Springa
      */
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle,
                             @Value("classpath:/view/Navigation/NavigationView.fxml") Resource navigationView,
-                            @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                            @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                             ApplicationContext applicationContext,
                             MockDataService mockDataService,
                             ReservationService reservationService,
@@ -57,8 +52,6 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
                             TicketOrderService ticketOrderService) {
         this.applicationTitle = applicationTitle;
         this.navigationView = navigationView;
-        this.mainView = mainView;
-        this.anonymousMainView = anonymousMainView;
         this.applicationContext = applicationContext;
         this.mockDataService = mockDataService;
         this.reservationService=reservationService;

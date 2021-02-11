@@ -2,25 +2,14 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
-
-import java.io.IOException;
-
 
 /**
  * Kontroler obsługujący formularz do dodawania klientów
@@ -28,10 +17,10 @@ import java.io.IOException;
 @Component
 public class AddCustomerController {
 
-    private final Resource customerView;
-    private final Resource userCustomerView;
-
     private final ApplicationContext applicationContext;
+    private final NavigationController navigationController;
+    private CustomerService customerService;
+    private Customer customer;
 
     @FXML
     public TextField firstName, lastName, country,city, street, postalCode, phoneNumber, emailAddress;
@@ -44,8 +33,7 @@ public class AddCustomerController {
     @FXML
     public Text actiontarget;
 
-    private CustomerService customerService;
-    private Customer customer;
+
 
     /**
      * Metoda ustawiająca klienta do edycji
@@ -132,46 +120,15 @@ public class AddCustomerController {
     }
 
 
-    public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView,
-                                 @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomerView,
+    public AddCustomerController(NavigationController navigationController,
                                  ApplicationContext applicationContext,
                                  CustomerService customerService){
-        this.customerView = customerView;
+        this.navigationController = navigationController;
         this.applicationContext = applicationContext;
         this.customerService = customerService;
-        this.userCustomerView = userCustomerView;
     }
 
-
     public void showCustomersView(ActionEvent actionEvent) {
-        try {
-            //ładujemy widok z pliku .fxml
-            FXMLLoader fxmlloader;
-            String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-
-            //ładujemy widok w zależności od roli zalogowanego użytkownika
-            if(role.equals("[ROLE_ADMIN]")){
-                fxmlloader = new FXMLLoader(customerView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(userCustomerView.getURL());
-            }
-
-            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
-            fxmlloader.setControllerFactory(applicationContext::getBean);
-
-            //wczytanie sceny
-            Parent parent = fxmlloader.load();
-
-            //pobieramy stage z którego wywołany został actionEvent - bo nie chcemy tworzyć za każdym razem nowego Stage
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-            //utworzenie i wyświetlenie sceny
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigationController.showCustomersView(actionEvent);
     }
 }
