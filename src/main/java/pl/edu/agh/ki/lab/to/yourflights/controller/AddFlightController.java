@@ -24,15 +24,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Airline;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
-import pl.edu.agh.ki.lab.to.yourflights.model.TicketCategory;
 import pl.edu.agh.ki.lab.to.yourflights.service.AirlineService;
-import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.Validator;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -41,26 +38,17 @@ import java.util.stream.Collectors;
 
 /**
  * Kontroler obsługujący formularz do dodawania lotów
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class AddFlightController {
 
-    /**
-     * Widok lotów
-     */
+
     private final Resource flightView;
     private final Resource ticketCategoryView;
     private final AirlineService airlineService;
 
-    /**
-     * Kontekst aplikacji Springowej
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Pola formularza
-     */
     @FXML
     public TextField placeOfDestination,placeOfDeparture;
     @FXML
@@ -88,7 +76,7 @@ public class AddFlightController {
     @FXML
     public Label arrivalDateValidation;
 
-    /**
+    /** TODO po angielsku zrobić
      * Formatuje date i czas w postaci string do odpowiedniego formatu
      */
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -204,12 +192,6 @@ public class AddFlightController {
         showTicketCategoryView(actionEvent, tempFlight);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param ticketCategoryView widok kategorii biletów
-     * @param flightService serwis przewoźników
-     * @param applicationContext kontekst aplikacji Springa
-     */
     public AddFlightController(@Value("classpath:/view/FlightView.fxml") Resource flightView,
                                @Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
                                ApplicationContext applicationContext,

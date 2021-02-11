@@ -24,39 +24,23 @@ import java.io.IOException;
 
 /**
  * Kontroler obsługujący formularz do dodawania klientów
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class AddCustomerController {
 
-    /**
-     * Widok klientów
-     */
     private final Resource customerView;
     private final Resource userCustomerView;
 
-    /**
-     * Kontekst aplikacji Springowej
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Pola formularza
-     */
     @FXML
     public TextField firstName, lastName, country,city, street, postalCode, phoneNumber, emailAddress;
 
-    /**
-     * Etykiety do wyświetlania komunikatów o błędnie podanych danych w formularzu
-     */
     @FXML
     public Label firstNameValidationLabel, lastNameValidationLabel,
             countryValidationLabel, cityValidationLabel, streetValidationLabel,
             postalCodeValidationLabel, phoneNumberValidationLabel, emailAddressValidationLabel;
 
-    /**
-     * Etykieta do wyświetlania komunikatu o sukcesie dodawania klienta
-     */
     @FXML
     public Text actiontarget;
 
@@ -147,11 +131,7 @@ public class AddCustomerController {
         showCustomersView(actionEvent);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param customerView widok tabeli klientów
-     * @param applicationContext kontekst aplikacji Springa
-     */
+
     public AddCustomerController(@Value("classpath:/view/CustomersView.fxml") Resource customerView,
                                  @Value("classpath:/view/UserView/UserCustomersView.fxml") Resource userCustomerView,
                                  ApplicationContext applicationContext,
@@ -162,10 +142,7 @@ public class AddCustomerController {
         this.userCustomerView = userCustomerView;
     }
 
-    /**
-     * Metoda służąca do przejścia do widoku listy klientów
-     * @param actionEvent event emitowany przez przycisk
-     */
+
     public void showCustomersView(ActionEvent actionEvent) {
         try {
             //ładujemy widok z pliku .fxml

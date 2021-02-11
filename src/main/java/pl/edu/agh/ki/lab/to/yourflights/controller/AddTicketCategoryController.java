@@ -37,24 +37,14 @@ import java.util.stream.Collectors;
 
 /**
  * Kontroler obsługujący formularz do dodawania lotów
- * Oznaczenie @Component pozwala Springowi na wstrzykiwanie kontrolera tam gdzie jest potrzebny
  */
 @Component
 public class AddTicketCategoryController {
 
-    /**
-     * Widok lotów
-     */
     private final Resource ticketCategoryView;
 
-    /**
-     * Kontekst aplikacji Springowej
-     */
     private final ApplicationContext applicationContext;
 
-    /**
-     * Pola formularza
-     */
     @FXML
     public TextField name,price, numberOfSeats;
 
@@ -80,9 +70,7 @@ public class AddTicketCategoryController {
         updateControls();
     }
 
-    /**
-     * Metoda ustawiająca wartości pól tekstowych w formularzu, w zależności od otrzymanego lotu do edycji
-     */
+
     private void updateControls() {
         if(ticketCategory != null) {
             name.textProperty().setValue(ticketCategory.getCategoryName());
@@ -141,12 +129,6 @@ public class AddTicketCategoryController {
         showTicketCategoryView(actionEvent);
     }
 
-    /**
-     * Konstruktor, Spring wstrzykuje odpowiednie zależności, jak np. kontekst aplikacji
-     * @param ticketCategoryService serwis kategorii lotu
-     * @param flightService serwis przewoźników
-     * @param applicationContext kontekst aplikacji Springa
-     */
     public AddTicketCategoryController(@Value("classpath:/view/TicketCategoryView.fxml") Resource ticketCategoryView,
                                ApplicationContext applicationContext,
                                FlightService flightService,
