@@ -44,6 +44,8 @@ public class LoginController {
     private final Resource mainView;
     private final Resource anonymousMainView;
 
+    private final Resource navigationView;
+
     /**
      * Pola potrzebne do autentykacji użytkownika
      */
@@ -70,10 +72,12 @@ public class LoginController {
      */
     public LoginController(ApplicationContext applicationContext,
                            @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
-                           @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView) {
+                           @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
+                           @Value("classpath:/view/Navigation/NavigationView.fxml") Resource navigationView) {
         this.applicationContext = applicationContext;
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
+        this.navigationView = navigationView;
     }
 
     /**
@@ -117,15 +121,11 @@ public class LoginController {
      * Metoda służąca do przejścia do głównego widoku
      * @param actionEvent event emitowany przez przycisk
      */
+    //todo change name to showNavigationView
     public void showMainView(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlloader;
-            if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ANONYMOUS]")){
-                fxmlloader = new FXMLLoader(anonymousMainView.getURL());
-            }
-            else{
-                fxmlloader = new FXMLLoader(mainView.getURL());
-            }
+            fxmlloader = new FXMLLoader(navigationView.getURL());
             fxmlloader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlloader.load();
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

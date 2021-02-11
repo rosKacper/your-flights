@@ -33,6 +33,8 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     private final CustomerService customerService;
     private final TicketOrderService ticketOrderService;
 
+    private final Resource navigationView;
+
     /**
      * Kontekst aplikacji Springa
      */
@@ -45,6 +47,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
      * @param applicationContext kontekst aplikacji Springa
      */
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle,
+                            @Value("classpath:/view/Navigation/NavigationView.fxml") Resource navigationView,
                             @Value("classpath:/view/MainView/MainView.fxml") Resource mainView,
                             @Value("classpath:/view/MainView/AnonymousMainView.fxml") Resource anonymousMainView,
                             ApplicationContext applicationContext,
@@ -53,6 +56,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
                             CustomerService customerService,
                             TicketOrderService ticketOrderService) {
         this.applicationTitle = applicationTitle;
+        this.navigationView = navigationView;
         this.mainView = mainView;
         this.anonymousMainView = anonymousMainView;
         this.applicationContext = applicationContext;
@@ -62,6 +66,40 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
         this.ticketOrderService=ticketOrderService;
     }
 
+//    /**
+//     * Metoda reagująca na StageReadyEvent i inicjalizująca aplikację
+//     */
+//    @Override
+//    public void onApplicationEvent(JavafxApplication.StageReadyEvent event) {
+//        try {
+//            //ładujemy główny widok z pliku .fxml
+//            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+//
+//            //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
+//            fxmlloader.setControllerFactory(applicationContext::getBean);
+//
+//            //wczytanie sceny
+//            Parent parent = fxmlloader.load();
+//
+//            //pobieramy stage z którego wywołany został event
+//            Stage stage = event.getStage();
+//
+//            //wypełnienie wbudowanej bazy danych przykładowymi danymi startowymi
+////            mockDataService.createMockData();
+//
+//            //utworzenie i wyświetlenie sceny
+//            Scene scene = new Scene(parent);
+//            stage.setScene(scene);
+//            stage.setTitle(applicationTitle);
+//            stage.show();
+//
+//            EmailHandler emailHandler=new EmailHandler(reservationService,ticketOrderService);
+//            emailHandler.upcomingEmail(customerService,ticketOrderService);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     /**
      * Metoda reagująca na StageReadyEvent i inicjalizująca aplikację
      */
@@ -69,7 +107,7 @@ public class StageInitializer implements ApplicationListener<JavafxApplication.S
     public void onApplicationEvent(JavafxApplication.StageReadyEvent event) {
         try {
             //ładujemy główny widok z pliku .fxml
-            FXMLLoader fxmlloader = new FXMLLoader(anonymousMainView.getURL());
+            FXMLLoader fxmlloader = new FXMLLoader(navigationView.getURL());
 
             //Spring wstrzykuje odpowiedni kontroler obsługujący dany plik .fxml na podstawie kontekstu aplikacji
             fxmlloader.setControllerFactory(applicationContext::getBean);
