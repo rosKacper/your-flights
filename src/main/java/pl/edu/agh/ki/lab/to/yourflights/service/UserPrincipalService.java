@@ -11,10 +11,7 @@ import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.model.User;
 import pl.edu.agh.ki.lab.to.yourflights.model.UserPrincipal;
 import pl.edu.agh.ki.lab.to.yourflights.repository.UserRepository;
-
-
 import java.util.List;
-
 
 @Service
 public class UserPrincipalService implements UserDetailsService {
@@ -57,10 +54,6 @@ public class UserPrincipalService implements UserDetailsService {
         }
     }
 
-    /**
-     * Metoda zapisująca użytkownika w bazie danych
-     * @param user użytkownik do zapisania w bazie danych
-     */
     public boolean save(User user) {
         if(user != null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));

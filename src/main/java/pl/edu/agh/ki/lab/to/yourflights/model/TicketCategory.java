@@ -3,21 +3,14 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
 
 /**
- * Klasa definiuje model kategorii biletu
- * (czyli np. Kategoria biznesowa, o danej cenie biletu i danej liczbie miejsc w danym locie)
- * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
+ * Entity representing ticket category (for example: Business Category, Economic Category)
  */
 @Entity
 public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
@@ -33,9 +26,6 @@ public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
     @NotNull
     private int totalNumberOfSeats;
 
-    /**
-     * Mapowanie relacji do lotu którego dotyczy dana kategoria biletu
-     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "flightID")
     private Flight flight;
@@ -48,9 +38,6 @@ public class TicketCategory extends RecursiveTreeObject<TicketCategory> {
         this.totalNumberOfSeats = totalNumberOfSeats;
         this.flight = flight;
     }
-
-
-    //getters and setters
 
     public Long getId() {
         return id;

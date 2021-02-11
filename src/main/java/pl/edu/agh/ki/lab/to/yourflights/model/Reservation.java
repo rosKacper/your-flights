@@ -3,19 +3,10 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 
-/**
- * Klasa definiuje model rezerwacji
- * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
- */
 @Entity
 public class Reservation extends RecursiveTreeObject<Reservation> {
 
@@ -29,14 +20,9 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
     @NotEmpty
     private String userName;
 
-
-
     @NotEmpty
     private String status;
 
-    /**
-     * Mapowanie relacji do klienta który składa daną rezerwację
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerID")
     private Customer customer;
@@ -86,7 +72,11 @@ public class Reservation extends RecursiveTreeObject<Reservation> {
         return new SimpleStringProperty(userName);
     }
 
-    public String getStatus() { return status; }
+    public String getStatus() {
+        return status;
+    }
 
-    public void setStatus(String status) { this.status = status; }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

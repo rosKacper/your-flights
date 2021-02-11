@@ -3,18 +3,14 @@ package pl.edu.agh.ki.lab.to.yourflights.model;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
 /**
- * Klasa definiuje model zamówienia na bilety (np. 3 bilety w kategorii ekonomicznej, ze zniżką studencką)
- * Pojedyncza rezerwacja może mieć kilka takich zamówień na bilety (np. 2 bilety dla dorosłych i 1 bilet dla dzieci)
- * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
+ * Entity class representing ticket order
+ * Example ticket order: 3 tickets in Business Class, with Student Discount,
+ * in given reservation (single reservation can have multiple ticket orders)
  */
 @Entity
 public class TicketOrder extends RecursiveTreeObject<TicketOrder> {
@@ -26,29 +22,19 @@ public class TicketOrder extends RecursiveTreeObject<TicketOrder> {
     @NotNull
     private int numberOfSeats;
 
-    /**
-     * Mapowanie relacji do zniżki na bilet
-     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ticketDiscountID")
     private TicketDiscount ticketDiscount;
 
-    /**
-     * Mapowanie relacji do rezerwacji której dotyczy zamówienie na bilety
-     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reservationId")
     private Reservation reservation;
 
-    /**
-     * Mapowanie relacji do kategorii biletów której dotyczy zamówienie na bilety
-     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ticketCategoryID")
     private TicketCategory ticketCategory;
 
-
-    public TicketOrder(){}
+    public TicketOrder() {}
 
     public TicketOrder(int numberOfSeats, TicketDiscount ticketDiscount, Reservation reservation, TicketCategory ticketCategory){
         this.numberOfSeats = numberOfSeats;
@@ -56,9 +42,6 @@ public class TicketOrder extends RecursiveTreeObject<TicketOrder> {
         this.reservation = reservation;
         this.ticketCategory = ticketCategory;
     }
-
-
-    //getters and setters
 
     public int getNumberOfSeats() {
         return numberOfSeats;
@@ -95,5 +78,4 @@ public class TicketOrder extends RecursiveTreeObject<TicketOrder> {
     public StringProperty getNumberOfSeatsProperty(){
         return new SimpleStringProperty(Integer.toString(numberOfSeats));
     }
-
 }

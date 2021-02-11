@@ -9,10 +9,6 @@ import javax.validation.constraints.NotEmpty;
 
 import java.util.List;
 
-/**
- * Klasa definiuje model przewoźnika
- * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
- */
 @Entity
 public class Airline extends RecursiveTreeObject<Airline> {
 
@@ -35,9 +31,6 @@ public class Airline extends RecursiveTreeObject<Airline> {
     @OneToOne(cascade = CascadeType.REMOVE)
     private User user;
 
-    /**
-     * Mapowanie relacji do lotów danego przewoźnika
-     */
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,
@@ -53,9 +46,7 @@ public class Airline extends RecursiveTreeObject<Airline> {
         this.user = user;
     }
 
-    public Airline() {
-
-    }
+    public Airline() {}
 
     public StringProperty getNameProperty() {
         return new SimpleStringProperty(name);
@@ -92,7 +83,6 @@ public class Airline extends RecursiveTreeObject<Airline> {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public User getUser() {
         return user;

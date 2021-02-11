@@ -7,12 +7,7 @@ import javafx.beans.property.StringProperty;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.UUID;
 
-/**
- * Klasa definiuje model klienta
- * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
- */
 @Entity
 public class Customer extends RecursiveTreeObject<Customer> {
 
@@ -28,9 +23,6 @@ public class Customer extends RecursiveTreeObject<Customer> {
     @OneToOne(cascade = CascadeType.REMOVE)
     private User user;
 
-    /**
-     * Mapowanie relacji do rezerwacji danego klienta
-     */
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,
@@ -68,7 +60,7 @@ public class Customer extends RecursiveTreeObject<Customer> {
         this.user = user;
     }
 
-    public Customer(){}
+    public Customer() {}
 
     public StringProperty getFirstNameProperty(){
         return new SimpleStringProperty(firstName);
