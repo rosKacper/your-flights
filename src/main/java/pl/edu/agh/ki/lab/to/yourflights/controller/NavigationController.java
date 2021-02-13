@@ -59,6 +59,16 @@ public class NavigationController {
     @FXML
     private JFXButton buttonRegister;
 
+    @FXML
+    private JFXButton customersButton;
+
+    @FXML
+    private JFXButton reservationsButton;
+
+    @FXML
+    private JFXButton discountButton;
+
+
     public NavigationController(@Value("classpath:/view/Navigation/NavigationView.fxml") Resource navigationView,
                                 @Value("classpath:/view/Main/MainView.fxml") Resource mainView,
                                 @Value("classpath:/view/Airlines/AirlinesView.fxml") Resource airlinesView,
@@ -103,7 +113,8 @@ public class NavigationController {
 
     @FXML
     public void initialize() {
-        this.setupBindings();
+        this.setupLoginBindings();
+        this.setupNavigationBindings();
         this.showMainView();
     }
 
@@ -431,7 +442,8 @@ public class NavigationController {
         }
     }
 
-    private void setupBindings() {
+
+    private void setupLoginBindings() {
         String r = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
         ObservableList role = FXCollections.observableArrayList(Collections.singletonList(r));
 
@@ -450,4 +462,21 @@ public class NavigationController {
                         .isEqualTo("[ROLE_ANONYMOUS]")
         );
     }
+
+    private void setupNavigationBindings(){
+        String r = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList role = FXCollections.observableArrayList(Collections.singletonList(r));
+
+        customersButton.visibleProperty().bind(Bindings.valueAt(role, 0)
+                .isNotEqualTo("[ROLE_ANONYMOUS]"));
+
+        reservationsButton.visibleProperty().bind(Bindings.valueAt(role, 0)
+                .isNotEqualTo("[ROLE_ANONYMOUS]"));
+
+        discountButton.visibleProperty().bind(Bindings.valueAt(role, 0)
+                .isNotEqualTo("[ROLE_ANONYMOUS]").and(Bindings.valueAt(role, 0)
+                        .isNotEqualTo("[USER]")));
+
+    }
+
 }
