@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.ki.lab.to.yourflights.model.Customer;
 import pl.edu.agh.ki.lab.to.yourflights.service.CustomerService;
 import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
+
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -131,5 +133,18 @@ public class CustomersViewController {
                     Bindings.size(customersTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
             );
         }
+
+        String r = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList role = FXCollections.observableArrayList(Collections.singletonList(r));
+
+        buttonDeleteCustomer.visibleProperty().bind(
+                Bindings.valueAt(role, 0)
+                        .isEqualTo("[ROLE_ADMIN]")
+        );
+
+        buttonUpdateCustomer.visibleProperty().bind(
+                Bindings.valueAt(role, 0)
+                        .isNotEqualTo("[ROLE_USER]")
+        );
     }
 }

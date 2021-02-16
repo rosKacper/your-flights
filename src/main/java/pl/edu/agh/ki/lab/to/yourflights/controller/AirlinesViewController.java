@@ -3,6 +3,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import pl.edu.agh.ki.lab.to.yourflights.service.UserPrincipalService;
 import pl.edu.agh.ki.lab.to.yourflights.utils.GenericFilter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -174,5 +176,19 @@ public class AirlinesViewController {
                     Bindings.size(airlinesTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
             );
         }
+
+        String r = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList role = FXCollections.observableArrayList(Collections.singletonList(r));
+
+        buttonDeleteAirline.visibleProperty().bind(
+                Bindings.valueAt(role, 0)
+                        .isEqualTo("[ROLE_ADMIN]")
+        );
+
+        BooleanBinding binding =
+                Bindings.valueAt(role, 0).isEqualTo("[ROLE_AIRLINE]")
+                .or(Bindings.valueAt(role, 0).isEqualTo("[ROLE_ADMIN]"));
+
+        buttonUpdateAirline.visibleProperty().bind(binding);
     }
 }
