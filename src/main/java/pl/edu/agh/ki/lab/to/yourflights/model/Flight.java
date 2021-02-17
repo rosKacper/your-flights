@@ -1,28 +1,15 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
-
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sun.istack.NotNull;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 
-/**
- * Klasa definiuje model lotu
- * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
- */
 @Entity
 public class Flight extends RecursiveTreeObject<Flight> {
-
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -43,9 +30,6 @@ public class Flight extends RecursiveTreeObject<Flight> {
     @NotNull
     private String arrivalTime;
 
-    /**
-     * Mapowanie relacji do przewoźnika realizującego dany lot
-     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "airlineID")
     private Airline airline;
@@ -60,9 +44,7 @@ public class Flight extends RecursiveTreeObject<Flight> {
         this.arrivalTime=arrivalTime;
     }
 
-    public Flight() {
-
-    }
+    public Flight() {}
 
     public void setPlaceOfDeparture(String placeOfDeparture) {
         this.placeOfDeparture = placeOfDeparture;
@@ -104,13 +86,21 @@ public class Flight extends RecursiveTreeObject<Flight> {
         return airline;
     }
 
-    public String getDepartureTime() { return departureTime; }
+    public String getDepartureTime() {
+        return departureTime;
+    }
 
-    public void setDepartureTime(String departureTime) { this.departureTime = departureTime; }
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
 
-    public String getArrivalTime() { return arrivalTime; }
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
 
-    public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
 
     public Long getId() {
         return id;
@@ -123,19 +113,27 @@ public class Flight extends RecursiveTreeObject<Flight> {
     public StringProperty getplaceOfDepartureProperty(){
         return new SimpleStringProperty(placeOfDeparture);
     }
+
     public StringProperty getplaceOfDestinationProperty(){
         return new SimpleStringProperty(placeOfDestination);
     }
+
     public StringProperty getdepartureDateProperty(){
         return new SimpleStringProperty(departureDate);
     }
+
     public StringProperty getarrivalDateProperty(){
         return new SimpleStringProperty(arrivalDate);
     }
-    public StringProperty getAirlineNameProperty(){return new SimpleStringProperty(airline.getName());}
+
+    public StringProperty getAirlineNameProperty(){
+        return new SimpleStringProperty(airline.getName());
+    }
+
     public StringProperty getDepartureTimeProperty(){
         return new SimpleStringProperty(departureTime);
     }
+
     public StringProperty getArrivalTimeProperty(){
         return new SimpleStringProperty(arrivalTime);
     }

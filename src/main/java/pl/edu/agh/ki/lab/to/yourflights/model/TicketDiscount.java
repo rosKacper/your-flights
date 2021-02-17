@@ -6,12 +6,7 @@ import javafx.beans.property.StringProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.UUID;
 
-/**
- * Klasa definiuje model zniżki na bilet (czyli np. zniżka studencka, zniżka dla dzieci)
- * Zawiera oznaczenia potrzebne do późniejszego wykorzystania jej w bazie danych z użyciem Spring Data JPA
- */
 @Entity
 public class TicketDiscount extends RecursiveTreeObject<TicketDiscount> {
 
@@ -53,5 +48,4 @@ public class TicketDiscount extends RecursiveTreeObject<TicketDiscount> {
     public StringProperty getDiscountProperty(){
         return new SimpleStringProperty(Double.toString(discount));
     }
-
 }

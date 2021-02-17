@@ -1,30 +1,19 @@
 package pl.edu.agh.ki.lab.to.yourflights.model;
 
-
-import org.springframework.security.core.GrantedAuthority;
 import pl.edu.agh.ki.lab.to.yourflights.utils.UserRole;
-
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 public class User {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     private String username;
-
     private String email;
-
     private String password;
-
     private UserRole userRole;
-
-//    private Customer customer;
 
     public User(){}
 
@@ -66,13 +55,4 @@ public class User {
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
     }
-//
-//    public Customer getCustomer() {
-//        return customer;
-//    }
-//
-//    public void setCustomer(Customer customer) {
-//        this.customer = customer;
-//    }
-
 }

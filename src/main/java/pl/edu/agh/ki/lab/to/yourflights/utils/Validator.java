@@ -6,25 +6,22 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * Klasa implementująca metody, służące do sprawdzania poprawności
+ * Class implementing form validation methods
  */
 public class Validator {
     public Validator(){}
 
     /**
-     * Metoda sprawdzająca czy pole formularza jest niepuste
-     * @param field pole formularza
-     * @param label etykieta do wpisania komunikatu błędu
-     * @return true jeśli pole jest niepuste, false w przeciwnym razie
+     * Method checking if form field is not empty
+     * @param field form field
+     * @param label error message label
+     * @return true if the field is not empty, false otherwise
      */
     public static boolean validateNotEmpty(TextField field, Label label) {
         if(field.getText() == null || field.getText().isEmpty()) {
@@ -53,7 +50,7 @@ public class Validator {
     public static boolean validateMoneyFormat(TextField field, Label label) {
         String value = field.textProperty().getValue();
         if (!Pattern.matches("[0-9]*\\.?[0-9]?[0-9]?", value)) {
-            label.setText("Wrong email format!");
+            label.setText("Wrong money format!");
             label.setTextFill(Color.RED);
             return false;
         } else {
@@ -92,13 +89,11 @@ public class Validator {
     }
 
     /**
-     *
-     * @param departure -czas odlotu
-     * @param arrival -czas przylotu
-     * @param label - etykieta do wpisania komunkatu błędu
-     * @return zwraca true jeżeli jest poprawny format oraz czas, false oraz komunikat błędy w przeciwnym przyadpku
-     * Funkcja weryfikuje czy data została podana, weryfikuje jej format oraz czy czas odlotu nie jest później od
-     * daty przylotu.
+     * Date validation method
+     * @param departure - departure date
+     * @param arrival - departure time
+     * @param label - error message label
+     * @return true if both dates have valid format and departure date is before arrival date, false otherwise
      */
     public static boolean validateDate(DatePicker departure, DatePicker arrival, Label label) {
         if (departure.getValue() == null || departure.getValue().toString().isEmpty()) {
@@ -138,16 +133,6 @@ public class Validator {
         }
     }
 
-    /**
-     *
-     * @param departure czas odlotu
-     * @param arrival czas przylotu
-     * @param departureDate data odlotu
-     * @param arrivalDate data przylotu
-     * @param label etykieta do wpisania komunkatu błędu
-     * @return zwraca wartość boolean czy format jest poprawny czy nie, oraz weryfikuje
-     * czy czas odlotu nie jest wcześniej niż czas przylotu. Stąd potrzeba również dat.
-     */
     public static boolean validateTime(JFXTimePicker departure, JFXTimePicker arrival, DatePicker departureDate, DatePicker arrivalDate,  Label label){
         if (departure.getValue() == null || departure.getValue().toString().isEmpty() || arrival.getValue()==null) {
             if(departure.getValue()==null){
@@ -194,16 +179,9 @@ public class Validator {
         }
     }
 
-    /**
-     * Metoda sprawdzająca poprawność podanego adresu email w formularzu
-     * @param field pole formularza
-     * @param label etykieta do wpisania komunikatu błędu
-     * @return true jeśli email jest poprawny, false w przeciwnym razie
-     */
-
     public static boolean validateEmail(TextField field, Label label) {
-        // poniższy regex akceptuje maile w formacie person@mail.pl asd@a.a (muszą zawierać literę lub cyfrę
-        // na pierwszym miejscu, literę na ostatnim miejscu, oraz @ i . wewnątrz )
+        // regex accepting emails in format person@mail.pl asd@a.a (they have to contain a letter or digit
+        // in first position, digit in lat position, '@' and '.' in the middle)
         if (!Pattern.matches("\\A\\s*[a-zA-Z0-9]+([-._]?[A-z0-9]+)*(\\+[A-z0-9]+([-._]?[A-z0-9]+)*)?@[A-z0-9]+([-.]?[a-z0-9]+)*\\.[A-z]+\\s*", field.getText())) {
             label.setText("Email address incorrect!");
             label.setTextFill(Color.RED);
