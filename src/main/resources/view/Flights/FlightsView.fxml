@@ -17,7 +17,7 @@
 
 <!-- Widok lotów  -->
 
-<AnchorPane fx:id="flightsViewPane" prefHeight="800.0" prefWidth="1060.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.FlightController">
+<AnchorPane fx:id="flightsViewPane" prefHeight="800.0" prefWidth="1060.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.ki.lab.to.yourflights.controller.flights.FlightController">
    <children>
       <JFXTreeTableView fx:id="flightsTableView" layoutX="68.0" layoutY="104.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="1000.0" style="-fx-border-color: #1d3557;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="200.0">
          <columns>
@@ -89,7 +89,7 @@
                   <Insets left="100.0" />
                </HBox.margin>
             </JFXButton>
-            <JFXButton fx:id="buttonShowTicketCategories" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleShowTicketCategories" prefHeight="0.0" prefWidth="180.0" ripplerFill="#276738" style="-fx-border-color: #276738; -fx-border-width: 2px;" text="Ticket categories" textAlignment="CENTER">
+            <JFXButton fx:id="buttonShowTicketCategories" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" onAction="#handleShowTicketCategories" prefHeight="43.0" prefWidth="205.0" ripplerFill="#276738" style="-fx-border-color: #276738; -fx-border-width: 2px;" text="Ticket categories" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.ki.lab.to.yourflights.controller.flights.DestinationController;
+import pl.edu.agh.ki.lab.to.yourflights.controller.flights.FlightDetailsController;
 import pl.edu.agh.ki.lab.to.yourflights.model.Flight;
 import pl.edu.agh.ki.lab.to.yourflights.service.FlightService;
 import java.io.IOException;
@@ -37,8 +39,8 @@ public class MainViewController {
 
     public MainViewController(ApplicationContext applicationContext,
                               FlightService flightService,
-                              @Value("classpath:/view/MainView/FlightDetailsBrief.fxml") Resource flightDetailsBrief,
-                              @Value("classpath:/view/MainView/Destination.fxml") Resource destinationView) {
+                              @Value("classpath:/view/Main/FlightDetailsBrief.fxml") Resource flightDetailsBrief,
+                              @Value("classpath:/view/Main/Destination.fxml") Resource destinationView) {
         this.applicationContext = applicationContext;
         this.flightDetailsBrief = flightDetailsBrief;
         this.flightService = flightService;
@@ -65,7 +67,6 @@ public class MainViewController {
 
     }
 
-    //todo move this to NavigationController
     public void showMostPopularDestinations(List<String> destinations) {
         try {
             for(String destination : destinations) {
@@ -85,7 +86,6 @@ public class MainViewController {
         }
     }
 
-    //todo move this to NavigationController
     public void showFlightDetailsView(List<Flight> flights) {
         try {
             for(Flight flight : flights) {
