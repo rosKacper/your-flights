@@ -2,6 +2,7 @@ package pl.edu.agh.ki.lab.to.yourflights.controller.flights;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -62,6 +63,8 @@ public class FlightController {
 
     @FXML
     private JFXButton buttonAddReservation;
+    @FXML
+    private JFXButton buttonAddFlight;
     @FXML
     private JFXButton buttonDeleteFlight;
     @FXML
@@ -134,7 +137,7 @@ public class FlightController {
         this.setModel();
         setPredicates();
         flightsTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        setButtonsDisablePropertyBinding();
+        setButtonsPropertyBinding();
     }
 
     public void showAddReservation(ActionEvent actionEvent, Flight flight) {
@@ -203,7 +206,7 @@ public class FlightController {
         datePicker.setValue(null);
     }
 
-    private void setButtonsDisablePropertyBinding() {
+    private void setButtonsPropertyBinding() {
         if(buttonAddReservation != null) {
             buttonAddReservation.disableProperty().bind(
                     Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
@@ -229,5 +232,30 @@ public class FlightController {
                     Bindings.size(flightsTableView.getSelectionModel().getSelectedItems()).isNotEqualTo(1)
             );
         }
+
+        //visibility of buttons depending on logged user's role
+
+        String r = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        ObservableList role = FXCollections.observableArrayList(Collections.singletonList(r));
+
+        buttonAddReservation.visibleProperty().bind(Bindings.valueAt(role, 0).isEqualTo("[USER]"));
+
+        buttonAddFlight.visibleProperty().bind(Bindings.valueAt(role, 0).isEqualTo("[ROLE_ADMIN]")
+                .or(Bindings.valueAt(role, 0).isEqualTo("[AIRLINE]")));
+
+        buttonDeleteFlight.visibleProperty().bind(Bindings.valueAt(role, 0).isEqualTo("[ROLE_ADMIN]")
+                .or(Bindings.valueAt(role, 0).isEqualTo("[AIRLINE]")));
+
+        buttonUpdateFlight.visibleProperty().bind(Bindings.valueAt(role, 0).isEqualTo("[AIRLINE]")
+                .or(Bindings.valueAt(role, 0).isEqualTo("[ROLE_ADMIN]")));
+
+        buttonShowFlightDetails.visibleProperty().bind(Bindings.valueAt(role, 0).isEqualTo("[AIRLINE]")
+                .or(Bindings.valueAt(role, 0).isEqualTo("[ROLE_ADMIN]")));
+
+        buttonShowTicketCategories.visibleProperty().bind(Bindings.valueAt(role, 0).isEqualTo("[AIRLINE]")
+                .or(Bindings.valueAt(role, 0).isEqualTo("[ROLE_ADMIN]")));
+
+
+
     }
 }
