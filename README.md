@@ -9,6 +9,7 @@ Desktop application for booking airline tickets, built in Java and Spring Boot.
 - [Project overview](#project-overview)
 - [Technologies](#technologies)  
 - [Build](#build)  
+- [Usage examples](#usage-examples)
 
 
 
