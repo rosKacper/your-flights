@@ -1,7 +1,7 @@
 # your-flights
 Desktop application for booking airline tickets, built in Java and Spring Boot. 
 
----
+
 
 ## Table of Contents
 
@@ -10,7 +10,7 @@ Desktop application for booking airline tickets, built in Java and Spring Boot.
 - [Technologies](#technologies)  
 - [Build](#build)  
 
----
+
 
 ## About project
 
@@ -18,12 +18,11 @@ This application is a project for object-oriented technologies classes taking pl
 
 Project was developed by:
 
-- Tomasz Kozyra
-- Kacper Rosiak
-- Bartosz Kaszuba
-- Amadeusz Szabała
+- [Tomasz Kozyra](https://github.com/tkozyra)
+- [Kacper Rosiak](https://github.com/rosKacper)
+- [Bartosz Kaszuba](https://github.com/kaszubab)
+- [Amadeusz Szabała](https://github.com/Amadeusz002)
 
----
 
 ## Project overview
 
@@ -39,7 +38,7 @@ The application allows users to register and log in as a Client or as an Airline
 
 Application is also configured to send emails with booking confirmations to users, as well as upcoming flight reminders.
 
----
+
 
 ## Technologies
 
@@ -50,7 +49,7 @@ Technologies used in the project:
 - JavaFX version 11.0.1
 - JFoenix version 9.0.10
 
----
+
 
 ## Build
 
@@ -68,3 +67,24 @@ To run this application:
       ```
  - Build `jar` file using command `gradle bootJar`
  - Run `jar` file using command `java -jar build/libs/yourflights-1.0.0.jar`
+
+
+## Usage examples
+
+
+Main view for logged user:
+
+
+<img src="src/main/resources/readme.screenshots/main_view.jpg" alt="drawing" width="600"/>
+
+
+Flight view as a logged in airline:
+
+<img src="src/main/resources/readme.screenshots/flight_airline.jpg" alt="drawing" width="600"/>
+
+Making reservation:
+
+![](src/main/resources/readme.screenshots/making_reservation.gif)
+
+
+
