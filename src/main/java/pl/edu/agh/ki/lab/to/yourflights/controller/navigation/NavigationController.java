@@ -472,8 +472,9 @@ public class NavigationController {
         ObservableList role = FXCollections.observableArrayList(Collections.singletonList(r));
 
         customersButton.visibleProperty().bind(Bindings.valueAt(role, 0)
-                .isNotEqualTo("[ROLE_ANONYMOUS]"));
-
+                .isNotEqualTo("[ROLE_ANONYMOUS]").and(Bindings.valueAt(role, 0)
+                        .isNotEqualTo("[AIRLINE]")));
+        
         reservationsButton.visibleProperty().bind(Bindings.valueAt(role, 0)
                 .isNotEqualTo("[ROLE_ANONYMOUS]"));
 
